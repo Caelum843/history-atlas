@@ -79,5 +79,5 @@ npm run dev
 
 `reference/prototype_v0_raw.html` 与 `prototype_readme.md` 是 chat 窗口里的滚动叙事小实验。
 它的场景数据结构和 viewBox 镜头补间思路值得参考，但海岸线是手绘示意、内容未逐条核实、
-视觉是罗马专属主题，均不满足本项目要求。当前 `src/index.html` 是它的可运行副本，
-M1 搭起 Astro 工程时会移入 `reference/`。
+视觉是罗马专属主题，均不满足本项目要求。M1 搭起 Astro 工程时，
+它的可运行副本已移入 `reference/prototype_v0_standalone.html`。
