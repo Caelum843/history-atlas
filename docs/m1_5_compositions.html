@@ -1,0 +1,477 @@
+<title>历史世界三层构图</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600&family=Noto+Serif+SC:wght@300;400;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+
+<style>
+:root{
+  --ground:#14120f; --ground-deep:#0a0908; --surface:#1e1b16; --surface-2:#262218;
+  --read-surface:#2b2921; --read-ink:#f2eee4;
+  --ink:#ede8dd; --ink-dim:#b3ab9c; --ink-faint:#7d7668; --rule:#322d24;
+  --cool:#7ea6c9; --cool-dim:#4d6f8c; --warm:#c89a56; --warm-dim:#8a6a3a;
+  --f-display:'EB Garamond','Noto Serif SC',Georgia,serif;
+  --f-body:'Noto Serif SC','EB Garamond',Georgia,serif;
+  --f-mono:'IBM Plex Mono',ui-monospace,monospace;
+  --sp:1rem;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--f-body);
+  font-weight:300;line-height:1.8;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:3rem 1.5rem 5rem}
+
+.masthead{border-bottom:1px solid var(--rule);padding-bottom:2rem;margin-bottom:1.5rem}
+.eyebrow{font-family:var(--f-mono);font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--warm);margin:0 0 1rem}
+h1{font-family:var(--f-display);font-weight:600;font-size:clamp(2rem,4.4vw,3rem);line-height:1.1;
+  margin:0 0 1rem;text-wrap:balance}
+.dek{max-width:34em;color:var(--ink-dim);margin:0 0 1.5rem}
+.chips{display:flex;flex-wrap:wrap;gap:.4rem}
+.chip{font-family:var(--f-mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;
+  padding:.3rem .6rem;border:1px solid var(--rule);color:var(--ink-dim);background:var(--surface)}
+.chip.hot{border-color:var(--warm-dim);color:var(--warm)}
+
+.thesis{background:var(--read-surface);color:var(--read-ink);padding:1.5rem 2rem;
+  border-left:2px solid var(--warm);max-width:44em;margin:2.5rem 0 4rem}
+.thesis p{margin:0 0 .9rem}.thesis p:last-child{margin:0}
+.thesis strong{font-weight:600;color:#fff}
+
+section{margin-bottom:5rem}
+.shead{display:flex;align-items:baseline;gap:1rem;flex-wrap:wrap;margin-bottom:.5rem}
+h2{font-family:var(--f-display);font-weight:600;font-size:clamp(1.4rem,2.6vw,1.95rem);margin:0}
+.route{font-family:var(--f-mono);font-size:.7rem;color:var(--cool);letter-spacing:.06em}
+.altitude{font-family:var(--f-mono);font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ink-faint)}
+.slead{max-width:36em;color:var(--ink-dim);margin:0 0 1.5rem;font-size:.98rem}
+
+/* 构图框：全出血感 —— 内容在四边被裁切 */
+.frame{position:relative;background:var(--ground-deep);border:1px solid var(--rule);overflow:hidden}
+.frame svg{display:block;width:100%;height:auto}
+
+.notes{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1.25rem;margin-top:1.5rem}
+.note{border-top:1px solid var(--rule);padding-top:.75rem}
+.note b{display:block;font-family:var(--f-mono);font-size:.62rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--warm);margin-bottom:.35rem;font-weight:500}
+.note span{font-size:.86rem;color:var(--ink-dim);line-height:1.68}
+
+.ask{border-top:1px solid var(--rule);padding-top:2rem}
+.ask ol{max-width:36em;padding-left:1.2rem;color:var(--ink-dim)}
+.ask li{margin-bottom:1rem}
+.ask strong{color:var(--ink);font-weight:600}
+
+footer{margin-top:4rem;border-top:1px solid var(--rule);padding-top:1.5rem;
+  font-family:var(--f-mono);font-size:.64rem;letter-spacing:.1em;color:var(--ink-faint);
+  text-transform:uppercase}
+:focus-visible{outline:2px solid var(--cool);outline-offset:3px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media (max-width:640px){.wrap{padding:2rem 1rem 3rem}.thesis{padding:1.25rem}}
+</style>
+
+<div class="wrap">
+
+<header class="masthead">
+  <p class="eyebrow">M1.5 · 交付 1–2 · 待确认方向</p>
+  <h1>历史世界：三层构图</h1>
+  <p class="dek">
+    三张静态构图，对应世界层、地区层、故事层。它们不是最终视觉，是用来确认
+    「第一屏像进入世界，而不是打开文章」这件事能不能成立。
+  </p>
+  <div class="chips">
+    <span class="chip hot">静态构图 · 无交互</span>
+    <span class="chip">罗马占位数据</span>
+    <span class="chip">M1 的 schema 与校验全部保留</span>
+  </div>
+</header>
+
+<div class="thesis">
+  <p>
+    整份架构里只有一个需要你先同意的判断：<strong>三层不是三个页面，是同一个空间的三个高度。</strong>
+  </p>
+  <p>
+    如果三层各自是独立页面，世界感只能靠大图、粒子、渐入去伪造——也就是你明确排除的那些。
+    改成连续下降之后，「返回上层仍知道自己在哪」不再需要面包屑，因为<strong>从没离开过那个空间，返回是上升</strong>。
+  </p>
+  <p>
+    还有一件必须先摆出来的事：诗云有几百首诗，LoL 有一百多个英雄。
+    <strong>我们现在有 1 个故事、8 个对象。</strong>世界感这一轮不可能来自数量，
+    只能来自裁切、未开放节点，和每个对象背后那层很深的证据系统。
+  </p>
+</div>
+
+<!-- ============ 世界层 ============ -->
+<section>
+  <div class="shead">
+    <span class="altitude">高空</span>
+    <h2>世界层</h2>
+    <span class="route">/</span>
+  </div>
+  <p class="slead">
+    不画世界海岸线——粗糙的海岸线就是虚假精确。改用经纬网加锚在真实坐标上的区域场：
+    文明是有位置、有边界模糊度的光场，不是描边的国家。这也顺带把「文明的范围本来就不是线」讲了出来。
+  </p>
+
+  <div class="frame">
+    <svg viewBox="0 0 1200 620" role="img" aria-label="世界层构图：经纬网与文明区域场，罗马世界为亮场，其余文明为暗场">
+      <defs>
+        <radialGradient id="fieldOpen"><stop offset="0%" stop-color="#c89a56" stop-opacity=".42"/><stop offset="100%" stop-color="#c89a56" stop-opacity="0"/></radialGradient>
+        <radialGradient id="fieldDim"><stop offset="0%" stop-color="#7ea6c9" stop-opacity=".13"/><stop offset="100%" stop-color="#7ea6c9" stop-opacity="0"/></radialGradient>
+        <radialGradient id="vig"><stop offset="55%" stop-color="#0a0908" stop-opacity="0"/><stop offset="100%" stop-color="#0a0908" stop-opacity=".92"/></radialGradient>
+      </defs>
+      <rect width="1200" height="620" fill="#0a0908"/>
+      <g id="w-grat"></g>
+      <g id="w-fields"></g>
+      <g id="w-nodes"></g>
+      <rect width="1200" height="620" fill="url(#vig)" pointer-events="none"/>
+      <g id="w-chrome"></g>
+    </svg>
+  </div>
+
+  <div class="notes">
+    <div class="note"><b>裁切即规模</b><span>区域场在四边被画框切断。可见范围之外还有场和节点——规模由画面结构证明，不由文案宣称。</span></div>
+    <div class="note"><b>暗场可感知不可进入</b><span>其余文明是暗场，明确标注未开放，不假装可点。它们必须对应真实规划，否则点开是空的，世界立刻塌成贴图。</span></div>
+    <div class="note"><b>没有列表</b><span>诗云从不给列表，给一个场。世界层任何时候都不出现「作品列表」。</span></div>
+    <div class="note"><b>时间只是一个状态</b><span>本阶段不做时间轴，左下角只显示「罗马共和国晚期 · 实验内容」，未来通过独立接口接入。</span></div>
+  </div>
+</section>
+
+<!-- ============ 地区层 ============ -->
+<section>
+  <div class="shead">
+    <span class="altitude">中空</span>
+    <h2>地区层 · 罗马共和国晚期</h2>
+    <span class="route">/world/rome-republic/</span>
+  </div>
+  <p class="slead">
+    卷首页，不是目录。镜头从高空降下来，同一个衬底上的对象开始解析：地点落在地图上，
+    人物停靠在边缘，卢比孔河因为位置不可考而没有锚点。
+  </p>
+
+  <div class="frame">
+    <svg viewBox="0 0 1200 620" role="img" aria-label="地区层构图：地中海与意大利，地点节点在地图上，人物停靠在左侧，卢比孔河为无锚点的争议标记">
+      <rect width="1200" height="620" fill="#0a0908"/>
+      <g id="r-map"></g>
+      <g id="r-nodes"></g>
+      <rect width="1200" height="620" fill="url(#vig)" pointer-events="none"/>
+      <g id="r-chrome"></g>
+    </svg>
+  </div>
+
+  <div class="notes">
+    <div class="note"><b>人物不落在地图上</b><span>人不是地点，钉在地图上是范畴错误。凯撒与庞培停靠在舞台左缘的人物列，与地点节点在视觉语言上完全不同。</span></div>
+    <div class="note"><b>卢比孔河没有锚点</b><span>数据里 <code>positionDisputed: true</code>。视觉如实反映：虚线圈、不指向具体河道、位置刻意悬浮。</span></div>
+    <div class="note"><b>关系默认不显示</b><span>沿用 M0 审核结论——三类关系不同时显示。只有选中某个对象时，才亮起该对象的关系。</span></div>
+    <div class="note"><b>无死角互链</b><span>LoL 那种「像一本书」靠的是永远撞不到叶子节点。硬规则：任何对象浮层至少给两条去向。</span></div>
+  </div>
+</section>
+
+<!-- ============ 故事层 ============ -->
+<section>
+  <div class="shead">
+    <span class="altitude">地面</span>
+    <h2>故事层 · 卢比孔河 · 状态三</h2>
+    <span class="route">/story/rubicon/</span>
+  </div>
+  <p class="slead">
+    展示第三个状态——地图因证据不足无法继续精确放大。选它而不是状态一，是因为它最能说明
+    这个产品和别的历史网站的差别：<strong>我们会在画面上承认自己不知道</strong>。
+    旁白是浮层，不是正文栏；证据抽屉半开，演示它不压过舞台。
+  </p>
+
+  <div class="frame">
+    <svg viewBox="0 0 1200 620" role="img" aria-label="故事层构图：意大利北部地图边界模糊，出现证据精度不足提示，右侧证据抽屉半开，底部旁白浮层">
+      <rect width="1200" height="620" fill="#0a0908"/>
+      <g id="s-stage"></g>
+      <g id="s-chrome"></g>
+    </svg>
+  </div>
+
+  <div class="notes">
+    <div class="note"><b>滚动改变同一个舞台</b><span>不是滚过三个区块。三次滚动是同一块画面的三个状态，镜头与图层在原地转换。</span></div>
+    <div class="note"><b>精度耗尽是内容，不是错误</b><span>边界羽化、出现「证据精度不足」，然后媒介从地图切到现代影像。这一刻本身就是论点。</span></div>
+    <div class="note"><b>对象在舞台里可点</b><span>凯撒、卢比孔河、lex Cornelia 都是可进入对象，点开浮层卡片，不跳走、不打断。</span></div>
+    <div class="note"><b>抽屉最宽 38%</b><span>M1 那套严谨系统一项不删，全部移进这里。默认画面上不出现 renderer 名、图层 ID、开发状态。</span></div>
+  </div>
+</section>
+
+<section class="ask">
+  <h2>需要你确认的四点</h2>
+  <ol>
+    <li><strong>「三层 = 同一空间的三个高度」成立吗？</strong>如果你更想要三个独立场景、各有各的画风、之间靠转场衔接（更接近 LoL 每个地区一套视觉身份的做法），框架要换一种搭法——现在改成本最低。</li>
+    <li><strong>世界层不画海岸线，用经纬网加区域场。</strong>诚实，但比一张世界地图抽象，即时冲击力弱一些。</li>
+    <li><strong>人物不落在地图上。</strong>数据上正确，代价是人物列看着有点像侧边栏。</li>
+    <li><strong>未开放节点的密度。</strong>我按罗马系列的真实规划放了 7 个暗节点。放得多世界感强但都点不动，放得少诚实但显空。</li>
+  </ol>
+</section>
+
+<footer>静态构图 · 无交互 · 确认方向后制作可操作的 M1.5</footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var NS="http://www.w3.org/2000/svg";
+  function e(t,a){var n=document.createElementNS(NS,t);for(var k in a)if(a[k]!=null)n.setAttribute(k,a[k]);return n;}
+  function add(p,t,a,txt){var n=e(t,a);if(txt!=null)n.textContent=txt;p.appendChild(n);return n;}
+  function g(id){return document.getElementById(id);}
+
+  var MONO="'IBM Plex Mono',monospace", BODY="'Noto Serif SC',serif";
+
+  /* ================= 世界层 ================= */
+  // 等距圆柱，窗口 lon -25..135 / lat 60..-22
+  var K=7.5, wx=function(lon){return (lon+25)*K;}, wy=function(lat){return (60-lat)*K;};
+
+  var grat=g("w-grat");
+  if(grat){
+    for(var lo=-30;lo<=150;lo+=15) add(grat,"line",{x1:wx(lo),y1:0,x2:wx(lo),y2:620,stroke:"#1a1712","stroke-width":1});
+    for(var la=75;la>=-30;la-=15) add(grat,"line",{x1:0,y1:wy(la),x2:1200,y2:wy(la),stroke:"#1a1712","stroke-width":1});
+    // 赤道略亮，给一点方位
+    add(grat,"line",{x1:0,y1:wy(0),x2:1200,y2:wy(0),stroke:"#241f18","stroke-width":1});
+  }
+
+  var FIELDS=[
+    {lon:15,  lat:38, r:150, open:true,  zh:"罗马世界",     sub:"已开放"},
+    {lon:30,  lat:36, r:112, open:false, zh:"希腊化世界",   sub:"未开放"},
+    {lon:52,  lat:33, r:120, open:false, zh:"帕提亚",       sub:"未开放"},
+    {lon:78,  lat:22, r:128, open:false, zh:"印度次大陆",   sub:"未开放"},
+    {lon:112, lat:34, r:142, open:false, zh:"汉",           sub:"未开放"},
+    {lon:6,   lat:50, r:104, open:false, zh:"凯尔特世界",   sub:"未开放"},
+    {lon:32,  lat:16, r:96,  open:false, zh:"库施与努比亚", sub:"未开放"},
+    {lon:45,  lat:-2, r:88,  open:false, zh:"红海贸易网",   sub:"未开放"}
+  ];
+  var wf=g("w-fields"), wn=g("w-nodes");
+  if(wf&&wn){
+    FIELDS.forEach(function(f){
+      var x=wx(f.lon), y=wy(f.lat);
+      add(wf,"circle",{cx:x,cy:y,r:f.r,fill:f.open?"url(#fieldOpen)":"url(#fieldDim)"});
+      add(wf,"circle",{cx:x,cy:y,r:f.r*0.62,fill:"none",
+        stroke:f.open?"#8a6a3a":"#2c3a44","stroke-width":1,"stroke-dasharray":"2 7",opacity:f.open?.8:.55});
+      add(wn,"text",{x:x,y:y+4,"text-anchor":"middle","font-family":BODY,
+        "font-size":f.open?18:13,fill:f.open?"#ede8dd":"#5d6a73","letter-spacing":"0.08em"},f.zh);
+      add(wn,"text",{x:x,y:y+22,"text-anchor":"middle","font-family":MONO,
+        "font-size":8.5,fill:f.open?"#c89a56":"#3f4a52","letter-spacing":"0.16em"},f.sub);
+    });
+
+    // 这个高度只解析到"区域 + 已开放作品"。
+    // 8 个故事节点全画出来是尺度错误：它们全在罗马场内，挤成一团。
+    // 对象随高度逐级解析 —— 故事节点留到地区层。
+    var rx0=wx(12.4), ry0=wy(43.5);
+    add(wn,"circle",{cx:rx0,cy:ry0,r:5.5,fill:"#c89a56"});
+    add(wn,"circle",{cx:rx0,cy:ry0,r:13,fill:"none",stroke:"#c89a56","stroke-width":1,opacity:.5});
+    add(wn,"text",{x:rx0+20,y:ry0+4,"font-family":BODY,"font-size":14,fill:"#ede8dd"},"《卢比孔河》");
+    add(wn,"text",{x:rx0+20,y:ry0+21,"font-family":MONO,"font-size":8,fill:"#8a6a3a","letter-spacing":".14em"},"+ 7 篇规划中");
+  }
+
+  var wc=g("w-chrome");
+  if(wc){
+    add(wc,"text",{x:36,y:52,"font-family":MONO,"font-size":10,fill:"#c89a56","letter-spacing":"0.24em"},"HISTORY ATLAS");
+    add(wc,"text",{x:36,y:566,"font-family":BODY,"font-size":15,fill:"#ede8dd"},"罗马共和国晚期");
+    add(wc,"text",{x:36,y:588,"font-family":MONO,"font-size":9,fill:"#7d7668","letter-spacing":"0.16em"},"实验内容 · 1 部作品已开放");
+    // 探索入口：一条线，不是搜索框控件
+    add(wc,"line",{x1:1000,y1:566,x2:1164,y2:566,stroke:"#322d24","stroke-width":1});
+    add(wc,"text",{x:1164,y:558,"text-anchor":"end","font-family":MONO,"font-size":9,
+      fill:"#7d7668","letter-spacing":"0.16em"},"探索 / 搜索");
+    add(wc,"text",{x:1164,y:52,"text-anchor":"end","font-family":MONO,"font-size":9,
+      fill:"#4a4235","letter-spacing":"0.14em"},"画外仍有区域与故事");
+  }
+
+  /* ================= 地中海海岸线（草图级） ================= */
+  var NORTH=[[-8.7,43.3],[-9.5,38.7],[-6.3,36.8],[-4.4,36.7],[-0.5,38.3],[2.2,41.4],[3.0,43.0],
+    [5.4,43.3],[8.9,44.4],[10.3,43.7],[12.3,41.7],[14.8,40.6],[15.9,38.7],[15.65,38.1],[17.1,39.1],
+    [18.5,40.15],[16.2,41.9],[13.5,43.6],[12.3,45.4],[13.8,45.6],[16.4,43.5],[19.5,41.3],[20.9,39.6],
+    [21.7,37.0],[23.2,36.5],[24.0,38.2],[22.6,40.5],[24.6,40.9],[26.9,40.7],[26.3,38.9],[27.3,37.0],
+    [29.7,36.2],[32.4,36.2],[35.9,36.6],[35.5,33.9],[34.3,31.4],[32.5,31.1],[44,31.0],[44,54],[-14,54],[-14,44]];
+  var AFRICA=[[32.5,31.1],[27.8,31.2],[24.0,32.1],[20.0,32.1],[19.2,30.8],[15.2,31.3],[13.2,32.9],
+    [10.1,33.9],[10.6,35.8],[10.3,37.1],[8.8,37.0],[3.1,36.8],[-0.6,35.8],[-5.3,35.9],[-14,35.9],
+    [-14,20],[44,20],[44,31.1]];
+  var ISLES=[
+    [[15.55,38.25],[12.4,38.0],[12.4,37.8],[14.2,37.1],[15.3,37.1]],
+    [[8.2,41.1],[9.7,41.0],[9.5,39.1],[8.4,39.3]],
+    [[8.6,42.9],[9.5,42.7],[9.3,41.4],[8.7,41.9]],
+    [[23.5,35.2],[26.0,35.2],[26.0,34.95],[23.5,35.0]]
+  ];
+  function land(host,px,py,cls){
+    [NORTH,AFRICA].concat(ISLES).forEach(function(poly){
+      var d=poly.map(function(p,i){return (i?"L":"M")+px(p[0]).toFixed(1)+" "+py(p[1]).toFixed(1);}).join(" ")+" Z";
+      add(host,"path",Object.assign({d:d},cls));
+    });
+  }
+
+  /* ================= 地区层 ================= */
+  // 中地中海尺度。这个尺度下那套简化海岸线还够用，但仍按 schematic 标注。
+  var RK=52, rx=function(lon){return (lon-3.5)*RK;}, ry=function(lat){return (47-lat)*RK;};
+  var rm=g("r-map"), rn=g("r-nodes");
+  if(rm&&rn){
+    land(rm,rx,ry,{fill:"#191610",stroke:"#3c352a","stroke-width":1});
+
+    // 行省边界示意：虚线，与实测海岸线在笔法上必须不同
+    var bd=[[12.15,44.9],[12.3,44.4],[12.45,44.05],[13.2,43.5],[13.9,42.9]];
+    add(rm,"path",{d:bd.map(function(p,i){return (i?"L":"M")+rx(p[0]).toFixed(1)+" "+ry(p[1]).toFixed(1);}).join(" "),
+      fill:"none",stroke:"#8a6a3a","stroke-width":2,"stroke-dasharray":"5 7",opacity:.7});
+
+    // 地点：落在地图上
+    var PLACES=[
+      {lon:12.48,lat:41.90,zh:"罗马",dx:12,dy:5,a:"start"},
+      {lon:12.20,lat:44.42,zh:"拉文纳",dx:-12,dy:-6,a:"end"},
+      {lon:12.57,lat:44.06,zh:"里米尼",dx:13,dy:14,a:"start"}
+    ];
+    PLACES.forEach(function(p){
+      var x=rx(p.lon),y=ry(p.lat);
+      add(rn,"circle",{cx:x,cy:y,r:4,fill:"#ede8dd"});
+      add(rn,"text",{x:x+p.dx,y:y+p.dy,"text-anchor":p.a,"font-family":BODY,"font-size":13,fill:"#ede8dd"},p.zh);
+    });
+
+    // 卢比孔河：没有锚点。两圈虚线表示"大致在这一带"，引线把标签拉到空处
+    var ux=rx(12.42), uy=ry(44.12);
+    add(rn,"circle",{cx:ux,cy:uy,r:30,fill:"none",stroke:"#7ea6c9","stroke-width":1,"stroke-dasharray":"3 6",opacity:.85});
+    add(rn,"circle",{cx:ux,cy:uy,r:50,fill:"none",stroke:"#4d6f8c","stroke-width":1,"stroke-dasharray":"2 9",opacity:.4});
+    add(rn,"path",{d:"M"+(ux-46)+" "+(uy-24)+" L"+(ux-110)+" "+(uy-64),stroke:"#4d6f8c","stroke-width":1,opacity:.6,fill:"none"});
+    add(rn,"text",{x:ux-116,y:uy-66,"text-anchor":"end","font-family":BODY,"font-size":13,fill:"#7ea6c9"},"卢比孔河");
+    add(rn,"text",{x:ux-116,y:uy-50,"text-anchor":"end","font-family":MONO,"font-size":8,fill:"#4d6f8c","letter-spacing":".12em"},"位置不可考 · 无锚点");
+
+    // 已开放故事，连到它讲的那片地方
+    var stx=rx(15.6), sty=ry(45.6);
+    add(rn,"path",{d:"M"+(ux+48)+" "+(uy-14)+" L"+(stx-14)+" "+(sty+4),stroke:"#8a6a3a","stroke-width":1,opacity:.5,fill:"none"});
+    add(rn,"circle",{cx:stx,cy:sty,r:6,fill:"#c89a56"});
+    add(rn,"text",{x:stx+16,y:sty+5,"font-family":BODY,"font-size":15,fill:"#ede8dd"},"《卢比孔河》");
+    add(rn,"text",{x:stx+16,y:sty+23,"font-family":MONO,"font-size":8.5,fill:"#c89a56","letter-spacing":".14em"},"实验样章 · 可进入");
+
+    // 未开放故事：看得见，进不去。都是罗马系列真实规划里的题目
+    [{lon:13.9,lat:42.1,t:"科尔菲尼乌姆"},
+     {lon:17.94,lat:40.64,t:"布林迪西的撤离"},
+     {lon:19.45,lat:41.31,t:"都拉基乌姆"},
+     {lon:22.4,lat:39.29,t:"法萨卢斯"},
+     {lon:10.32,lat:37.06,t:"迦太基的终结"}].forEach(function(u){
+      var x=rx(u.lon),y=ry(u.lat);
+      add(rn,"circle",{cx:x,cy:y,r:2.8,fill:"none",stroke:"#6b6154","stroke-width":1});
+      add(rn,"text",{x:x+10,y:y+3.5,"font-family":BODY,"font-size":10.5,fill:"#6b6154"},u.t);
+    });
+
+    add(rn,"text",{x:1164,y:604,"text-anchor":"end","font-family":MONO,"font-size":8,
+      fill:"#4a4235","letter-spacing":".14em"},"海岸线为简化示意 · SCHEMATIC");
+  }
+
+  var rc=g("r-chrome");
+  if(rc){
+    // 人物列：停靠在左缘，与地点节点的视觉语言完全不同
+    add(rc,"rect",{x:0,y:0,width:118,height:620,fill:"#100e0c",opacity:.92});
+    add(rc,"line",{x1:118,y1:0,x2:118,y2:620,stroke:"#322d24","stroke-width":1});
+    add(rc,"text",{x:22,y:44,"font-family":MONO,"font-size":8.5,fill:"#7d7668","letter-spacing":".18em"},"人物");
+    [{zh:"凯撒",y:92},{zh:"庞培",y:176}].forEach(function(p){
+      add(rc,"rect",{x:22,y:p.y-26,width:74,height:74,fill:"#1e1b16",stroke:"#3c352a","stroke-width":1});
+      add(rc,"text",{x:59,y:p.y+16,"text-anchor":"middle","font-family":BODY,"font-size":14,fill:"#ede8dd"},p.zh);
+    });
+    add(rc,"text",{x:22,y:288,"font-family":MONO,"font-size":8.5,fill:"#7d7668","letter-spacing":".18em"},"制度");
+    add(rc,"rect",{x:22,y:302,width:74,height:52,fill:"#1e1b16",stroke:"#3c352a","stroke-width":1});
+    add(rc,"text",{x:59,y:324,"text-anchor":"middle","font-family":BODY,"font-size":11,fill:"#b3ab9c"},"叛国法");
+    add(rc,"text",{x:59,y:340,"text-anchor":"middle","font-family":MONO,"font-size":7,fill:"#7d7668"},"LEX CORNELIA");
+    add(rc,"text",{x:22,y:404,"font-family":MONO,"font-size":8.5,fill:"#7d7668","letter-spacing":".18em"},"文物");
+    add(rc,"rect",{x:22,y:418,width:74,height:52,fill:"#1e1b16",stroke:"#3c352a","stroke-width":1,"stroke-dasharray":"3 3"});
+    add(rc,"text",{x:59,y:448,"text-anchor":"middle","font-family":MONO,"font-size":8,fill:"#6b6154"},"待检索");
+
+    add(rc,"text",{x:1164,y:48,"text-anchor":"end","font-family":MONO,"font-size":9,fill:"#7d7668","letter-spacing":".18em"},"↑ 返回世界");
+    add(rc,"text",{x:150,y:592,"font-family":BODY,"font-size":14,fill:"#ede8dd"},"罗马共和国晚期");
+    add(rc,"text",{x:150,y:610,"font-family":MONO,"font-size":8.5,fill:"#7d7668","letter-spacing":".14em"},"前 133 — 前 27 · 实验样章");
+  }
+
+  /* ================= 故事层 · 状态三 ================= */
+  // 关键决定：这个尺度上我们没有可用的测绘数据，所以**不画海岸线**。
+  // 状态三讲的就是"精度耗尽"，此时还描一条精确海岸线是自相矛盾。
+  // 改用无边界的地形场：有方位，没有假装出来的界线。
+  var SK=136, sxf=function(lon){return (lon-10.36)*SK;}, syf=function(lat){return (46-lat)*SK;};
+  var st=g("s-stage");
+  if(st){
+    var defs=add(st,"defs",{});
+    var fade=e("radialGradient");fade.setAttribute("id","fadeOut");
+    fade.innerHTML='<stop offset="0%" stop-color="#0a0908" stop-opacity="0"/><stop offset="72%" stop-color="#0a0908" stop-opacity=".5"/><stop offset="100%" stop-color="#0a0908" stop-opacity=".95"/>';
+    defs.appendChild(fade);
+    var terr=e("linearGradient");terr.setAttribute("id","terr");
+    terr.setAttribute("x1","0");terr.setAttribute("y1","0");terr.setAttribute("x2","1");terr.setAttribute("y2","0.3");
+    terr.innerHTML='<stop offset="0%" stop-color="#241f17" stop-opacity=".95"/><stop offset="46%" stop-color="#1d1a14" stop-opacity=".7"/><stop offset="62%" stop-color="#12100d" stop-opacity=".35"/><stop offset="100%" stop-color="#0d0c0a" stop-opacity=".1"/>';
+    defs.appendChild(terr);
+
+    // 地形场：陆地在西，海在东，中间没有线 —— 因为我们不知道线在哪
+    add(st,"rect",{x:0,y:0,width:744,height:620,fill:"url(#terr)"});
+    for(var i=0;i<7;i++){
+      add(st,"path",{d:"M"+(60+i*18)+" 0 C "+(140+i*30)+" 200 "+(90+i*26)+" 420 "+(200+i*34)+" 620",
+        fill:"none",stroke:"#2b251b","stroke-width":1,opacity:.35-i*0.035});
+    }
+
+    // 行省边界：在这一状态开始羽化、断裂 —— 精度耗尽本身是内容
+    var bd2=[[12.15,44.75],[12.3,44.4],[12.42,44.15],[12.7,43.9]];
+    var dpath=bd2.map(function(p,i){return (i?"L":"M")+sxf(p[0]).toFixed(1)+" "+syf(p[1]).toFixed(1);}).join(" ");
+    add(st,"path",{d:dpath,fill:"none",stroke:"#8a6a3a","stroke-width":14,opacity:.08});
+    add(st,"path",{d:dpath,fill:"none",stroke:"#8a6a3a","stroke-width":5,opacity:.16,"stroke-dasharray":"3 16"});
+    add(st,"path",{d:dpath,fill:"none",stroke:"#8a6a3a","stroke-width":1.4,opacity:.34,"stroke-dasharray":"2 18"});
+
+    // 三条候选河道：并列，都不确定，谁也不比谁更真
+    [[12.28,44.24],[12.40,44.13],[12.52,44.02]].forEach(function(p){
+      var x=sxf(p[0]),y=syf(p[1]);
+      add(st,"path",{d:"M"+(x-90)+" "+(y-18)+" Q "+x+" "+(y+10)+" "+(x+96)+" "+(y+2),
+        fill:"none",stroke:"#4d6f8c","stroke-width":1.6,opacity:.45,"stroke-dasharray":"5 7"});
+    });
+
+    add(st,"circle",{cx:sxf(12.42),cy:syf(44.12),r:200,fill:"url(#fadeOut)"});
+
+    // 地点仍在，但位置标为近似
+    [{lon:12.20,lat:44.42,zh:"拉文纳"},{lon:12.57,lat:44.06,zh:"里米尼"}].forEach(function(p){
+      var x=sxf(p.lon),y=syf(p.lat);
+      add(st,"circle",{cx:x,cy:y,r:3.6,fill:"#b3ab9c"});
+      add(st,"text",{x:x+11,y:y+4,"font-family":BODY,"font-size":12.5,fill:"#b3ab9c"},p.zh);
+    });
+
+    add(st,"text",{x:36,y:604,"font-family":MONO,"font-size":8,fill:"#4a4235","letter-spacing":".14em"},
+      "此尺度无可用测绘数据 · 不绘制海岸线");
+  }
+
+  var sc=g("s-chrome");
+  if(sc){
+    // 精度耗尽提示 —— 画面正中偏左，是内容不是错误
+    add(sc,"line",{x1:432,y1:118,x2:600,y2:118,stroke:"#4d6f8c","stroke-width":1});
+    add(sc,"text",{x:432,y:106,"font-family":MONO,"font-size":10,fill:"#7ea6c9","letter-spacing":".2em"},"证据精度不足");
+    add(sc,"text",{x:432,y:142,"font-family":BODY,"font-size":13.5,fill:"#b3ab9c"},"古代河道不可考 · 无法继续放大");
+    add(sc,"text",{x:432,y:164,"font-family":MONO,"font-size":8.5,fill:"#4d6f8c","letter-spacing":".12em"},"SCHEMATIC → 现代影像");
+    add(sc,"text",{x:432,y:196,"font-family":BODY,"font-size":11.5,fill:"#6b6154"},"三条并列虚线 = 三个候选河道");
+
+    // 旁白浮层：不是正文栏
+    add(sc,"rect",{x:60,y:452,width:520,height:112,fill:"#14120f",opacity:.9});
+    add(sc,"rect",{x:60,y:452,width:2,height:112,fill:"#c89a56"});
+    add(sc,"text",{x:84,y:482,"font-family":MONO,"font-size":8.5,fill:"#c89a56","letter-spacing":".16em"},"前 49 年 1 月 · 山南高卢行省界");
+    add(sc,"text",{x:84,y:512,"font-family":BODY,"font-size":15,fill:"#ede8dd"},"我们知道他越过了行省的边界。");
+    add(sc,"text",{x:84,y:540,"font-family":BODY,"font-size":15,fill:"#b3ab9c"},"我们不知道那条边界具体在哪一条河上。");
+
+    // 可点对象条
+    [{t:"凯撒",x:640},{t:"卢比孔河",x:712},{t:"叛国法",x:812}].forEach(function(o){
+      add(sc,"rect",{x:o.x,y:492,width:o.t.length*15+22,height:30,fill:"none",stroke:"#4a4235","stroke-width":1});
+      add(sc,"text",{x:o.x+11,y:512,"font-family":BODY,"font-size":13,fill:"#b3ab9c"},o.t);
+    });
+    add(sc,"text",{x:640,y:552,"font-family":MONO,"font-size":8,fill:"#6b6154","letter-spacing":".14em"},"舞台内可进入对象");
+
+    // 证据抽屉：半开，占 38%
+    add(sc,"rect",{x:744,y:0,width:456,height:620,fill:"#100e0c",opacity:.96});
+    add(sc,"line",{x1:744,y1:0,x2:744,y2:620,stroke:"#3c352a","stroke-width":1});
+    add(sc,"text",{x:776,y:52,"font-family":MONO,"font-size":9,fill:"#c89a56","letter-spacing":".2em"},"证据");
+    add(sc,"text",{x:1168,y:52,"text-anchor":"end","font-family":MONO,"font-size":9,fill:"#7d7668"},"关闭 ✕");
+    add(sc,"line",{x1:776,y1:70,x2:1168,y2:70,stroke:"#322d24","stroke-width":1});
+
+    var rows=[
+      {y:104,k:"论断",v:"使这一行为成立犯罪的是率军越出行省",s:"ATTESTED",c:"#ede8dd"},
+      {y:186,k:"来源",v:"Caes. BC 1.5 · 当事人自述",s:"SUPPORTS",c:"#b3ab9c"},
+      {y:268,k:"争议",v:"元老院是否已正式宣告公敌",s:"DISPUTED",c:"#7ea6c9"},
+      {y:350,k:"替代解释",v:"条件式要求，非当场宣告",s:"ALTERNATIVE",c:"#7ea6c9"},
+      {y:432,k:"地图精度",v:"行省边界为估计，非实测",s:"SCHEMATIC",c:"#7d7668"},
+      {y:514,k:"内容状态",v:"实验样章 · 出处待补",s:"SAMPLE",c:"#c89a56"}
+    ];
+    rows.forEach(function(r){
+      add(sc,"text",{x:776,y:r.y,"font-family":MONO,"font-size":8,fill:"#7d7668","letter-spacing":".16em"},r.k);
+      add(sc,"text",{x:776,y:r.y+24,"font-family":BODY,"font-size":13,fill:r.c},r.v);
+      add(sc,"text",{x:776,y:r.y+44,"font-family":MONO,"font-size":7.5,fill:"#5d564b","letter-spacing":".14em"},r.s);
+      add(sc,"line",{x1:776,y1:r.y+58,x2:1168,y2:r.y+58,stroke:"#241f18","stroke-width":1});
+    });
+
+    add(sc,"text",{x:36,y:48,"font-family":MONO,"font-size":9,fill:"#7d7668","letter-spacing":".18em"},"↑ 返回罗马共和国晚期");
+    // 状态指示：三个状态中的第三个
+    [0,1,2].forEach(function(i){
+      add(sc,"rect",{x:36,y:290+i*22,width:i===2?18:9,height:2,fill:i===2?"#c89a56":"#3c352a"});
+    });
+  }
+})();
+</script>
