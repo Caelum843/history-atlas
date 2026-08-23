@@ -1,0 +1,21 @@
+---
+/**
+ * 视觉分发器。
+ *
+ * registry 负责"这个 renderer 存不存在、config 合不合法"；
+ * 这里只负责"用哪个组件画"。两件事分开，
+ * 是为了让新增 renderer 不必改动内容契约。
+ */
+import MapNarrative from '../renderers/map-narrative/Renderer.astro';
+import AuthorityTracks from '../renderers/authority-tracks/Renderer.astro';
+import ProcedureSequence from '../renderers/procedure-sequence/Renderer.astro';
+import { getRenderer } from '../renderers/registry';
+
+interface Props { renderer: string; config: Record<string, unknown> }
+const { renderer, config } = Astro.props;
+const def = getRenderer(renderer);
+---
+{renderer === 'map-narrative' && <MapNarrative config={config as any} />}
+{renderer === 'authority-tracks' && <AuthorityTracks config={config as any} />}
+{renderer === 'procedure-sequence' && <ProcedureSequence config={config as any} />}
+{!def && <p class="faint">未注册的 renderer：{renderer}</p>}

@@ -1,0 +1,48 @@
+---
+import '../styles/base.css';
+import '../styles/themes/rome-republic.css';
+
+interface Props {
+  title: string;
+  /** 作品主题。换文明只换这一个值 + 一份主题 css。 */
+  theme?: string;
+}
+const { title, theme = 'rome-republic' } = Astro.props;
+---
+<!doctype html>
+<html lang="zh-CN" data-theme={theme}>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{title}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=Noto+Serif+SC:wght@300;400;600&family=IBM+Plex+Mono:wght@400;500&display=swap"
+  />
+</head>
+<body>
+  <slot />
+</body>
+</html>
+
+<style is:global>
+  /* 页面骨架。颜色一律走令牌，不在这里做颜色决策。 */
+  .shell { max-width: 1100px; margin: 0 auto; padding: var(--ha-sp-12) var(--ha-sp-6) var(--ha-sp-16); }
+  h1, h2, h3 { font-family: var(--ha-font-display); font-weight: 600; text-wrap: balance; margin: 0; }
+  h1 { font-size: var(--ha-text-3xl); line-height: var(--ha-leading-tight); }
+  h2 { font-size: var(--ha-text-xl); }
+  p { margin: 0; }
+  a { color: var(--ha-cool); }
+  .eyebrow {
+    font-family: var(--ha-font-mono); font-size: var(--ha-text-xs);
+    letter-spacing: var(--ha-tracking-label); text-transform: uppercase;
+    color: var(--ha-warm);
+  }
+  .stack { display: flex; flex-direction: column; gap: var(--ha-sp-4); }
+  .stack-lg { display: flex; flex-direction: column; gap: var(--ha-sp-12); }
+  .dim { color: var(--ha-ink-dim); }
+  .faint { color: var(--ha-ink-faint); }
+  hr { border: 0; border-top: var(--ha-rule-width) solid var(--ha-rule); margin: 0; }
+</style>

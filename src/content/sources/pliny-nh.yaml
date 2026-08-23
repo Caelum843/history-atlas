@@ -1,0 +1,16 @@
+kind: ancient
+author:
+  name: C. Plinius Secundus
+  nameZh: 老普林尼
+  floruit: 公元23/24–79
+title:
+  original: Naturalis Historia
+  zh: 博物志
+  en: Natural History
+locusScheme: "卷.节"
+composed:
+  label: 约公元 77 年
+  sortKey: 77
+language: la
+stance:
+  zh: 帝国时期的汇编性著作，卷三列举意大利第八区诸河，反映的是成书当时的地理认知。

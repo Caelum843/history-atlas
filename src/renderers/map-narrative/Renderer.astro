@@ -1,0 +1,74 @@
+---
+/**
+ * map-narrative 渲染器 —— M1 阶段为骨架版。
+ *
+ * 真实地图在 M2 接入（Natural Earth / AWMC → TopoJSON → d3-geo）。
+ * 现在先把**媒介与精度的显式声明**渲染出来，因为那才是这个渲染器的立场：
+ * 每一步在看的是什么性质的东西，界面必须说清楚。
+ */
+import type { MapNarrativeConfig } from './schema';
+interface Props { config: MapNarrativeConfig }
+const { config } = Astro.props;
+
+const MEDIUM_LABEL: Record<string, string> = {
+  basemap: '现代测绘底图',
+  schematic: '示意图',
+  photograph: '照片（非古代地理证据）',
+};
+---
+<div class="mn">
+  <ol class="mn-steps">
+    {config.steps.map((s) => (
+      <li class={`mn-step mn-step--${s.medium}`}>
+        <div class="mn-frame" aria-hidden="true">
+          <span class="mn-pending">地图待接入 · M2</span>
+        </div>
+        <div class="mn-meta">
+          <span class="mn-medium">{MEDIUM_LABEL[s.medium]}</span>
+          <span class={`ha-accuracy mn-acc--${s.accuracy}`}>{s.accuracy}</span>
+        </div>
+        {s.caption && <p class="mn-caption dim">{s.caption.zh}</p>}
+      </li>
+    ))}
+  </ol>
+
+  {config.authorityBands.length > 0 && (
+    <section class="mn-bands">
+      <h3 class="eyebrow">制度授权带</h3>
+      <ul>
+        {config.authorityBands.map((b) => (
+          <li>
+            <span class="mn-band-label">{b.label.zh}</span>
+            {b.expiresLabel && <span class="mn-band-exp faint">{b.expiresLabel.zh}</span>}
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+</div>
+
+<style>
+  .mn { display: flex; flex-direction: column; gap: var(--ha-sp-6); }
+  .mn-steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--ha-sp-4); }
+  .mn-frame {
+    aspect-ratio: 16 / 9;
+    background: var(--ha-ground-deep);
+    border: var(--ha-rule-width) solid var(--ha-rule);
+    display: grid; place-items: center;
+  }
+  /* 示意图与照片在边框上就要与实测底图不同 */
+  .mn-step--schematic .mn-frame { border-style: dashed; }
+  .mn-step--photograph .mn-frame { border-color: var(--ha-ink-faint); }
+
+  .mn-pending { font-family: var(--ha-font-mono); font-size: var(--ha-text-xs); color: var(--ha-ink-faint); letter-spacing: .1em; }
+  .mn-meta { display: flex; gap: var(--ha-sp-3); align-items: center; margin-top: var(--ha-sp-3); }
+  .mn-medium { font-family: var(--ha-font-mono); font-size: var(--ha-text-xs); color: var(--ha-ink-dim); }
+  .mn-acc--survey { color: var(--ha-cool); }
+  .mn-acc--scholarly { color: var(--ha-warm); }
+  .mn-acc--schematic, .mn-acc--disputed { color: var(--ha-ink-faint); }
+  .mn-caption { font-size: var(--ha-text-sm); margin-top: var(--ha-sp-2); max-width: var(--ha-measure); }
+
+  .mn-bands ul { list-style: none; margin: var(--ha-sp-3) 0 0; padding: 0; display: flex; flex-direction: column; gap: var(--ha-sp-2); }
+  .mn-bands li { display: flex; flex-wrap: wrap; gap: var(--ha-sp-3); align-items: baseline; font-size: var(--ha-text-sm); border-left: 2px solid var(--ha-warm-dim); padding-left: var(--ha-sp-3); }
+  .mn-band-exp { font-size: var(--ha-text-xs); font-family: var(--ha-font-mono); }
+</style>

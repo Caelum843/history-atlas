@@ -1,0 +1,18 @@
+kind: ancient
+author:
+  name: Πλούταρχος
+  nameZh: 普鲁塔克
+  floruit: 约公元46–约120
+title:
+  original: Καῖσαρ
+  zh: 凯撒传（《对比列传》之一）
+  en: Life of Caesar
+locusScheme: "章（如 32）"
+composed:
+  label: 公元 2 世纪初
+  sortKey: 110
+language: grc
+stance:
+  zh: >-
+    道德传记而非编年史，取材于已散佚的更早著作。
+    所记"骰子"一语为希腊文命令式，与苏埃托尼乌斯的拉丁文陈述式含义不同。

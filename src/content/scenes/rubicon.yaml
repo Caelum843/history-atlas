@@ -1,0 +1,253 @@
+title:
+  zh: 卢比孔河
+  en: The Rubicon
+status: sample
+work: republic-crisis
+order: 1
+
+summary:
+  zh: >-
+    罗马共和国对军事力量的约束是空间性的。跨过行省边界这个动作同时改变了法定权限、
+    政治定性、当事人的自我辩护和实际后果——但这四件事变化的时点并不一致，
+    其中一部分至今仍有争议。
+
+intent: >-
+  不讲"凯撒渡了一条河从此内战"。要讲的是：使这个行为在法律上成立犯罪的是
+  lex Cornelia de maiestate（率军越出受命行省），不是"跨过卢比孔"本身。
+  河只是那条边界当时的地标。M1 阶段只落地拍 1/2/3 三拍，用于跑通渲染管道。
+
+geoLayers:
+  - id: mediterranean-coast
+    data: /data/mediterranean-coast.topo.json
+    validFor: 现代
+    accuracy: survey
+    label: { zh: 地中海海岸线 }
+  - id: province-boundary-49bc
+    data: /data/province-boundary-49bc.topo.json
+    validFor: 约前 49 年
+    accuracy: schematic
+    label: { zh: 行省边界示意 }
+    note:
+      zh: >-
+        古代行省边界为估计，不存在测绘意义上的界线数据。
+        绘制上用虚线与羽化边缘，与实测海岸线区分。
+
+beats:
+
+  # ---------- 拍 1 ----------
+  - id: b1-forces
+    title:
+      zh: 前 50 年代末的力量分布
+    time:
+      label: { zh: 前 50 年代末 }
+      sortKey: -50
+      precision: range
+    body:
+      - zh: >-
+          不看疆域，看两件事：军团实际驻在哪里，以及这些指挥权是谁给的、依据哪条法律、什么时候到期。
+    claims:
+      - id: c1-authorisation
+        text:
+          zh: 凯撒在高卢的指挥权来自公民大会立法，并经再次立法延长，不是自行取得的。
+        status: inferred
+        citations: []
+        uncertainty:
+          zh: 具体法律名称、授权范围与到期时点的现代研究支撑待补（留至 M3）。
+      - id: c1-concentration
+        text:
+          zh: 权力正在向少数拥有军队与政治网络的个人集中。
+        status: inferred
+        citations: []
+        uncertainty:
+          zh: >-
+            这是综合判断。也有研究强调共和国晚期制度仍在运作，
+            危机来自制度无法处理长期战区指挥权这一新变量，而非"被少数人架空"。
+    visual:
+      renderer: map-narrative
+      config:
+        steps:
+          - id: s1
+            medium: basemap
+            accuracy: survey
+            camera: { lon: 14.0, lat: 39.5, span: 46 }
+            layers: [mediterranean-coast]
+        markers:
+          - { place: rome, emphasis: key }
+          - { place: ravenna, emphasis: normal }
+        authorityBands:
+          - id: ab-caesar-gaul
+            holder: caesar
+            label: { zh: 凯撒 · 山南高卢与伊利里库姆，后加山外高卢 }
+            basis: lex-vatinia
+            expiresLabel: { zh: 到期时点本身即为争议焦点 }
+            places: [ravenna]
+
+  # ---------- 拍 2：关键 ----------
+  - id: b2-authority
+    title:
+      zh: imperium 的四个维度
+    time:
+      label: { zh: 前 50 年末 — 前 49 年初 }
+      sortKey: -49.5
+      precision: range
+      reckoning: 前儒略历
+      note:
+        zh: 前儒略历当时已与季节脱节，本场景所有"1 月"均指前儒略历，非儒略历。
+    body:
+      - zh: >-
+          越过边界确实具有重大法律与政治意义。但这件事的四个侧面并不同步变化——
+          有的在越河之前就变了，有的正好在那一刻变，有的自始至终没变，有的在之后才慢慢展开。
+    claims:
+      - id: c2-lex-cornelia
+        text:
+          zh: >-
+            使这一行为在法律上成立犯罪的是苏拉的 lex Cornelia de maiestate——
+            总督未经授权率军离开受命行省。犯罪要件是越出行省，与具体地标无关。
+        status: attested
+        citations: []
+        uncertainty:
+          zh: 已核实成立。条文原文与现代罗马法研究的逐条引注留至 M3。
+      - id: c2-scu-not-hostis
+        text:
+          zh: >-
+            前 49 年 1 月 7 日，元老院要求凯撒交出指挥权，否则将被判定为国家公敌——
+            这是条件式要求，不是当场的正式 hostis 宣告；senatus consultum ultimum 是另一项措施。
+        status: attested
+        citations:
+          - source: caesar-bc
+            locus: '1.5'
+            relation: supports
+            note: { zh: 凯撒本人对当日经过的记述，属当事人自述。 }
+        uncertainty:
+          zh: >-
+            已核实。多数二手资料把 SCU 与 hostis 宣告混为一谈——
+            这条轨道之所以标为有争议，不是学术上的谨慎姿态，而是因为流行版本确实是错的。
+      - id: c2-caesar-defence
+        text:
+          zh: 凯撒公开援引的辩护理由包括保民官的否决权与神圣不可侵犯性遭到侵害。
+        status: attested
+        citations:
+          - source: caesar-bc
+            locus: '1.5, 1.7, 1.22'
+            relation: supports
+      - id: c2-absentia
+        text:
+          zh: 凯撒同时主张自己有权缺席竞选执政官。
+        status: disputed
+        citations:
+          - source: caesar-bc
+            locus: '1.9'
+            relation: supports
+        alternatives:
+          - text:
+              zh: >-
+                另一种解释认为，缺席竞选的特许与后来的立法存在冲突，
+                其法律效力在当时即无定论；也有研究认为免于起诉并非他行动的主要动机。
+            citations: []
+        uncertainty:
+          zh: 学界长期争论，本场景不采一说。逐条引注留至 M3。
+    visual:
+      renderer: authority-tracks
+      config:
+        nodes:
+          - { id: n0, label: { zh: 前 50 年末 },        sortKey: -50.9 }
+          - { id: n1, label: { zh: 1 月 7 日 },          sortKey: -49.02 }
+          - { id: n2, label: { zh: 越河 }, sortKey: -49.03, pivot: true }
+          - { id: n3, label: { zh: 其后数周 },          sortKey: -49.15 }
+        tracks:
+          - id: t-legal
+            label: { zh: 法定军事权限 }
+            status: attested
+            note: { zh: 四条里最有依据的一条。 }
+            cells:
+              - { node: n0, changed: false, label: { zh: 在受命行省内有效 },   status: attested, mode: none }
+              - { node: n1, changed: false, label: { zh: 未变 },               status: attested, mode: none }
+              - { node: n2, changed: true,  label: { zh: 率军越出行省 },       status: attested, mode: step, claims: [c2-lex-cornelia] }
+              - { node: n3, changed: false, label: { zh: 状态维持 },           status: attested, mode: none }
+          - id: t-opponents
+            label: { zh: 对手的定性 }
+            status: disputed
+            note: { zh: 时序与措辞是流行叙述最常出错的地方。 }
+            cells:
+              - { node: n0, changed: false, label: { zh: 政治对立，未定性 },   status: attested, mode: none }
+              - { node: n1, changed: true,  label: { zh: 条件式要求：交权，否则判为公敌 }, status: attested, mode: step, claims: [c2-scu-not-hostis] }
+              - { node: n2, changed: false, label: { zh: 无新的正式宣告 },     status: disputed, mode: none }
+              - { node: n3, changed: false, label: { zh: 定性延续 },           status: inferred, mode: none }
+          - id: t-caesar
+            label: { zh: 凯撒自己的主张 }
+            status: attested
+            note: { zh: 主要见于他本人著作，属当事人自述。 }
+            cells:
+              - { node: n0, changed: false, label: { zh: 保民官权利受侵害 },   status: attested, mode: none, claims: [c2-caesar-defence] }
+              - { node: n1, changed: false, label: { zh: 同一主张 },           status: attested, mode: none }
+              - { node: n2, changed: false, label: { zh: 同一主张 },           status: attested, mode: none }
+              - { node: n3, changed: false, label: { zh: 同一主张 },           status: attested, mode: none }
+          - id: t-consequences
+            label: { zh: 实际后果 }
+            status: inferred
+            note: { zh: 事实层面相对可考，因果解释有争议。 }
+            cells:
+              - { node: n0, changed: false, label: { zh: 无 },                 status: attested, mode: none }
+              - { node: n1, changed: false, label: { zh: 无 },                 status: attested, mode: none }
+              - { node: n2, changed: false, label: { zh: 当日无可见后果 },     status: inferred, mode: none }
+              - { node: n3, changed: true,  label: { zh: 城镇态度、对手应对逐步显现 }, status: inferred, mode: gradual }
+
+  # ---------- 拍 3 ----------
+  - id: b3-procedure
+    title:
+      zh: 前 49 年 1 月上旬
+    time:
+      label: { zh: 前 49 年 1 月 1 日 — 1 月 7 日 }
+      sortKey: -49.02
+      precision: day
+      reckoning: 前儒略历
+    body:
+      - zh: >-
+          元老院的常规手段依次被用尽。这不等于制度必然失败——
+          直到最后几天，院内仍有实质分歧与调停努力。
+    claims:
+      - id: c3-mediation
+        text:
+          zh: 元老院内存在调停努力，包括双方同时解除兵权的提案，未能成立。
+        status: attested
+        citations:
+          - source: caesar-bc
+            locus: '1.2–1.4'
+            relation: supports
+      - id: c3-extraordinary
+        text:
+          zh: 常规政治协调已经失效，冲突进入非常措施阶段。
+        status: inferred
+        citations: []
+        uncertainty:
+          zh: 只陈述"进入非常措施阶段"这个可被证据支持的范围，不写成必然结局。
+    visual:
+      renderer: procedure-sequence
+      config:
+        stages:
+          - id: st-letter
+            label: { zh: 凯撒的信函在元老院宣读 }
+            outcome: completed
+            status: attested
+            timeLabel: { zh: 1 月 1 日 }
+          - id: st-mediation
+            label: { zh: 调停提案 }
+            outcome: exhausted
+            status: attested
+            claims: [c3-mediation]
+          - id: st-veto
+            label: { zh: 保民官否决 }
+            outcome: vetoed
+            status: attested
+          - id: st-override
+            label: { zh: 否决被压制 }
+            outcome: overridden
+            status: disputed
+            note: { zh: 保民官离开罗马的具体情形有出入，是否受暴力驱迫待核（M3）。 }
+          - id: st-scu
+            label: { zh: 非常措施 }
+            outcome: extraordinary
+            status: attested
+            timeLabel: { zh: 1 月 7 日 }
+            claims: [c3-extraordinary]
+        endsAt: ravenna

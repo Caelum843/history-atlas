@@ -1,0 +1,69 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { listRenderers } from '../renderers/registry';
+
+const scenes = await getCollection('scenes');
+const works = await getCollection('works');
+const renderers = listRenderers();
+---
+<Base title="history_atlas">
+  <div class="shell stack-lg">
+    <header class="stack">
+      <p class="eyebrow">M1 · 工程骨架</p>
+      <h1>history_atlas</h1>
+      <p class="dim lede">
+        这是开发期的索引页，不是产品首页。真正的发现入口（世界地图 → 时间 → 作品）在 M2.5 建。
+      </p>
+    </header>
+
+    <section class="stack">
+      <h2>作品</h2>
+      {works.map((w) => (
+        <div class="stack card">
+          <div class="row">
+            <strong>{w.data.title.zh}</strong>
+            <span class="ha-status">{w.data.status === 'sample' ? '实验样章' : w.data.status}</span>
+          </div>
+          <p class="dim">{w.data.span.label.zh}</p>
+          {w.data.sampleNotice && <p class="faint small">{w.data.sampleNotice.zh}</p>}
+          <ul class="scenes">
+            {scenes.filter((s) => s.data.work === w.id).map((s) => (
+              <li><a href={`/scene/${s.id}/`}>{s.data.title.zh}</a></li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </section>
+
+    <section class="stack">
+      <h2>已注册的渲染器</h2>
+      <p class="dim small">
+        场景视觉走 registry，公共 schema 不枚举类型。新增一种历史表达 = 注册一个 renderer，不动内容契约。
+      </p>
+      <ul class="renderers">
+        {renderers.map((r) => (
+          <li>
+            <code>{r.id}</code>
+            <span class={r.implemented ? 'ok' : 'faint'}>{r.implemented ? '已实现' : '已登记 · 未实现'}</span>
+            <span class="faint small">{r.purpose}</span>
+          </li>
+        ))}
+      </ul>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .lede { max-width: var(--ha-measure); }
+  .card { border-left: 2px solid var(--ha-rule); padding-left: var(--ha-sp-4); gap: var(--ha-sp-2); }
+  .row { display: flex; gap: var(--ha-sp-3); align-items: center; }
+  .small { font-size: var(--ha-text-sm); max-width: var(--ha-measure); }
+  .scenes { margin: var(--ha-sp-2) 0 0; padding-left: 1.1rem; }
+  .renderers { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--ha-sp-3); }
+  .renderers li { display: grid; grid-template-columns: 12rem 8rem 1fr; gap: var(--ha-sp-3); align-items: baseline; font-size: var(--ha-text-sm); }
+  .renderers code { font-family: var(--ha-font-mono); color: var(--ha-cool); }
+  .ok { font-family: var(--ha-font-mono); font-size: var(--ha-text-xs); color: var(--ha-warm); }
+  .faint { font-family: var(--ha-font-mono); font-size: var(--ha-text-xs); }
+  @media (max-width: 720px) { .renderers li { grid-template-columns: 1fr; gap: var(--ha-sp-1); } }
+</style>

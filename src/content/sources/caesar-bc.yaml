@@ -1,0 +1,28 @@
+kind: ancient
+author:
+  name: C. Iulius Caesar
+  nameZh: 尤利乌斯·凯撒
+  floruit: 前100–前44
+title:
+  original: Commentarii de Bello Civili
+  zh: 内战记
+  en: The Civil War
+locusScheme: "卷.章（如 1.8）"
+composed:
+  label: 约前 47 年前后
+  sortKey: -47
+  note:
+    zh: 成书时间有争议；现存文本是否经他人整理刊行亦有讨论。
+language: la
+url: http://www.thelatinlibrary.com/caesar/bc1.shtml
+accessed: '2026-08-23'
+stance:
+  zh: >-
+    当事人自述，且写于内战期间或其后，具有明确的辩护与宣传意图。
+    他有充分动机夸大对手的规模与过错、淡化自己行动的法律问题。
+limits:
+  zh: >-
+    第 1 卷未出现 Rubico 一词，也没有后世流传的渡河场面；
+    叙述自士兵表态（1.7）直接接到"带着那个军团前往里米尼"（1.8）。
+    这不等于他"没有记载渡河"——他记载了从拉文纳到里米尼的行军，
+    只是没有点名那条河，也没有那个场面。

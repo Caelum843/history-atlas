@@ -1,0 +1,20 @@
+kind: ancient
+author:
+  name: C. Suetonius Tranquillus
+  nameZh: 苏埃托尼乌斯
+  floruit: 约公元69–约122
+title:
+  original: Divus Iulius
+  zh: 神圣的尤利乌斯（《罗马十二帝王传》之一）
+  en: The Deified Julius
+locusScheme: "章（如 32）"
+composed:
+  label: 约公元 121 年
+  sortKey: 121
+language: la
+stance:
+  zh: >-
+    成书距事件约一百七十年。传记体，兼收轶闻与异说，
+    渡河场面与"骰子已经掷出"的拉丁文形式均出自此书。
+limits:
+  zh: 所载渡河前的神异显现属后世传说，不能作为事件证据。

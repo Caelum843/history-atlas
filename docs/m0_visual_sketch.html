@@ -1,0 +1,738 @@
+<title>卢比孔分镜草图</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=Noto+Serif+SC:wght@300;400;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+
+<style>
+/* ============================================================
+   M0 静态视觉草图 —— 罗马首轮「深色展厅」方向
+   单一视觉世界，刻意不做深浅切换（作品主题令牌层）。
+   每个颜色都显式声明，不继承宿主底色。
+   ============================================================ */
+:root{
+  /* —— 全站基础令牌（换文明不变的部分） —— */
+  --sp-1:.25rem; --sp-2:.5rem; --sp-3:.75rem; --sp-4:1rem;
+  --sp-6:1.5rem; --sp-8:2rem; --sp-12:3rem; --sp-16:4rem;
+  --measure: 34em;
+  --f-display:'EB Garamond','Noto Serif SC',Georgia,serif;
+  --f-body:'Noto Serif SC','EB Garamond',Georgia,serif;
+  --f-mono:'IBM Plex Mono',ui-monospace,monospace;
+
+  /* —— 作品主题令牌：rome-republic / 深色展厅 —— */
+  /* 暖中性近黑：低照度展厅墙面，不是海图蓝 */
+  --ground:      #14120f;
+  --ground-deep: #0d0c0a;
+  --surface:     #1e1b16;
+  --surface-2:   #262218;
+  /* 长阅读面：刻意抬高，不为氛围牺牲正文对比度 */
+  --read-surface:#2b2921;
+  --read-ink:    #f2eee4;
+
+  --ink:         #ede8dd;
+  --ink-dim:     #b3ab9c;
+  --ink-faint:   #7d7668;
+  --rule:        #322d24;
+
+  /* 双色语义：冷 = 我们对它的判断（现代学术）；暖 = 它留下的东西（古代物质） */
+  --cool:        #7ea6c9;   /* 埃及蓝，古代颜料，提亮后用于深底 */
+  --cool-dim:    #4d6f8c;
+  --warm:        #c89a56;   /* 赭石 */
+  --warm-dim:    #8a6a3a;
+
+  /* 证据状态：靠明度 + 笔法区分，不用红/绿 */
+  --st-attested: #ede8dd;
+  --st-inferred: #b3ab9c;
+  --st-disputed: #7ea6c9;
+  --st-legend:   #7d7668;
+}
+
+*{box-sizing:border-box;}
+
+body{
+  margin:0;
+  background:var(--ground);
+  color:var(--ink);
+  font-family:var(--f-body);
+  font-weight:300;
+  line-height:1.8;
+  font-size:16px;
+  -webkit-font-smoothing:antialiased;
+}
+
+.wrap{max-width:1080px; margin:0 auto; padding:var(--sp-12) var(--sp-6) var(--sp-16);}
+
+/* ---------- 文档头 ---------- */
+.masthead{border-bottom:1px solid var(--rule); padding-bottom:var(--sp-8); margin-bottom:var(--sp-12);}
+.eyebrow{
+  font-family:var(--f-mono); font-size:.68rem; letter-spacing:.18em;
+  text-transform:uppercase; color:var(--warm); margin:0 0 var(--sp-4);
+}
+h1{
+  font-family:var(--f-display); font-weight:600; font-size:clamp(2rem,4.5vw,3.1rem);
+  line-height:1.1; margin:0 0 var(--sp-4); text-wrap:balance; color:var(--ink);
+}
+.dek{max-width:var(--measure); color:var(--ink-dim); margin:0 0 var(--sp-6); font-size:1.02rem;}
+
+.statusbar{display:flex; flex-wrap:wrap; gap:var(--sp-2);}
+.chip{
+  font-family:var(--f-mono); font-size:.64rem; letter-spacing:.1em; text-transform:uppercase;
+  padding:.3rem .6rem; border:1px solid var(--rule); color:var(--ink-dim); background:var(--surface);
+}
+.chip.sample{border-color:var(--warm-dim); color:var(--warm);}
+.chip.unverified{border-color:var(--cool-dim); color:var(--cool);}
+
+/* ---------- 章节 ---------- */
+section{margin-bottom:var(--sp-16);}
+h2{
+  font-family:var(--f-display); font-weight:600; font-size:clamp(1.4rem,2.6vw,1.9rem);
+  margin:0 0 var(--sp-2); color:var(--ink); text-wrap:balance;
+}
+h2 .num{
+  font-family:var(--f-mono); font-size:.7rem; letter-spacing:.14em; color:var(--warm);
+  display:block; margin-bottom:var(--sp-2); font-weight:400;
+}
+.lead{max-width:var(--measure); color:var(--ink-dim); margin:0 0 var(--sp-8);}
+
+/* ---------- 关键论点：抬高的长阅读面 ---------- */
+.readpanel{
+  background:var(--read-surface); color:var(--read-ink);
+  padding:var(--sp-6) var(--sp-8); border-left:2px solid var(--warm);
+  max-width:calc(var(--measure) + 4rem); margin:0 0 var(--sp-8);
+}
+.readpanel p{margin:0 0 var(--sp-4);}
+.readpanel p:last-child{margin-bottom:0;}
+.readpanel strong{font-weight:600; color:#fff;}
+
+/* ---------- 分镜卡 ---------- */
+.strip{display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:var(--sp-6);}
+.beat{background:var(--surface); border:1px solid var(--rule); display:flex; flex-direction:column;}
+.beat figure{margin:0; background:var(--ground-deep); border-bottom:1px solid var(--rule);}
+.beat svg{display:block; width:100%; height:auto;}
+.beat .meta{padding:var(--sp-4) var(--sp-4) var(--sp-6); display:flex; flex-direction:column; gap:var(--sp-3);}
+.beat h3{
+  font-family:var(--f-display); font-weight:600; font-size:1.12rem; margin:0; color:var(--ink);
+}
+.beat .idx{
+  font-family:var(--f-mono); font-size:.62rem; letter-spacing:.16em; color:var(--warm);
+  text-transform:uppercase;
+}
+.beat p{margin:0; font-size:.9rem; color:var(--ink-dim); line-height:1.7;}
+.beat .role{
+  font-family:var(--f-mono); font-size:.62rem; letter-spacing:.08em;
+  color:var(--cool); border-top:1px dotted var(--rule); padding-top:var(--sp-3);
+}
+
+/* ---------- 全宽深潜 ---------- */
+.deep{background:var(--surface); border:1px solid var(--rule); padding:var(--sp-8); overflow-x:auto;}
+.deep > svg{display:block; width:100%; min-width:660px; height:auto;}
+
+/* ---------- 证据标记示范 ---------- */
+.legend{display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:var(--sp-4); margin-top:var(--sp-8);}
+.legend div{border-top:1px solid var(--rule); padding-top:var(--sp-3);}
+.legend dt{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.1em; text-transform:uppercase;
+  margin-bottom:var(--sp-2);
+}
+.legend dd{margin:0; font-size:.86rem; color:var(--ink-dim); line-height:1.65;}
+
+/* 论断在正文里的四种笔法 */
+.cl{font-style:normal;}
+.cl-attested{color:var(--st-attested);}
+.cl-inferred{color:var(--st-inferred); border-bottom:1px dotted var(--st-inferred);}
+.cl-disputed{color:var(--st-disputed); border-bottom:1px solid var(--st-disputed);
+  background:linear-gradient(to bottom,transparent 60%,rgba(126,166,201,.12) 60%);}
+.cl-legend{color:var(--st-legend); border-bottom:1px dashed var(--st-legend); font-style:italic;}
+
+/* ---------- 精度标记 ---------- */
+.acc{
+  font-family:var(--f-mono); font-size:.6rem; letter-spacing:.08em; text-transform:uppercase;
+  padding:.15rem .45rem; border:1px solid currentColor; white-space:nowrap;
+}
+.acc-survey{color:var(--cool);}
+.acc-scholarly{color:var(--warm);}
+.acc-schematic{color:var(--ink-faint);}
+.acc-photo{color:var(--ink-dim);}
+
+/* ---------- 媒介阶梯 ---------- */
+.ladder{display:grid; gap:var(--sp-4); margin-top:var(--sp-6);}
+.rung{
+  display:grid; grid-template-columns:2.2rem 1fr auto; gap:var(--sp-4);
+  align-items:center; background:var(--surface); border:1px solid var(--rule); padding:var(--sp-4);
+}
+.rung .step{font-family:var(--f-mono); font-size:.7rem; color:var(--warm);}
+.rung .what{font-size:.92rem;}
+.rung .what small{display:block; color:var(--ink-faint); font-size:.78rem; margin-top:.2rem;}
+.rung:nth-child(3){border-style:dashed;}
+.rung:nth-child(4){border-style:dashed; background:var(--ground-deep);}
+
+/* ---------- 表 ---------- */
+.tablewrap{overflow-x:auto; margin-top:var(--sp-6);}
+table{border-collapse:collapse; width:100%; min-width:560px; font-size:.88rem;}
+th,td{text-align:left; padding:var(--sp-3) var(--sp-4); border-bottom:1px solid var(--rule); vertical-align:top;}
+th{
+  font-family:var(--f-mono); font-size:.64rem; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--ink-faint); font-weight:400;
+}
+td{color:var(--ink-dim);}
+td:first-child{color:var(--ink);}
+td code{font-family:var(--f-mono); font-size:.8rem; color:var(--cool);}
+
+/* ---------- 开放问题 ---------- */
+.open{border-top:1px solid var(--rule); padding-top:var(--sp-8);}
+.open ol{max-width:var(--measure); padding-left:1.2rem; color:var(--ink-dim);}
+.open li{margin-bottom:var(--sp-4);}
+.open li strong{color:var(--ink); font-weight:600;}
+
+footer{
+  margin-top:var(--sp-16); border-top:1px solid var(--rule); padding-top:var(--sp-6);
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.1em;
+  color:var(--ink-faint); text-transform:uppercase;
+}
+
+:focus-visible{outline:2px solid var(--cool); outline-offset:3px;}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important; transition:none!important;}}
+
+@media (max-width:640px){
+  .wrap{padding:var(--sp-8) var(--sp-4) var(--sp-12);}
+  .readpanel{padding:var(--sp-4) var(--sp-4);}
+  .deep{padding:var(--sp-4);}
+  .rung{grid-template-columns:1.8rem 1fr; }
+  .rung .acc{grid-column:2;}
+}
+
+/* SVG 内部 */
+.mapland{fill:#221e18; stroke:#4a4235; stroke-width:.8; vector-effect:non-scaling-stroke;}
+.mapland.schem{stroke-dasharray:3 3; fill:#1c1913;}
+.sk-label{font-family:'IBM Plex Mono',monospace; font-size:8px; letter-spacing:.06em; fill:#7d7668;}
+.sk-label.on{fill:#c89a56;}
+.sk-title{font-family:'IBM Plex Mono',monospace; font-size:8.5px; letter-spacing:.14em; fill:#7d7668;}
+</style>
+
+<div class="wrap">
+
+<header class="masthead">
+  <p class="eyebrow">M0 · 内容与视觉分镜 · 审核节点 ①</p>
+  <h1>卢比孔河</h1>
+  <p class="dek">
+    互动历史书首轮实验的第一个场景。本页是静态视觉草图，用来在写任何代码之前
+    检验两件事：六拍叙事是否成立，以及第 2 拍能否既诚实又一眼看懂。
+  </p>
+  <div class="statusbar">
+    <span class="chip sample">实验样章 · 非完整章节</span>
+    <span class="chip unverified">史料全部待核 · 联网检索暂不可用</span>
+    <span class="chip">作品主题：rome-republic</span>
+    <span class="chip">静态草图 · 无交互</span>
+  </div>
+</header>
+
+<section>
+  <h2><span class="num">这一场要说什么</span>问题不在那条河</h2>
+  <div class="readpanel">
+    <p>
+      流行叙述把这件事讲成：跨过一条河，从合法总督变成叛国者。这个讲法的问题是，
+      <strong>当时并没有一条"越过卢比孔即叛国"的法律</strong>。
+    </p>
+    <p>
+      让这个行为在法律上成立犯罪的，是苏拉的 <em>lex Cornelia de maiestate</em>——
+      总督未经授权率军离开自己的行省即构成 maiestas。河只是那条边界当时的地标，
+      换成任何别的地标，法律后果完全一样。
+    </p>
+    <p>
+      所以这一场真正要让读者看见的，是<strong>罗马共和国对军事力量的约束是空间性的</strong>，
+      以及跨过那条界线时，法定权限、政治定性、当事人的自我辩护、实际后果这四件事
+      <strong>并没有同时改变，方向也不一致</strong>——其中一部分至今仍有争议。
+    </p>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">六拍</span>分镜</h2>
+  <p class="lead">
+    每格是一屏的静态构图意图，不是最终视觉。地图均为草图级简化，正式实现接入真实地理数据。
+  </p>
+
+  <div class="strip">
+
+    <article class="beat">
+      <figure><svg viewBox="0 0 432 232" role="img" aria-label="地中海全景，军团驻地与政治网络示意"><g id="sk1"></g></svg></figure>
+      <div class="meta">
+        <span class="idx">拍 1</span>
+        <h3>前 50 年代末的力量分布</h3>
+        <p>不画疆域色块，画两样东西：军团的实际驻地与数量，以及庇护、委任、姻亲构成的政治网络。用疆域会暗示这是国家间战争，那是错的。</p>
+        <p class="role">论点：<span class="cl cl-inferred">权力正在向少数拥有军队与政治网络的个人集中</span></p>
+      </div>
+    </article>
+
+    <article class="beat">
+      <figure><svg viewBox="0 0 432 232" role="img" aria-label="四条并行轨道的缩略示意"><g id="sk2"></g></svg></figure>
+      <div class="meta">
+        <span class="idx">拍 2 · 关键</span>
+        <h3>imperium 的四个维度</h3>
+        <p>四条并行轨道共用一条时间轴，各自标注确定性等级。单一状态条会给出一个不存在的唯一答案，四条不会。展开见下节。</p>
+        <p class="role">论点：<span class="cl cl-attested">共和国对军事力量的约束是空间性的</span></p>
+      </div>
+    </article>
+
+    <article class="beat">
+      <figure><svg viewBox="0 0 432 232" role="img" aria-label="元老院程序时序示意"><g id="sk3"></g></svg></figure>
+      <div class="meta">
+        <span class="idx">拍 3</span>
+        <h3>前 49 年 1 月上旬</h3>
+        <p>不用地图。用一条程序时序：提案 → 保民官否决 → 否决被压制 → 非常措施。镜头最后落到拉文纳。</p>
+        <p class="role">论点：<span class="cl cl-inferred">常规政治协调已经失效，冲突进入非常措施阶段</span></p>
+      </div>
+    </article>
+
+    <article class="beat">
+      <figure><svg viewBox="0 0 432 232" role="img" aria-label="四段媒介转换阶梯示意"><g id="sk4"></g></svg></figure>
+      <div class="meta">
+        <span class="idx">拍 4</span>
+        <h3>这个位置我们其实不确切知道</h3>
+        <p>不是同一张地图连续放大，而是四次明确的媒介切换。底图数据支撑不到十几米的尺度，硬放大就是在制造虚假精确。</p>
+        <p class="role">论点：<span class="cl cl-disputed">古代河道无定论，候选河流至今有争议</span></p>
+      </div>
+    </article>
+
+    <article class="beat">
+      <figure><svg viewBox="0 0 432 232" role="img" aria-label="越河时刻四条轨道各自反应"><g id="sk5"></g></svg></figure>
+      <div class="meta">
+        <span class="idx">拍 5</span>
+        <h3>越河：四条轨道各自反应</h3>
+        <p>回到四维面板，时间推过越河点。四条轨道的变化时点不同、幅度不同、确定性不同——没有一个统一的"变红"时刻。</p>
+        <p class="role">论点：<span class="cl cl-disputed">"变了什么"取决于谁在解释</span></p>
+      </div>
+    </article>
+
+    <article class="beat">
+      <figure><svg viewBox="0 0 432 232" role="img" aria-label="意大利境内军力数量与可靠性示意"><g id="sk6"></g></svg></figure>
+      <div class="meta">
+        <span class="idx">拍 6</span>
+        <h3>对岸</h3>
+        <p>要同时表达"少"和"不可靠"。两个军团在数量上不算无力，问题是其中一个刚从凯撒手上转来。数量与可靠性分走两个视觉通道。</p>
+        <p class="role">论点：<span class="cl cl-inferred">成功不仅来自决断，也与未能迅速形成有效抵抗有关</span></p>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">深潜一 · 拍 2 与拍 5</span>四条轨道，四个不同的变化时点</h2>
+  <p class="lead">
+    这张图是整个方法论的检验点。它要在不依赖正文的前提下说清一件复杂的事：
+    越过边界确实具有重大法律与政治意义，但这件事的四个侧面并不同步变化。
+  </p>
+
+  <div class="deep">
+    <svg viewBox="0 0 900 340" role="img" aria-label="imperium 四维面板：法定军事权限、对手的定性、凯撒的主张、实际后果，四条轨道在越河时点前后各自变化">
+      <g id="tracks"></g>
+    </svg>
+  </div>
+
+  <div class="readpanel" style="margin-top:2rem">
+    <p>
+      看图不看字，读者应该能得到的第一印象是：<strong>那条竖线只对准了一条轨道。</strong>
+    </p>
+    <p>
+      「对手的定性」在越河<em>之前</em>就已经变化（1 月 7 日的非常措施）；
+      「法定军事权限」正好在越河那一刻改变；
+      「凯撒的主张」<em>全程没有变化</em>——从他自己的立场看，什么都没发生；
+      「实际后果」在越河<em>之后</em>才逐步展开，而且是渐变不是突变。
+    </p>
+    <p>
+      一前、一同、一无、一后。这四个错位本身就是论点，不需要一句解释文字。
+    </p>
+  </div>
+
+  <div class="legend">
+    <div><dt style="color:var(--st-attested)">Attested 确证</dt><dd>有直接史料支持。实线，满色。</dd></div>
+    <div><dt style="color:var(--st-inferred)">Inferred 推断</dt><dd>由证据推出，非直接记载。降低明度，点线。</dd></div>
+    <div><dt style="color:var(--st-disputed)">Disputed 争议</dt><dd>学界有分歧，必须并列替代解释。冷色，底纹。</dd></div>
+    <div><dt style="color:var(--st-legend)">Legend 传说</dt><dd>后世附会。最弱明度，虚线，斜体。</dd></div>
+  </div>
+
+  <p class="lead" style="margin-top:2rem">
+    四条轨道的区分靠<strong>明度 + 色相双通道加笔法</strong>，不用红/绿：
+    色觉障碍读者分不清是一方面，更重要的是红色天然带"反派"暗示，
+    与"避免只采用单一视角"的原则相冲。
+  </p>
+</section>
+
+<section>
+  <h2><span class="num">深潜二 · 拍 4</span>媒介转换，不是连续放大</h2>
+  <p class="lead">
+    原方案设想从数百公里连续放大到十几米。问题是底图数据支撑不到那个尺度，
+    而卢比孔河的古代河道与渡河位置本身就有争议——连续放大会让读者以为位置已经精确确认。
+    改为四段明确切换媒介：每换一次，呈现方式也跟着换，读者立刻知道自己在看的东西性质变了。
+  </p>
+
+  <div class="ladder">
+    <div class="rung">
+      <span class="step">a</span>
+      <span class="what">地中海全景底图<small>现代测绘数据，可信</small></span>
+      <span class="acc acc-survey">survey</span>
+    </div>
+    <div class="rung">
+      <span class="step">b</span>
+      <span class="what">意大利区域图<small>现代测绘数据，可信</small></span>
+      <span class="acc acc-survey">survey</span>
+    </div>
+    <div class="rung">
+      <span class="step">c</span>
+      <span class="what">行省边界示意<small>古代行省边界为估计 · 虚线加羽化边缘绘制，与实测数据在视觉上必须可区分</small></span>
+      <span class="acc acc-schematic">schematic</span>
+    </div>
+    <div class="rung">
+      <span class="step">d</span>
+      <span class="what">候选河流实景照片<small>现代实景 · 不能证明古代渡河点 · 界面强制标注</small></span>
+      <span class="acc acc-photo">现代影像</span>
+    </div>
+  </div>
+
+  <div class="readpanel" style="margin-top:2rem">
+    <p>
+      这一拍的支点是一条需要优先核实的史料：
+      <strong>凯撒本人的《内战记》可能根本没有记载渡过卢比孔河</strong>，
+      叙述从拉文纳直接跳到里米尼。
+    </p>
+    <p>
+      如果核实属实，那么西方文明最著名的场景之一，当事人自己的记录里并不存在——
+      它出自苏埃托尼乌斯、普鲁塔克、阿庇安与卢坎，全是后世。
+      这一条一旦坐实，整个场景就有了实证支点：
+      <em>我们如何知道我们以为知道的事。</em>
+    </p>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">论断标记</span>四种笔法在正文里长什么样</h2>
+  <p class="lead">证据状态必须在正文里可见，不能让推断和确证长得一样。下面是四种笔法的实际效果。</p>
+
+  <div class="readpanel">
+    <p>
+      前 49 年 1 月 7 日，<span class="cl cl-attested">元老院通过非常措施（senatus consultum ultimum），
+      保民官安东尼与昆图斯·卡西乌斯随后离开罗马前往凯撒处</span>。
+      <span class="cl cl-disputed">元老院此时是否已正式宣告凯撒为公敌，时序与措辞仍有争议</span>——
+      流行叙述常把这两件事混为一谈，但在法律上它们不是一回事。
+    </p>
+    <p>
+      凯撒率<span class="cl cl-inferred">约五千步兵与三百骑兵</span>南下。
+      苏埃托尼乌斯记下了他渡河前<span class="cl cl-legend">见到神异显现</span>，
+      这属于后世附会。
+    </p>
+  </div>
+
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>状态</th><th>界面表现</th><th>schema 约束</th></tr></thead>
+      <tbody>
+        <tr><td>attested</td><td>满色，无额外笔法</td><td>需 <code>citations</code></td></tr>
+        <tr><td>inferred</td><td>降低明度 + 点下划线</td><td>需 <code>citations</code>，建议填 <code>uncertainty</code></td></tr>
+        <tr><td>disputed</td><td>冷色 + 实下划线 + 底纹，可展开</td><td><code>alternatives</code> <strong>必填</strong></td></tr>
+        <tr><td>legend</td><td>最弱明度 + 虚线 + 斜体</td><td>需注明后世来源与转述关系</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="open">
+  <h2><span class="num">留给审核</span>三个我还没解决的问题</h2>
+  <ol>
+    <li>
+      <strong>拍 1 的政治网络怎么画才不沦为装饰性连线。</strong>
+      庇护关系、行省委任、姻亲三种关系性质完全不同，混在一张网里会变成好看但无信息的蛛网。
+      目前草图里只是示意，还没有满意的方案。
+    </li>
+    <li>
+      <strong>拍 4 段 d 的照片授权。</strong>
+      候选卢比孔河的现代实景照片如果找不到授权清晰的，需要降级方案——
+      改用地形图加明确标注，但那样"媒介转换"的冲击力会弱很多。
+    </li>
+    <li>
+      <strong>四维面板在窄屏上怎么办。</strong>
+      桌面端四条轨道横向并列成立；手机上横向空间不够，
+      若改成纵向堆叠，"四个变化时点错位"这个核心视觉论点就消失了。
+      这是移动端保留完整内容与保留论点之间的真实冲突，尚无解法。
+    </li>
+  </ol>
+</section>
+
+<footer>
+  M0 静态视觉草图 · 史料待核 · 无交互 · 审核通过后进入 M1 工程骨架
+</footer>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var NS = "http://www.w3.org/2000/svg";
+  function el(tag, attrs){
+    var n = document.createElementNS(NS, tag);
+    for (var k in attrs) if (attrs[k] != null) n.setAttribute(k, attrs[k]);
+    return n;
+  }
+  function add(parent, tag, attrs, text){
+    var n = el(tag, attrs);
+    if (text != null) n.textContent = text;
+    parent.appendChild(n);
+    return n;
+  }
+
+  /* ---------- 简化地中海：草图级，非地理数据 ---------- */
+  var NORTH = [[-8.7,43.3],[-9.5,38.7],[-6.3,36.8],[-4.4,36.7],[-0.5,38.3],[2.2,41.4],[3.0,43.0],
+    [5.4,43.3],[8.9,44.4],[10.3,43.7],[12.3,41.7],[14.8,40.6],[15.9,38.7],[15.65,38.1],[17.1,39.1],
+    [18.5,40.15],[16.2,41.9],[13.5,43.6],[12.3,45.4],[13.8,45.6],[16.4,43.5],[19.5,41.3],[20.9,39.6],
+    [21.7,37.0],[23.2,36.5],[24.0,38.2],[22.6,40.5],[24.6,40.9],[26.9,40.7],[26.3,38.9],[27.3,37.0],
+    [29.7,36.2],[32.4,36.2],[35.9,36.6],[35.5,33.9],[34.3,31.4],[32.5,31.1],[44,31.0],[44,54],[-14,54],[-14,44]];
+  var AFRICA = [[32.5,31.1],[27.8,31.2],[24.0,32.1],[20.0,32.1],[19.2,30.8],[15.2,31.3],[13.2,32.9],
+    [10.1,33.9],[10.6,35.8],[10.3,37.1],[8.8,37.0],[3.1,36.8],[-0.6,35.8],[-5.3,35.9],[-14,35.9],
+    [-14,20],[44,20],[44,31.1]];
+  var ISLES = [
+    [[15.55,38.25],[12.4,38.0],[12.4,37.8],[14.2,37.1],[15.3,37.1]],
+    [[8.2,41.1],[9.7,41.0],[9.5,39.1],[8.4,39.3]],
+    [[8.6,42.9],[9.5,42.7],[9.3,41.4],[8.7,41.9]],
+    [[23.5,35.2],[26.0,35.2],[26.0,34.95],[23.5,35.0]]
+  ];
+
+  function mkProj(scale, ox, oy){
+    return function(lon, lat){ return [(lon + 10) * scale + ox, (50 - lat) * scale + oy]; };
+  }
+  function poly(pts, proj){
+    return pts.map(function(p,i){
+      var q = proj(p[0], p[1]);
+      return (i ? "L" : "M") + q[0].toFixed(1) + " " + q[1].toFixed(1);
+    }).join(" ") + " Z";
+  }
+  function drawLand(g, proj, cls){
+    [NORTH, AFRICA].concat(ISLES).forEach(function(p){
+      add(g, "path", {"class": cls || "mapland", d: poly(p, proj)});
+    });
+  }
+
+  /* ---------- 拍 1：军团驻地 + 政治网络 ---------- */
+  var g1 = document.getElementById("sk1");
+  if (g1){
+    var p1 = mkProj(8, 0, -4);
+    add(g1, "rect", {x:0, y:0, width:432, height:232, fill:"#111"});
+    drawLand(g1, p1);
+    add(g1, "text", {x:12, y:18, "class":"sk-title"}, "军团驻地 / 政治网络 · 示意");
+
+    // 军团驻地：方块阵，块数 = 军团数（草图用近似值，正式版需核实）
+    var forces = [
+      {lon:5.0,  lat:45.5, n:6, side:"c", label:"高卢"},
+      {lon:12.4, lat:44.4, n:2, side:"c", label:"山南高卢"},
+      {lon:13.2, lat:41.6, n:2, side:"p", label:"意大利"},
+      {lon:-2.0, lat:41.0, n:5, side:"p", label:"西班牙"},
+      {lon:23.5, lat:38.5, n:1, side:"p", label:"东方"}
+    ];
+    forces.forEach(function(f){
+      var q = p1(f.lon, f.lat);
+      var col = f.side === "c" ? "#c89a56" : "#7ea6c9";
+      for (var i = 0; i < f.n; i++){
+        add(g1, "rect", {
+          x: q[0] - 1 + (i % 3) * 5, y: q[1] - 8 + Math.floor(i / 3) * 5,
+          width: 3.4, height: 3.4, fill: col, opacity: .9
+        });
+      }
+      add(g1, "text", {x:q[0]-1, y:q[1]+9, "class":"sk-label"}, f.label);
+    });
+
+    // 政治网络：目前只是示意，方案未定（见"留给审核"第 1 条）
+    var netEdges = [[12.4,41.9, 5.0,45.5],[12.4,41.9, -2.0,41.0],[12.4,41.9, 23.5,38.5],[12.4,41.9, 29.9,31.2]];
+    netEdges.forEach(function(e){
+      var a = p1(e[0], e[1]), b = p1(e[2], e[3]);
+      add(g1, "path", {
+        d: "M" + a[0] + " " + a[1] + "Q" + ((a[0]+b[0])/2) + " " + (Math.min(a[1],b[1]) - 18) + " " + b[0] + " " + b[1],
+        fill:"none", stroke:"#4d6f8c", "stroke-width":.7, "stroke-dasharray":"2 3", opacity:.75
+      });
+    });
+    var rome = p1(12.48, 41.9);
+    add(g1, "circle", {cx:rome[0], cy:rome[1], r:2.6, fill:"#ede8dd"});
+    add(g1, "text", {x:rome[0]+5, y:rome[1]+3, "class":"sk-label on"}, "ROMA");
+  }
+
+  /* ---------- 四维轨道：缩略版（拍 2 / 拍 5）与全幅版 ---------- */
+  var TRACKS = [
+    {name:"法定军事权限", when:"at",     cert:"attested", col:"#7ea6c9", dash:null},
+    {name:"对手的定性",   when:"before", cert:"disputed", col:"#9fb4c4", dash:"5 4"},
+    {name:"凯撒的主张",   when:"never",  cert:"attested", col:"#c89a56", dash:null},
+    {name:"实际后果",     when:"after",  cert:"inferred", col:"#ede8dd", dash:"1 3"}
+  ];
+
+  function drawTracks(g, opt){
+    var x0 = opt.x0, x1 = opt.x1, y0 = opt.y0, rowH = opt.rowH, lw = opt.lw;
+    var xCross = x0 + (x1 - x0) * 0.55;
+    var xSCU   = x0 + (x1 - x0) * 0.40;
+    var small  = !!opt.small;
+
+    // 时间轴
+    add(g, "line", {x1:x0, y1:y0 - 14, x2:x1, y2:y0 - 14, stroke:"#322d24", "stroke-width":1});
+    if (!small){
+      add(g, "text", {x:x0, y:y0 - 22, "class":"sk-title"}, "前 50 年 12 月");
+      add(g, "text", {x:x1, y:y0 - 22, "class":"sk-title", "text-anchor":"end"}, "前 49 年 2 月");
+    }
+
+    // 越河竖线：唯一的公共对齐点
+    add(g, "line", {
+      x1:xCross, y1:y0 - 18, x2:xCross, y2:y0 + rowH * TRACKS.length + 4,
+      stroke:"#c89a56", "stroke-width":1
+    });
+    if (!small){
+      add(g, "text", {x:xCross + 6, y:y0 - 22, "class":"sk-title", fill:"#c89a56"}, "越河");
+    }
+
+    TRACKS.forEach(function(t, i){
+      var y = y0 + i * rowH;
+      if (lw > 0 && !small){
+        add(g, "text", {x:x0 - 12, y:y + 4, "class":"sk-label", "text-anchor":"end", fill:"#b3ab9c"}, t.name);
+        add(g, "text", {x:x1 + 10, y:y + 4, "class":"sk-label", fill:t.cert === "disputed" ? "#7ea6c9" : "#7d7668"}, t.cert);
+      }
+      // 底槽
+      add(g, "line", {x1:x0, y1:y, x2:x1, y2:y, stroke:"#262218", "stroke-width":small ? 4 : 7});
+
+      var w = small ? 4 : 7;
+      if (t.when === "before"){
+        add(g, "line", {x1:x0, y1:y, x2:xSCU, y2:y, stroke:t.col, "stroke-width":w, opacity:.32});
+        add(g, "line", {x1:xSCU, y1:y, x2:x1, y2:y, stroke:t.col, "stroke-width":w,
+          "stroke-dasharray":t.dash, opacity:.95});
+        add(g, "circle", {cx:xSCU, cy:y, r:small ? 2.6 : 4, fill:"#14120f", stroke:t.col, "stroke-width":1.4});
+        if (!small) add(g, "text", {x:xSCU, y:y - 12, "class":"sk-label", "text-anchor":"middle"}, "1 月 7 日");
+      } else if (t.when === "at"){
+        add(g, "line", {x1:x0, y1:y, x2:xCross, y2:y, stroke:t.col, "stroke-width":w, opacity:.32});
+        add(g, "line", {x1:xCross, y1:y, x2:x1, y2:y, stroke:t.col, "stroke-width":w, opacity:.95});
+        add(g, "circle", {cx:xCross, cy:y, r:small ? 2.6 : 4, fill:"#14120f", stroke:t.col, "stroke-width":1.4});
+      } else if (t.when === "never"){
+        add(g, "line", {x1:x0, y1:y, x2:x1, y2:y, stroke:t.col, "stroke-width":w, opacity:.85});
+      } else {
+        add(g, "line", {x1:x0, y1:y, x2:xCross, y2:y, stroke:t.col, "stroke-width":w, opacity:.28});
+        // 渐变式展开：用递增不透明的分段表示"逐步"，不是突变
+        var segs = small ? 5 : 9;
+        for (var s = 0; s < segs; s++){
+          var a = xCross + (x1 - xCross) * (s / segs);
+          var b = xCross + (x1 - xCross) * ((s + 1) / segs);
+          add(g, "line", {x1:a, y1:y, x2:b, y2:y, stroke:t.col, "stroke-width":w,
+            opacity: 0.28 + 0.62 * ((s + 1) / segs)});
+        }
+      }
+    });
+  }
+
+  var g2 = document.getElementById("sk2");
+  if (g2){
+    add(g2, "rect", {x:0, y:0, width:432, height:232, fill:"#111"});
+    add(g2, "text", {x:12, y:18, "class":"sk-title"}, "IMPERIVM · 四维面板");
+    drawTracks(g2, {x0:40, x1:392, y0:70, rowH:38, lw:0, small:true});
+  }
+
+  var g5 = document.getElementById("sk5");
+  if (g5){
+    add(g5, "rect", {x:0, y:0, width:432, height:232, fill:"#111"});
+    add(g5, "text", {x:12, y:18, "class":"sk-title"}, "越河时刻 · 四条轨道各自反应");
+    drawTracks(g5, {x0:40, x1:392, y0:70, rowH:38, lw:0, small:true});
+  }
+
+  var gt = document.getElementById("tracks");
+  if (gt){
+    drawTracks(gt, {x0:150, x1:760, y0:70, rowH:62, lw:1, small:false});
+    // 四个变化时点的说明
+    var notes = [
+      "越过行省边界时改变 —— lex Cornelia de maiestate",
+      "在越河之前就已改变 —— 1 月 7 日的非常措施",
+      "全程不变 —— 从他自己的立场看，什么都没发生",
+      "越河之后逐步展开 —— 渐变，不是突变"
+    ];
+    notes.forEach(function(n, i){
+      add(gt, "text", {x:150, y:70 + i * 62 + 24, "class":"sk-label", fill:"#7d7668"}, n);
+    });
+  }
+
+  /* ---------- 拍 3：程序时序 ---------- */
+  var g3 = document.getElementById("sk3");
+  if (g3){
+    add(g3, "rect", {x:0, y:0, width:432, height:232, fill:"#111"});
+    add(g3, "text", {x:12, y:18, "class":"sk-title"}, "元老院程序 · 常规手段依次用尽");
+    var steps = ["提案", "保民官否决", "否决被压制", "非常措施 SCU"];
+    steps.forEach(function(s, i){
+      var y = 52 + i * 38;
+      var faded = i < 3;
+      add(g3, "rect", {x:60, y:y - 12, width:250, height:24,
+        fill: i === 3 ? "#2b2921" : "#1c1913", stroke: i === 3 ? "#c89a56" : "#322d24", "stroke-width":1});
+      add(g3, "text", {x:72, y:y + 4, "class":"sk-label", fill: i === 3 ? "#c89a56" : "#b3ab9c"}, s);
+      if (i < 3){
+        add(g3, "path", {d:"M185 " + (y + 13) + " L185 " + (y + 25),
+          stroke:"#4a4235", "stroke-width":1, "stroke-dasharray":"2 2"});
+      }
+      if (faded){
+        add(g3, "text", {x:322, y:y + 4, "class":"sk-label", fill:"#7d7668"}, "✕");
+      }
+    });
+    add(g3, "text", {x:60, y:212, "class":"sk-label", fill:"#7d7668"}, "→ 镜头落到拉文纳");
+  }
+
+  /* ---------- 拍 4：媒介阶梯 ---------- */
+  var g4 = document.getElementById("sk4");
+  if (g4){
+    add(g4, "rect", {x:0, y:0, width:432, height:232, fill:"#111"});
+    add(g4, "text", {x:12, y:18, "class":"sk-title"}, "媒介转换 · 每换一次，呈现方式也换");
+    var rungs = [
+      {t:"地中海全景", a:"survey",    style:"solid",  fill:"#221e18"},
+      {t:"意大利区域", a:"survey",    style:"solid",  fill:"#221e18"},
+      {t:"行省边界示意", a:"schematic", style:"dash", fill:"#1c1913"},
+      {t:"候选河流实景", a:"现代影像",  style:"photo", fill:"#0d0c0a"}
+    ];
+    rungs.forEach(function(r, i){
+      var y = 40 + i * 44;
+      var box = add(g4, "rect", {x:56, y:y, width:150, height:32, fill:r.fill,
+        stroke: r.style === "photo" ? "#7d7668" : (r.style === "dash" ? "#4a4235" : "#4a4235"),
+        "stroke-width":1});
+      if (r.style === "dash") box.setAttribute("stroke-dasharray", "4 3");
+      if (r.style === "photo"){
+        // 用交叉线表示"这是照片，不是地图"
+        add(g4, "path", {d:"M56 " + y + " L206 " + (y + 32), stroke:"#322d24", "stroke-width":.8});
+        add(g4, "path", {d:"M206 " + y + " L56 " + (y + 32), stroke:"#322d24", "stroke-width":.8});
+      }
+      add(g4, "text", {x:218, y:y + 20, "class":"sk-label", fill:"#b3ab9c"}, r.t);
+      add(g4, "text", {x:340, y:y + 20, "class":"sk-label",
+        fill: r.a === "survey" ? "#7ea6c9" : "#7d7668"}, r.a);
+      if (i < 3){
+        add(g4, "path", {d:"M131 " + (y + 33) + " L131 " + (y + 43),
+          stroke:"#4a4235", "stroke-width":1});
+      }
+    });
+  }
+
+  /* ---------- 拍 6：意大利，数量 vs 可靠性 ---------- */
+  var g6 = document.getElementById("sk6");
+  if (g6){
+    add(g6, "rect", {x:0, y:0, width:432, height:232, fill:"#111"});
+    var p6 = mkProj(19, -190, -560);
+    drawLand(g6, p6);
+    add(g6, "text", {x:12, y:18, "class":"sk-title"}, "意大利 · 数量与可靠性分走两个通道");
+
+    // 数量 = 方块数；可靠性 = 实心 / 空心
+    var units = [
+      {lon:13.6, lat:41.4, n:1, solid:true,  label:"新征"},
+      {lon:14.6, lat:40.9, n:2, solid:false, label:"原属凯撒"},
+      {lon:12.3, lat:44.6, n:1, solid:true,  label:"守备"}
+    ];
+    units.forEach(function(u){
+      var q = p6(u.lon, u.lat);
+      for (var i = 0; i < u.n; i++){
+        add(g6, "rect", {
+          x:q[0] + i * 9, y:q[1] - 6, width:6.5, height:6.5,
+          fill: u.solid ? "#ede8dd" : "none",
+          stroke: u.solid ? "none" : "#ede8dd", "stroke-width":1.2,
+          "stroke-dasharray": u.solid ? null : "2 1.6"
+        });
+      }
+      add(g6, "text", {x:q[0], y:q[1] + 12, "class":"sk-label"}, u.label);
+    });
+
+    add(g6, "text", {x:300, y:190, "class":"sk-label"}, "■ 可靠");
+    add(g6, "text", {x:300, y:204, "class":"sk-label"}, "□ 忠诚存疑");
+    add(g6, "text", {x:300, y:218, "class":"sk-label", fill:"#c89a56"}, "数量 ≠ 可用");
+  }
+})();
+</script>

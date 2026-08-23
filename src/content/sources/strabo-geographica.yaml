@@ -1,0 +1,16 @@
+kind: ancient
+author:
+  name: Strabo
+  nameZh: 斯特拉波
+  floruit: 约前64–约公元24
+title:
+  original: Γεωγραφικά
+  zh: 地理志
+  en: Geographica
+locusScheme: "卷.章.节"
+composed:
+  label: 公元 1 世纪初
+  sortKey: 10
+language: grc
+stance:
+  zh: 奥古斯都时期的地理著作，描述的是其成书当时的行政区划，用于回溯前 49 年时需谨慎。

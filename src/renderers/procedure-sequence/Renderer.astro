@@ -1,0 +1,54 @@
+---
+/**
+ * procedure-sequence 渲染器。
+ * 一套程序被依次走完或依次绕过。结果类型（outcome）是这一屏的信息，
+ * 不是装饰 —— 读者要能看出哪一步是"用过但没解决"，哪一步是"被绕过"。
+ */
+import type { ProcedureSequenceConfig } from './schema';
+interface Props { config: ProcedureSequenceConfig }
+const { config } = Astro.props;
+
+const OUTCOME_LABEL: Record<string, string> = {
+  completed: '完成',
+  vetoed: '被否决',
+  overridden: '否决被压制',
+  exhausted: '用尽而未解决',
+  extraordinary: '非常措施',
+};
+---
+<ol class="ps">
+  {config.stages.map((s) => (
+    <li class={`ps-stage ps-stage--${s.outcome}`}>
+      <div class="ps-head">
+        <span class="ps-label">{s.label.zh}</span>
+        {s.timeLabel && <span class="ps-time">{s.timeLabel.zh}</span>}
+      </div>
+      <div class="ps-meta">
+        <span class={`ps-outcome ps-outcome--${s.outcome}`}>{OUTCOME_LABEL[s.outcome]}</span>
+        <span class={`ha-claim ha-claim--${s.status} ps-cert`}>{s.status}</span>
+      </div>
+      {s.note && <p class="ps-note faint">{s.note.zh}</p>}
+    </li>
+  ))}
+</ol>
+
+<style>
+  .ps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--ha-sp-2); max-width: 40em; }
+  .ps-stage {
+    border-left: 2px solid var(--ha-rule);
+    padding: var(--ha-sp-3) var(--ha-sp-4);
+    background: var(--ha-surface);
+  }
+  /* 非常措施是这一串的终点，视觉上必须与前面几步不同 */
+  .ps-stage--extraordinary { border-left-color: var(--ha-warm); background: var(--ha-surface-2); }
+  .ps-stage--overridden { border-left-style: dashed; }
+
+  .ps-head { display: flex; justify-content: space-between; gap: var(--ha-sp-4); align-items: baseline; }
+  .ps-label { font-size: var(--ha-text-base); }
+  .ps-time { font-family: var(--ha-font-mono); font-size: var(--ha-text-xs); color: var(--ha-ink-faint); }
+  .ps-meta { display: flex; gap: var(--ha-sp-3); align-items: baseline; margin-top: var(--ha-sp-1); }
+  .ps-outcome { font-family: var(--ha-font-mono); font-size: var(--ha-text-xs); letter-spacing: .08em; color: var(--ha-ink-dim); }
+  .ps-outcome--extraordinary { color: var(--ha-warm); }
+  .ps-cert { font-family: var(--ha-font-mono); font-size: var(--ha-text-xs); text-transform: uppercase; }
+  .ps-note { font-size: var(--ha-text-sm); margin-top: var(--ha-sp-2); max-width: var(--ha-measure-narrow); }
+</style>

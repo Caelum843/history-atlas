@@ -1,0 +1,56 @@
+/* ============================================================
+   作品主题：rome-republic —— 「深色展厅」
+   这是**罗马首轮实验的视觉方向**，不是全站永久主题。
+   别的作品换一份主题文件即可，基础令牌不动。
+
+   双色语义：
+     冷（埃及蓝）= 我们对它的判断，现代学术的一侧
+     暖（赭石）  = 它留下的东西，古代物质的一侧
+   这个映射有含义，不是装饰性配色。
+
+   阵营不用红/绿：色觉障碍不友好，且红=反派的暗示
+   与 brief 第 6 节"避免只采用单一视角"相冲。
+   ============================================================ */
+
+[data-theme="rome-republic"]{
+  --ha-ground:      #14120f;   /* 低照度展厅墙面，暖中性近黑 */
+  --ha-ground-deep: #0d0c0a;
+  --ha-surface:     #1e1b16;
+  --ha-surface-2:   #262218;
+
+  /* 长阅读面刻意抬高 */
+  --ha-read-surface:#2b2921;
+  --ha-read-ink:    #f2eee4;
+
+  --ha-ink:         #ede8dd;
+  --ha-ink-dim:     #b3ab9c;
+  --ha-ink-faint:   #7d7668;
+  --ha-rule:        #322d24;
+
+  --ha-cool:        #7ea6c9;
+  --ha-cool-dim:    #4d6f8c;
+  --ha-warm:        #c89a56;
+  --ha-warm-dim:    #8a6a3a;
+
+  --ha-focus:       var(--ha-cool);
+
+  /* 证据状态：明度 + 色相双通道 */
+  --ha-st-attested: #ede8dd;
+  --ha-st-inferred: #b3ab9c;
+  --ha-st-disputed: #7ea6c9;
+  --ha-st-legend:   #7d7668;
+
+  /* 出版状态与非史料提示 */
+  --ha-notice-ink:    #c89a56;
+  --ha-notice-border: #8a6a3a;
+  --ha-notice-bg:     #1e1b16;
+
+  /* 地图 */
+  --ha-map-land:    #221e18;
+  --ha-map-coast:   #4a4235;
+  --ha-map-grat:    #1c1913;
+
+  --ha-font-display:'EB Garamond','Noto Serif SC',Georgia,serif;
+  --ha-font-body:'Noto Serif SC','EB Garamond',Georgia,serif;
+  --ha-font-mono:'IBM Plex Mono',ui-monospace,monospace;
+}

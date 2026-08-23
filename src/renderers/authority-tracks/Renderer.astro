@@ -1,0 +1,186 @@
+---
+/**
+ * authority-tracks 渲染器。
+ *
+ * 桌面端：横向并列的轨道，共用一条时间轴，pivot 节点是唯一公共对齐点。
+ *   论点靠"变化时点错位"表达 —— 那条竖线只对准部分轨道。
+ * 移动端：共享时间节点的四行事件矩阵。**不使用横向滚动画布**。
+ *   四行始终同屏，纵向滚动推动同一个时间游标；每一站只有部分行在动。
+ *
+ * M1 版本是静态的：先证明数据结构能驱动出正确的构图。
+ * 滚动游标与动效在 M2 核心切片实现。
+ */
+import type { AuthorityTracksConfig } from './schema';
+
+interface Props { config: AuthorityTracksConfig }
+const { config } = Astro.props;
+
+const nodes = [...config.nodes].sort((a, b) => a.sortKey - b.sortKey);
+const pivot = nodes.find((n) => n.pivot);
+
+// 桌面 SVG 几何
+const W = 900, LABEL_W = 168, PAD_R = 96;
+const x0 = LABEL_W, x1 = W - PAD_R;
+const rowH = 62, topPad = 44;
+const H = topPad + config.tracks.length * rowH + 28;
+const xOf = (id: string) => {
+  const i = nodes.findIndex((n) => n.id === id);
+  return x0 + (nodes.length === 1 ? 0 : ((x1 - x0) * i) / (nodes.length - 1));
+};
+---
+
+<figure class="at">
+  <!-- 桌面端 -->
+  <div class="at-desktop">
+    <svg viewBox={`0 0 ${W} ${H}`} role="img"
+         aria-label={`${config.tracks.length} 条轨道共用一条时间轴，各自在不同时点变化`}>
+      <!-- 时间轴 -->
+      <line x1={x0} y1={topPad - 20} x2={x1} y2={topPad - 20} class="at-axis" />
+      {nodes.map((n) => (
+        <g>
+          <line x1={xOf(n.id)} y1={topPad - 24} x2={xOf(n.id)} y2={topPad - 16} class="at-tick" />
+          <text x={xOf(n.id)} y={topPad - 30} class="at-nodelabel" text-anchor="middle">{n.label.zh}</text>
+        </g>
+      ))}
+
+      <!-- 公共对齐点：整幅图唯一的一条竖线 -->
+      {pivot && (
+        <line x1={xOf(pivot.id)} y1={topPad - 16} x2={xOf(pivot.id)} y2={H - 18} class="at-pivot" />
+      )}
+
+      {config.tracks.map((t, ti) => {
+        const y = topPad + ti * rowH;
+        return (
+          <g>
+            <text x={x0 - 14} y={y + 4} class="at-tracklabel" text-anchor="end">{t.label.zh}</text>
+            <text x={x1 + 12} y={y + 4} class={`at-cert at-cert--${t.status}`}>{t.status}</text>
+            <line x1={x0} y1={y} x2={x1} y2={y} class="at-groove" />
+            {t.cells.map((c, ci) => {
+              const cx = xOf(c.node);
+              const next = t.cells[ci + 1];
+              const nx = next ? xOf(next.node) : x1;
+              return (
+                <g>
+                  <line x1={cx} y1={y} x2={nx} y2={y}
+                        class={`at-seg at-seg--${c.status} ${c.mode === 'gradual' ? 'is-gradual' : ''}`} />
+                  {c.changed && (
+                    <circle cx={cx} cy={y} r={c.mode === 'gradual' ? 3 : 4.5}
+                            class={`at-marker at-marker--${c.mode}`} />
+                  )}
+                </g>
+              );
+            })}
+            {t.cells.filter((c) => c.changed).map((c) => (
+              <text x={xOf(c.node)} y={y + 22} class="at-change" text-anchor="middle">{c.label.zh}</text>
+            ))}
+          </g>
+        );
+      })}
+    </svg>
+  </div>
+
+  <!-- 移动端：共享时间节点的四行事件矩阵 -->
+  <div class="at-mobile">
+    {nodes.map((n) => (
+      <section class={`at-node ${n.pivot ? 'is-pivot' : ''}`}>
+        <h3 class="at-node-title">
+          {n.label.zh}
+          {n.pivot && <span class="at-pivot-tag">公共对齐点</span>}
+        </h3>
+        <ul class="at-matrix">
+          {config.tracks.map((t) => {
+            const cell = t.cells.find((c) => c.node === n.id);
+            if (!cell) return null;
+            return (
+              <li class={cell.changed ? 'is-changed' : 'is-static'}>
+                <span class="at-row-label">{t.label.zh}</span>
+                <span class={`at-row-value ha-claim ha-claim--${cell.status}`}>{cell.label.zh}</span>
+                <span class="at-row-flag">{cell.changed ? (cell.mode === 'gradual' ? '渐变' : '变化') : '未变'}</span>
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+    ))}
+  </div>
+
+  <figcaption class="at-cap dim">
+    每条轨道各自标注证据等级。竖线是唯一的公共对齐点——注意它只对准了部分轨道。
+  </figcaption>
+</figure>
+
+<style>
+  .at { margin: 0; }
+  .at-desktop svg { display: block; width: 100%; height: auto; }
+  .at-mobile { display: none; }
+
+  .at-axis, .at-tick { stroke: var(--ha-rule); stroke-width: 1; }
+  .at-pivot { stroke: var(--ha-warm); stroke-width: 1; }
+  .at-groove { stroke: var(--ha-surface-2); stroke-width: 7; }
+
+  .at-seg { stroke-width: 7; stroke-linecap: butt; }
+  .at-seg--attested { stroke: var(--ha-st-attested); opacity: .9; }
+  .at-seg--inferred { stroke: var(--ha-st-inferred); opacity: .75; }
+  .at-seg--disputed { stroke: var(--ha-st-disputed); opacity: .85; }
+  .at-seg--legend   { stroke: var(--ha-st-legend);   opacity: .6; }
+  /* 渐变的变化不画成一个突兀的时点 */
+  .at-seg.is-gradual { opacity: .45; stroke-dasharray: 2 4; }
+
+  .at-marker { fill: var(--ha-ground); stroke: var(--ha-ink); stroke-width: 1.6; }
+  .at-marker--gradual { stroke-dasharray: 2 2; }
+
+  .at-nodelabel, .at-tracklabel, .at-cert, .at-change {
+    font-family: var(--ha-font-mono);
+    letter-spacing: .06em;
+  }
+  .at-nodelabel { font-size: 10px; fill: var(--ha-ink-faint); }
+  .at-tracklabel { font-size: 11px; fill: var(--ha-ink-dim); font-family: var(--ha-font-body); }
+  .at-cert { font-size: 9px; fill: var(--ha-ink-faint); text-transform: uppercase; }
+  .at-cert--disputed { fill: var(--ha-st-disputed); }
+  .at-change { font-size: 10px; fill: var(--ha-ink-dim); font-family: var(--ha-font-body); }
+
+  .at-cap {
+    font-size: var(--ha-text-sm);
+    margin-top: var(--ha-sp-4);
+    max-width: var(--ha-measure);
+  }
+
+  @media (max-width: 760px) {
+    .at-desktop { display: none; }
+    .at-mobile { display: flex; flex-direction: column; gap: var(--ha-sp-6); }
+
+    .at-node {
+      border-top: var(--ha-rule-width) solid var(--ha-rule);
+      padding-top: var(--ha-sp-3);
+    }
+    .at-node.is-pivot { border-top-color: var(--ha-warm); }
+    .at-node-title {
+      font-family: var(--ha-font-mono);
+      font-size: var(--ha-text-xs);
+      letter-spacing: var(--ha-tracking-label);
+      color: var(--ha-ink-dim);
+      display: flex; justify-content: space-between; align-items: baseline;
+      margin-bottom: var(--ha-sp-3);
+    }
+    .at-pivot-tag { color: var(--ha-warm); }
+
+    .at-matrix { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--ha-sp-2); }
+    .at-matrix li {
+      display: grid;
+      grid-template-columns: 6.5em 1fr auto;
+      gap: var(--ha-sp-3);
+      align-items: baseline;
+      font-size: var(--ha-text-sm);
+      line-height: var(--ha-leading-normal);
+    }
+    /* 未变的行压暗，变化的行留亮 —— 每一站只有部分行在动 */
+    .at-matrix li.is-static { opacity: .42; }
+    .at-row-label { color: var(--ha-ink-dim); }
+    .at-row-flag {
+      font-family: var(--ha-font-mono);
+      font-size: var(--ha-text-xs);
+      color: var(--ha-ink-faint);
+    }
+    .at-matrix li.is-changed .at-row-flag { color: var(--ha-warm); }
+  }
+</style>

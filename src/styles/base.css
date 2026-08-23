@@ -1,0 +1,121 @@
+/* ============================================================
+   全站基础令牌 —— 换文明不变的部分。
+   排版体系 / 间距节奏 / 注释系统 / 来源与不确定性标记 /
+   交互反馈 / 焦点可见性 / 可访问性规范。
+
+   这里刻意**不做任何颜色决策**。颜色属于作品主题层。
+   本文件里出现的颜色变量全部是"引用"，其值由主题文件提供。
+   ============================================================ */
+
+:root{
+  /* 间距节奏：4px 基数 */
+  --ha-sp-1:.25rem; --ha-sp-2:.5rem;  --ha-sp-3:.75rem; --ha-sp-4:1rem;
+  --ha-sp-6:1.5rem; --ha-sp-8:2rem;   --ha-sp-12:3rem;  --ha-sp-16:4rem;
+
+  /* 排版尺度 */
+  --ha-text-xs:.72rem; --ha-text-sm:.86rem; --ha-text-base:1rem;
+  --ha-text-lg:1.15rem; --ha-text-xl:1.45rem; --ha-text-2xl:1.9rem;
+  --ha-text-3xl:2.6rem;
+
+  --ha-leading-tight:1.2; --ha-leading-normal:1.65; --ha-leading-loose:1.85;
+  --ha-tracking-label:.14em;
+
+  /* 正文宽度：长阅读约 34em，注释稍窄 */
+  --ha-measure:34em;
+  --ha-measure-narrow:28em;
+
+  --ha-radius:2px;
+  --ha-rule-width:1px;
+
+  /* 动效：一律经由这两个变量，便于统一降级 */
+  --ha-motion-fast:.18s;
+  --ha-motion-slow:.6s;
+  --ha-ease:cubic-bezier(.4,0,.2,1);
+}
+
+*{box-sizing:border-box;}
+
+html{ -webkit-text-size-adjust:100%; }
+
+body{
+  margin:0;
+  background:var(--ha-ground);
+  color:var(--ha-ink);
+  font-family:var(--ha-font-body);
+  line-height:var(--ha-leading-loose);
+  -webkit-font-smoothing:antialiased;
+}
+
+/* 焦点可见性：全站统一，主题只提供颜色 */
+:focus-visible{
+  outline:2px solid var(--ha-focus);
+  outline-offset:3px;
+}
+
+/* ---------- 注释系统 ---------- */
+/* 论断的证据状态。四种笔法全站一致，颜色由主题给。
+   要求：inferred / disputed / legend 在视觉上必须与 attested 可区分。 */
+.ha-claim{ font-style:normal; }
+.ha-claim--attested{ color:var(--ha-st-attested); }
+.ha-claim--inferred{
+  color:var(--ha-st-inferred);
+  border-bottom:1px dotted var(--ha-st-inferred);
+}
+.ha-claim--disputed{
+  color:var(--ha-st-disputed);
+  border-bottom:1px solid var(--ha-st-disputed);
+  cursor:help;
+}
+.ha-claim--legend{
+  color:var(--ha-st-legend);
+  border-bottom:1px dashed var(--ha-st-legend);
+  font-style:italic;
+}
+
+/* 地理精度标记 */
+.ha-accuracy{
+  font-family:var(--ha-font-mono);
+  font-size:var(--ha-text-xs);
+  letter-spacing:var(--ha-tracking-label);
+  text-transform:uppercase;
+  padding:.15rem .45rem;
+  border:var(--ha-rule-width) solid currentColor;
+  white-space:nowrap;
+}
+
+/* 出版状态标识：实验样章不能被误认为完整作品 */
+.ha-status{
+  font-family:var(--ha-font-mono);
+  font-size:var(--ha-text-xs);
+  letter-spacing:var(--ha-tracking-label);
+  text-transform:uppercase;
+  padding:.25rem .6rem;
+  border:var(--ha-rule-width) solid var(--ha-notice-border);
+  color:var(--ha-notice-ink);
+  background:var(--ha-notice-bg);
+}
+
+/* 非原始史料标记：复原图与 AI 辅助图像强制显示，不可关闭 */
+.ha-nonprimary{
+  font-family:var(--ha-font-mono);
+  font-size:var(--ha-text-xs);
+  letter-spacing:var(--ha-tracking-label);
+  text-transform:uppercase;
+  color:var(--ha-notice-ink);
+}
+
+/* 长阅读面：史料抽屉与正文区域单独抬高对比度，
+   不为氛围牺牲可读性（decisions.md 第二轮新增原则） */
+.ha-read{
+  background:var(--ha-read-surface);
+  color:var(--ha-read-ink);
+  max-width:var(--ha-measure);
+  line-height:var(--ha-leading-loose);
+}
+
+/* 宽内容自己滚，页面 body 永不横向滚动 */
+.ha-scroll-x{ overflow-x:auto; }
+
+@media (prefers-reduced-motion:reduce){
+  *{ animation:none !important; transition:none !important; scroll-behavior:auto !important; }
+}

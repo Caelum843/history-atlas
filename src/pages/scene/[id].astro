@@ -1,0 +1,98 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import BeatVisual from '../../components/BeatVisual.astro';
+import { assertContentValid } from '../../lib/validate';
+
+export async function getStaticPaths() {
+  const scenes = await getCollection('scenes');
+  return scenes.map((s) => ({ params: { id: s.id }, props: { scene: s } }));
+}
+
+// 内容校验放在构建期。有问题就让构建失败，而不是上线后出现错误内容。
+await assertContentValid();
+
+const { scene } = Astro.props;
+const d = scene.data;
+const work = await getEntry('works', d.work);
+
+const STATUS_LABEL: Record<string, string> = {
+  sample: '实验样章', draft: '草稿', chapter: '完整章节', published: '已发布',
+};
+---
+<Base title={`${d.title.zh} · ${work?.data.title.zh ?? ''}`}>
+  <div class="shell stack-lg">
+
+    <header class="stack">
+      <p class="eyebrow">{work?.data.title.zh} · {work?.data.span.label.zh}</p>
+      <h1>{d.title.zh}</h1>
+      <p class="dim summary">{d.summary.zh}</p>
+      <div class="badges">
+        <span class="ha-status">{STATUS_LABEL[d.status]}</span>
+      </div>
+      {d.status === 'sample' && work?.data.sampleNotice && (
+        <aside class="ha-read notice">{work.data.sampleNotice.zh}</aside>
+      )}
+    </header>
+
+    <hr />
+
+    {d.beats.map((b, i) => (
+      <article class="beat stack">
+        <p class="eyebrow">拍 {i + 1} · {b.time.label.zh}</p>
+        <h2>{b.title.zh}</h2>
+        {b.body.map((p) => <p class="dim body">{p.zh}</p>)}
+
+        <div class="visual">
+          <BeatVisual renderer={b.visual.renderer} config={b.visual.config} />
+        </div>
+
+        {b.claims.length > 0 && (
+          <details class="claims">
+            <summary>论断与证据（{b.claims.length}）</summary>
+            <ul>
+              {b.claims.map((c) => (
+                <li class="stack claim">
+                  <p class={`ha-claim ha-claim--${c.status}`}>{c.text.zh}</p>
+                  <p class="faint tiny">
+                    {c.status}
+                    {c.citations.length > 0 && <> · {c.citations.map((x) => `${x.source} ${x.locus ?? ''}`).join('；')}</>}
+                    {c.citations.length === 0 && <> · 出处待补（M3）</>}
+                  </p>
+                  {c.uncertainty && <p class="faint tiny">{c.uncertainty.zh}</p>}
+                  {c.alternatives?.map((a) => (
+                    <p class="alt dim tiny">替代解释：{a.text.zh}</p>
+                  ))}
+                </li>
+              ))}
+            </ul>
+          </details>
+        )}
+      </article>
+    ))}
+
+    <hr />
+    <footer class="faint tiny">
+      renderer：{[...new Set(d.beats.map((b) => b.visual.renderer))].join(' · ')}
+      　地理图层：{d.geoLayers.map((l) => `${l.id}（${l.accuracy}）`).join('，') || '无'}
+    </footer>
+  </div>
+</Base>
+
+<style>
+  .summary, .body { max-width: var(--ha-measure); }
+  .badges { display: flex; gap: var(--ha-sp-2); }
+  .notice { padding: var(--ha-sp-4); font-size: var(--ha-text-sm); border-left: 2px solid var(--ha-warm); }
+  .beat { gap: var(--ha-sp-4); }
+  .visual { margin-top: var(--ha-sp-4); }
+  .claims { border-top: var(--ha-rule-width) solid var(--ha-rule); padding-top: var(--ha-sp-3); }
+  .claims summary {
+    cursor: pointer; font-family: var(--ha-font-mono);
+    font-size: var(--ha-text-xs); letter-spacing: var(--ha-tracking-label);
+    color: var(--ha-ink-dim); text-transform: uppercase;
+  }
+  .claims ul { list-style: none; margin: var(--ha-sp-4) 0 0; padding: 0; display: flex; flex-direction: column; gap: var(--ha-sp-6); }
+  .claim { gap: var(--ha-sp-2); max-width: var(--ha-measure); }
+  .tiny { font-size: var(--ha-text-xs); line-height: var(--ha-leading-normal); font-family: var(--ha-font-mono); }
+  .alt { border-left: 1px solid var(--ha-st-disputed); padding-left: var(--ha-sp-3); font-family: var(--ha-font-body); font-size: var(--ha-text-sm); }
+</style>
