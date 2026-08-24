@@ -1,0 +1,13 @@
+civilization: rome
+title: { zh: 晚期帝国的再造 }
+shortTitle: { zh: 晚期帝国 }
+order: 8
+availability: planned
+span: { label: { zh: 公元 284 — 395 年 }, fromSortKey: 284, toSortKey: 395 }
+thesis: { zh: 帝国通过多皇帝治理、行政分区、税制和宗教政治被重新组织，而不是只沿着衰落路线前进。 }
+summary: { zh: 从戴克里先到狄奥多西，皇帝宫廷、军队结构、基督教和新都共同改变了罗马帝国的重心。 }
+transition: { zh: 395 年以后东西各有皇帝与宫廷，但双方仍宣称属于同一个罗马帝国。 }
+anchors:
+  - { zh: 四帝共治 }
+  - { zh: 君士坦丁堡 }
+  - { zh: 基督教化 }

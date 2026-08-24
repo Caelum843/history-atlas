@@ -12,7 +12,11 @@ composed:
   label: 公元 2 世纪初
   sortKey: 110
 language: grc
+url: https://www.perseus.tufts.edu/hopper/text?doc=Perseus:text:2008.01.0001:chapter=32
+accessed: '2026-08-24'
 stance:
   zh: >-
     道德传记而非编年史，取材于已散佚的更早著作。
     所记"骰子"一语为希腊文命令式，与苏埃托尼乌斯的拉丁文陈述式含义不同。
+limits:
+  zh: 成书距事件约一个半世纪，渡河场面不能按同时代逐字记录使用。

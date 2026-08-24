@@ -1,0 +1,13 @@
+civilization: rome
+title: { zh: 元首制的建立 }
+shortTitle: { zh: 元首制 }
+order: 5
+availability: planned
+span: { label: { zh: 前 27 — 公元 96 年 }, fromSortKey: -27, toSortKey: 96 }
+thesis: { zh: 皇帝掌握决定性的军事与政治权力，却继续通过共和国的官职、元老院和传统语言统治。 }
+summary: { zh: 从奥古斯都到弗拉维王朝，继承、军队忠诚、皇帝形象和行省治理成为新秩序的核心问题。 }
+transition: { zh: 皇位不再依赖单一家族延续，但皇权本身已经成为帝国政治的固定中心。 }
+anchors:
+  - { zh: 奥古斯都的权力组合 }
+  - { zh: 皇位继承 }
+  - { zh: 行省与边疆 }

@@ -33,6 +33,23 @@
 }
 
 /* ---------- 罗马卷：暖 ---------- */
+[data-layer="civilization"][data-identity="rome"]{
+  --l-ground:      #0d1112;
+  --l-ground-2:    #14191a;
+  --l-surface:     rgba(20,25,25,.86);
+  --l-ink:         #e8e2d5;
+  --l-ink-dim:     #a7a294;
+  --l-ink-faint:   #676b66;
+  --l-rule:        #29302f;
+  --l-accent:      #c9a15b;
+  --l-accent-dim:  #715b35;
+  --l-cool:        #829fa9;
+  --l-focus:       #c9a15b;
+  --l-land:        #1a201f;
+  --l-land-edge:   #343e3b;
+}
+
+/* ---------- 罗马卷：暖 ---------- */
 [data-layer="realm"][data-identity="rome-republic"]{
   --l-ground:      #17140f;
   --l-ground-2:    #201b14;

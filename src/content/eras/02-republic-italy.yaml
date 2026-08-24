@@ -1,0 +1,13 @@
+civilization: rome
+title: { zh: 共和国与意大利共同体 }
+shortTitle: { zh: 意大利共和国 }
+order: 2
+availability: planned
+span: { label: { zh: 前 509 — 前 264 年 }, fromSortKey: -509, toSortKey: -264 }
+thesis: { zh: 罗马的共和国制度与它在意大利的扩张共同形成；公民身份、军事义务与联盟关系无法彼此分开。 }
+summary: { zh: 执政官、元老院和公民大会逐渐定型，罗马通过战争、殖民与不对称联盟控制意大利。 }
+transition: { zh: 控制意大利以后，罗马第一次卷入跨海的地中海霸权战争。 }
+anchors:
+  - { zh: 平民与贵族的政治斗争 }
+  - { zh: 萨莫奈战争 }
+  - { zh: 意大利联盟体系 }

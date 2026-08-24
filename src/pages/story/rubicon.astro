@@ -10,13 +10,15 @@ await assertContentValid();
 
 const scene = await getEntry('scenes', 'rubicon');
 if (!scene) throw new Error('缺少 rubicon 场景');
+const chapter = await getEntry('chapters', 'rubicon');
+if (!chapter) throw new Error('缺少 rubicon 知识章节');
 const work = await getEntry('works', scene.data.work);
 const world = await getCollection('world');
 const sources = await getCollection('sources');
 const byWorldId = new Map(world.map((node) => [node.id, node]));
 const bySourceId = new Map(sources.map((source) => [source.id, source]));
 
-const [forcesBeat, authorityBeat, procedureBeat] = scene.data.beats;
+const [, authorityBeat, procedureBeat] = scene.data.beats;
 const authorityConfig = authorityBeat.visual.config as any;
 const procedureConfig = procedureBeat.visual.config as any;
 
@@ -157,56 +159,40 @@ const evidence = Object.fromEntries(scene.data.beats.flatMap((beat) => beat.clai
       </section>
 
       <nav class="progress" aria-label="故事进度">
-        <button class="is-current" data-goto="0"><span>01</span>力量分布</button>
-        <button data-goto="1"><span>02</span>制度边界</button>
-        <button data-goto="2"><span>03</span>证据尽头</button>
+        <button class="is-current" data-goto="0"><span>01</span>空间边界</button>
+        <button data-goto="1"><span>02</span>制度失效</button>
+        <button data-goto="2"><span>03</span>行动与记忆</button>
       </nav>
     </div>
 
     <div class="scroll" id="scroll">
-      <article class="beat" data-beat="0">
-        <div class="beat__copy">
-          <p class="beat__meta">{forcesBeat.time.label.zh} · 地中海</p>
-          <h1>军权有一个<br />空间的尽头。</h1>
-          <p>{forcesBeat.body[0]?.zh}</p>
-          <div class="beat__objects">
-            <button data-object="caesar">凯撒</button>
-            <button data-object="ravenna">拉文纳</button>
-            <button data-object="rome-city">罗马</button>
+      {chapter.data.segments.map((segment, index) => (
+        <article
+          class:list={['beat', { 'beat--right': index % 2 === 1 }]}
+          data-beat={segment.act}
+          data-role={segment.role}
+        >
+          <div class="beat__copy">
+            <p class="beat__meta">{String(index + 1).padStart(2, '0')} / {String(chapter.data.segments.length).padStart(2, '0')} · {segment.eyebrow.zh}</p>
+            {index === 0 ? <h1>{segment.title.zh}</h1> : <h2>{segment.title.zh}</h2>}
+            {segment.body.map((paragraph) => <p>{paragraph.zh}</p>)}
+            {segment.keyPoint && <blockquote><span>本段结论</span>{segment.keyPoint.zh}</blockquote>}
+            {(segment.entities.length > 0 || segment.claimRefs.length > 0) && (
+              <div class="beat__objects">
+                {segment.entities.map((id) => (
+                  <button data-object={id}>{byWorldId.get(id)?.data.title.zh ?? id}</button>
+                ))}
+                {segment.claimRefs.map((id) => (
+                  <button data-evidence={id}>论断依据 · {evidence[id]?.statusLabel ?? '待核'}</button>
+                ))}
+              </div>
+            )}
+            {index < chapter.data.segments.length - 1
+              ? <span class="beat__scroll">继续阅读 ↓</span>
+              : <a class="beat__return" href={sitePath('/world/rome-republic/')}>带着这一章回到共和国危机卷 ↑</a>}
           </div>
-          <span class="beat__scroll">向下，进入制度边界 ↓</span>
-        </div>
-      </article>
-
-      <article class="beat beat--right" data-beat="1">
-        <div class="beat__copy">
-          <p class="beat__meta">{authorityBeat.time.label.zh} · 权限</p>
-          <h2>越过的不是<br />一条写着“叛国”的河。</h2>
-          <p>{authorityBeat.body[0]?.zh}</p>
-          <div class="beat__objects">
-            <button data-object="lex-cornelia">叛国法</button>
-            <button data-evidence="c2-lex-cornelia">查看核心论断</button>
-          </div>
-          <span class="beat__scroll">继续，看看我们究竟知道多少 ↓</span>
-        </div>
-      </article>
-
-      <article class="beat" data-beat="2">
-        <div class="beat__copy">
-          <p class="beat__meta">地理定位 · 有争议</p>
-          <h2>历史有时只留下<br />一个动作，没有坐标。</h2>
-          <p>
-            《内战记》从拉文纳直接写到里米尼，没有“卢比孔”一词。
-            后世留下了那条河的名字，却没有留下足以让我们在现代地图上画出一条确定线的证据。
-          </p>
-          <div class="beat__objects">
-            <button data-object="caesar-bc">《内战记》</button>
-            <button data-object="rubico">卢比孔河</button>
-            <button data-evidence="c2-scu-not-hostis">另一处常见误读</button>
-          </div>
-          <a class="beat__return" href={sitePath('/world/rome-republic/')}>回到罗马卷，保留这段记忆 ↑</a>
-        </div>
-      </article>
+        </article>
+      ))}
     </div>
   </div>
 
@@ -239,7 +225,8 @@ const evidence = Object.fromEntries(scene.data.beats.flatMap((beat) => beat.clai
   beats.forEach((beat) => observer.observe(beat));
 
   progress.forEach((button) => button.addEventListener('click', () => {
-    beats[Number(button.dataset.goto)]?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    beats.find((beat) => Number(beat.dataset.beat) === Number(button.dataset.goto))
+      ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }));
 
   const evidenceData = JSON.parse(document.getElementById('evidenceData')!.textContent!);
@@ -357,6 +344,8 @@ const evidence = Object.fromEntries(scene.data.beats.flatMap((beat) => beat.clai
   .beat__copy h1, .beat__copy h2 { margin: .9rem 0 1rem; color: var(--l-ink); font: 300 clamp(2.2rem,4vw,4.1rem)/1 var(--l-font-display); }
   .beat__copy h2 { font-size: clamp(1.9rem,3.3vw,3.5rem); }
   .beat__copy > p:not(.beat__meta) { color: var(--l-ink-dim); font-size: .88rem; line-height: 1.9; }
+  .beat__copy blockquote { display: grid; gap: .45rem; margin: 1.1rem 0 0; padding: .75rem .9rem; border: 0; border-left: 1px solid var(--l-cool); background: rgba(127,163,186,.045); color: var(--l-ink); font-size: .76rem; line-height: 1.75; }
+  .beat__copy blockquote span { color: var(--l-cool); font: .48rem var(--l-font-mono); letter-spacing: .14em; }
   .beat__objects { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: 1rem; }
   .beat__objects button { border: 1px solid var(--l-rule); padding: .48rem .65rem; background: rgba(0,0,0,.2); color: var(--l-ink-dim); font: .55rem var(--l-font-mono); cursor: pointer; }
   .beat__objects button:hover { border-color: var(--l-accent); color: var(--l-ink); }

@@ -18,16 +18,19 @@ export interface ContentIssue {
 }
 
 export async function validateContent(): Promise<ContentIssue[]> {
-  const [scenes, works, sources, entities] = await Promise.all([
+  const [scenes, works, sources, entities, chapters, world] = await Promise.all([
     getCollection('scenes'),
     getCollection('works'),
     getCollection('sources'),
     getCollection('entities'),
+    getCollection('chapters'),
+    getCollection('world'),
   ]);
 
   const workIds = new Set(works.map((w) => w.id));
   const sourceIds = new Set(sources.map((s) => s.id));
   const entityIds = new Set(entities.map((e) => e.id));
+  const worldIds = new Set(world.map((node) => node.id));
   const issues: ContentIssue[] = [];
 
   for (const s of scenes) {
@@ -98,6 +101,41 @@ export async function validateContent(): Promise<ContentIssue[]> {
               message: `step "${st.id}" 引用了场景中不存在的图层 "${l}"`,
             });
           }
+        }
+      }
+    }
+  }
+
+  const scenesById = new Map(scenes.map((scene) => [scene.id, scene]));
+  for (const chapter of chapters) {
+    const at = `chapter/${chapter.id}`;
+    const linkedScene = scenesById.get(chapter.data.scene);
+    if (!linkedScene) {
+      issues.push({ where: at, message: `引用了不存在的场景 "${chapter.data.scene}"` });
+      continue;
+    }
+
+    const claimIds = new Set(linkedScene.data.beats.flatMap((beat) => beat.claims.map((claim) => claim.id)));
+    const segmentIds = new Set<string>();
+    let previousAct = -1;
+    for (const segment of chapter.data.segments) {
+      const segmentAt = `${at}#${segment.id}`;
+      if (segmentIds.has(segment.id)) {
+        issues.push({ where: segmentAt, message: `章节段落 id 重复` });
+      }
+      segmentIds.add(segment.id);
+      if (segment.act < previousAct) {
+        issues.push({ where: segmentAt, message: `幕编号从 ${previousAct} 倒退到 ${segment.act}，会破坏滚动切幕顺序` });
+      }
+      previousAct = segment.act;
+      for (const claimRef of segment.claimRefs) {
+        if (!claimIds.has(claimRef)) {
+          issues.push({ where: segmentAt, message: `引用了场景中不存在的论断 "${claimRef}"` });
+        }
+      }
+      for (const entityRef of segment.entities) {
+        if (!worldIds.has(entityRef)) {
+          issues.push({ where: segmentAt, message: `引用了世界层中不存在的对象 "${entityRef}"` });
         }
       }
     }

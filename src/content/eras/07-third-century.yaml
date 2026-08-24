@@ -1,0 +1,13 @@
+civilization: rome
+title: { zh: 三世纪危机与重组 }
+shortTitle: { zh: 三世纪重组 }
+order: 7
+availability: planned
+span: { label: { zh: 公元 235 — 284 年 }, fromSortKey: 235, toSortKey: 284 }
+thesis: { zh: 频繁内战与外部战争暴露了帝国结构的脆弱，也催生出更机动、更军事化的统治方式。 }
+summary: { zh: 皇帝更替、地方政权、货币变化、瘟疫和边疆战争同时发生；帝国经历分裂，却没有简单崩溃。 }
+transition: { zh: 戴克里先把危机时期形成的应急变化转化为更系统的行政与皇权结构。 }
+anchors:
+  - { zh: 军人皇帝 }
+  - { zh: 地方帝国 }
+  - { zh: 货币与军队 }

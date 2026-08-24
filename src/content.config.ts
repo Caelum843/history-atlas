@@ -1,6 +1,6 @@
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
-import { scene, work, sourceEntity, worldNode } from './lib/schema';
+import { civilization, civilizationEra, knowledgeChapter, scene, work, sourceEntity, worldNode } from './lib/schema';
 import { z } from 'astro/zod';
 import { i18n } from './lib/schema';
 
@@ -58,4 +58,19 @@ const world = defineCollection({
   schema: worldNode,
 });
 
-export const collections = { works, scenes, sources, entities, world };
+const civilizations = defineCollection({
+  loader: glob({ pattern: '**/*.yaml', base: './src/content/civilizations' }),
+  schema: civilization,
+});
+
+const eras = defineCollection({
+  loader: glob({ pattern: '**/*.yaml', base: './src/content/eras' }),
+  schema: civilizationEra,
+});
+
+const chapters = defineCollection({
+  loader: glob({ pattern: '**/*.yaml', base: './src/content/chapters' }),
+  schema: knowledgeChapter,
+});
+
+export const collections = { works, scenes, sources, entities, world, civilizations, eras, chapters };

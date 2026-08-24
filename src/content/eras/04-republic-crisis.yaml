@@ -1,0 +1,15 @@
+civilization: rome
+title: { zh: 共和国危机 }
+shortTitle: { zh: 共和国危机 }
+order: 4
+availability: sample
+span: { label: { zh: 前 133 — 前 27 年 }, fromSortKey: -133, toSortKey: -27 }
+thesis: { zh: 共和国的制度仍在运作，但它越来越难以约束长期军事指挥权、竞争性政治动员和内战中的非常措施。 }
+summary: { zh: 从格拉古兄弟到奥古斯都，政治暴力、同盟战争、独裁、个人军队与反复内战改变了共和国。 }
+transition: { zh: 奥古斯都没有宣布废除共和国；新的君主权力以恢复共和国的语言建立。 }
+entry: /world/rome-republic/
+anchors:
+  - { zh: 格拉古兄弟 }
+  - { zh: 苏拉 }
+  - { zh: 凯撒与庞培 }
+  - { zh: 三头同盟与奥古斯都 }

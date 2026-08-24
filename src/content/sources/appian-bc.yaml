@@ -1,0 +1,20 @@
+kind: ancient
+author:
+  name: Ἀππιανός
+  nameZh: 阿庇安
+  floruit: 约公元95–165
+title:
+  original: Ῥωμαϊκά · Ἐμφύλια
+  zh: 罗马史·内战记
+  en: Roman History · Civil Wars
+locusScheme: "卷.章（如 2.34）"
+composed:
+  label: 公元 2 世纪中叶
+  sortKey: 150
+language: grc
+url: https://penelope.uchicago.edu/Thayer/E/Roman/Texts/Appian/Civil_Wars/2*.html
+accessed: '2026-08-24'
+stance:
+  zh: 成书距事件约两个世纪，提供完整的内战叙事，但不是当事人记录。
+limits:
+  zh: 渡河前的犹豫、神示和引语属于后世叙事传统，应与凯撒本人的文本分层阅读。

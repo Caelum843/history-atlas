@@ -1,0 +1,13 @@
+civilization: rome
+title: { zh: 两个宫廷与西部终结 }
+shortTitle: { zh: 两个宫廷 }
+order: 9
+availability: planned
+span: { label: { zh: 公元 395 — 476 年 }, fromSortKey: 395, toSortKey: 476 }
+thesis: { zh: 这不是一个帝国在某日整齐裂成两个国家，而是两个皇帝宫廷在不同军事、财政和外交条件下逐渐分化。 }
+summary: { zh: 西部皇权不断依赖军事强人和外来军队，东部宫廷维持更稳定的财政与行政基础；罗马身份没有随西部皇帝消失。 }
+transition: { zh: 476 年以后东部帝国继续以罗马自居；它不是本书的附录，而是未来独立展开的历史主干。 }
+anchors:
+  - { zh: 东西部宫廷 }
+  - { zh: 西部军权 }
+  - { zh: 东部罗马延续 }

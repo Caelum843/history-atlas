@@ -221,6 +221,44 @@ beats:
         citations: []
         uncertainty:
           zh: 只陈述"进入非常措施阶段"这个可被证据支持的范围，不写成必然结局。
+      - id: c4-caesar-account
+        text:
+          zh: 凯撒本人的现存叙述从士兵表态直接转到率第十三军团前往里米尼，没有出现 Rubico 一词或著名的渡河场面。
+        status: attested
+        citations:
+          - source: caesar-bc
+            locus: '1.7–1.8'
+            relation: supports
+        uncertainty:
+          zh: 这证明的是文本如何叙述，不是否定行军过程中必然发生的越界。
+      - id: c5-later-tradition
+        text:
+          zh: 犹豫、预兆和掷骰子名言主要见于公元二世纪的传记与历史叙事，各版本细节并不完全相同。
+        status: attested
+        citations:
+          - source: plutarch-caesar
+            locus: '32'
+            relation: later-tradition
+          - source: suetonius-iulius
+            locus: '31–33'
+            relation: later-tradition
+          - source: appian-bc
+            locus: '2.34–35'
+            relation: later-tradition
+        uncertainty:
+          zh: 这些文本能证明后世叙事传统的存在，不能证明每项戏剧细节都是现场原话或亲历记录。
+      - id: c6-not-single-moment
+        text:
+          zh: 越出行省是冲突军事化的关键门槛，但共和国的瓦解不能归因于这一瞬间或这一条河。
+        status: inferred
+        citations:
+          - source: caesar-bc
+            locus: '1.8 及以下'
+            relation: contextualises
+          - source: cambridge-ancient-history-9
+            relation: contextualises
+        uncertainty:
+          zh: 这是对长时段因果的编辑性概括；具体政治、社会和制度解释需要在时代卷中展开。
     visual:
       renderer: procedure-sequence
       config:

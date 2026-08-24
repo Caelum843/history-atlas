@@ -1,0 +1,185 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+import Shell from '../../layouts/Shell.astro';
+import { sitePath } from '../../lib/paths';
+
+const civilization = await getEntry('civilizations', 'rome');
+if (!civilization) throw new Error('缺少 rome 文明主干');
+
+const eras = (await getCollection('eras'))
+  .filter((era) => era.data.civilization === 'rome')
+  .sort((a, b) => a.data.order - b.data.order);
+
+const totalSpan = civilization.data.span.toSortKey - civilization.data.span.fromSortKey;
+const positionOf = (year: number) => ((year - civilization.data.span.fromSortKey) / totalSpan) * 100;
+const availabilityLabel = { open: '已开放', sample: '实验样卷', planned: '规划中' } as const;
+---
+
+<Shell
+  layer="civilization"
+  identity="rome"
+  title="罗马 · 时间主干"
+  context="文明时间主干 · 罗马"
+  up={{ href: '/', label: '返回历史世界' }}
+>
+  <div class="civilization">
+    <header class="intro">
+      <p class="intro__index">CIVILIZATION · ROMA</p>
+      <h1>同一个名字下，<br /><em>存在过许多不同的罗马。</em></h1>
+      <p class="intro__summary">{civilization.data.summary.zh}</p>
+      <p class="intro__scope">{civilization.data.scopeNote.zh}</p>
+      <div class="intro__hint">
+        <span>纵览约 1,229 年</span>
+        <strong>向下穿过时间，进入一个时代卷</strong>
+      </div>
+    </header>
+
+    <aside class="overview" aria-label="罗马历史总时间轴">
+      <p>约前 753</p>
+      <div class="overview__line">
+        {eras.map((era) => (
+          <button
+            class:list={['overview__era', `is-${era.data.availability}`]}
+            style={`top:${positionOf(era.data.span.fromSortKey)}%;height:${Math.max(positionOf(era.data.span.toSortKey) - positionOf(era.data.span.fromSortKey), 1.2)}%`}
+            data-jump={era.id}
+            title={`${era.data.shortTitle.zh} · ${era.data.span.label.zh}`}
+          ><span>{era.data.order}</span></button>
+        ))}
+        <i id="timelineNeedle"></i>
+      </div>
+      <p>公元 476</p>
+    </aside>
+
+    <main class="eras" id="eraScroll">
+      <section class="threshold" aria-label="时间主干说明">
+        <p>TIME AS STRUCTURE</p>
+        <h2>世界地图回答“在哪里”，<br />时间主干回答“这是怎样的罗马”。</h2>
+        <span>每一卷不是相同长度的世纪切片，而是一段制度、权力和社会结构具有共同问题的历史。</span>
+      </section>
+
+      {eras.map((era) => (
+        <article
+          id={era.id}
+          class:list={['era', `era--${era.data.availability}`]}
+          data-era={era.id}
+          data-order={era.data.order}
+        >
+          <div class="era__number">{String(era.data.order).padStart(2, '0')}</div>
+          <div class="era__body">
+            <div class="era__meta">
+              <span>{era.data.span.label.zh}</span>
+              <em>{availabilityLabel[era.data.availability]}</em>
+            </div>
+            <h2>{era.data.title.zh}</h2>
+            <p class="era__thesis">{era.data.thesis.zh}</p>
+            <p class="era__summary">{era.data.summary.zh}</p>
+            <ul aria-label="本卷历史锚点">
+              {era.data.anchors.map((anchor) => <li>{anchor.zh}</li>)}
+            </ul>
+            {era.data.transition && <p class="era__transition"><span>下一次变化</span>{era.data.transition.zh}</p>}
+            {era.data.entry
+              ? <a class="era__enter" href={sitePath(era.data.entry)}>进入《{era.data.shortTitle.zh}》 <i>→</i></a>
+              : <p class="era__planned">这一卷已有位置，但内容尚未开放</p>}
+          </div>
+        </article>
+      ))}
+
+      <footer class="continuation">
+        <p>476 不是罗马历史的终点</p>
+        <strong>东部罗马帝国将在后续编辑范围中继续延伸。</strong>
+        <a href={sitePath('/')}>上升到历史世界 ↑</a>
+      </footer>
+    </main>
+  </div>
+</Shell>
+
+<script>
+  const scroll = document.getElementById('eraScroll')!;
+  const articles = [...document.querySelectorAll<HTMLElement>('[data-era]')];
+  const markers = [...document.querySelectorAll<HTMLButtonElement>('[data-jump]')];
+  const needle = document.getElementById('timelineNeedle')!;
+
+  function setCurrent(id: string, order: string) {
+    markers.forEach((marker) => marker.classList.toggle('is-current', marker.dataset.jump === id));
+    const current = markers.find((marker) => marker.dataset.jump === id);
+    if (current) needle.style.top = `calc(${current.style.top} + ${current.style.height} / 2)`;
+    document.documentElement.style.setProperty('--current-era', order);
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    const visible = entries.filter((entry) => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+    if (!visible) return;
+    const element = visible.target as HTMLElement;
+    setCurrent(element.dataset.era!, element.dataset.order!);
+  }, { root: scroll, threshold: [.35, .55, .75] });
+  articles.forEach((article) => observer.observe(article));
+
+  markers.forEach((marker) => marker.addEventListener('click', () => {
+    document.getElementById(marker.dataset.jump!)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }));
+</script>
+
+<style>
+  .civilization { position: absolute; inset: 0; overflow: hidden; background: radial-gradient(circle at 20% 42%, rgba(63,78,74,.16), transparent 31%), var(--l-ground); }
+  .civilization::before { content: 'ROMA'; position: absolute; left: -2vw; bottom: -11vh; color: rgba(255,255,255,.018); font: 600 min(31vw,30rem)/1 var(--l-font-display); letter-spacing: -.06em; pointer-events: none; }
+  .intro { position: absolute; z-index: 4; left: clamp(1.5rem,6vw,7rem); top: 15vh; width: min(35vw,31rem); }
+  .intro__index, .threshold > p { color: var(--l-cool); font: .55rem var(--l-font-mono); letter-spacing: .2em; }
+  .intro h1 { margin: 1rem 0 1.5rem; color: var(--l-ink); font: 300 clamp(2.6rem,4.5vw,5.2rem)/1.02 var(--l-font-display); }
+  .intro h1 em { color: var(--l-accent); font-style: normal; }
+  .intro__summary { color: var(--l-ink-dim); font-size: .92rem; line-height: 2; }
+  .intro__scope { margin-top: 1.2rem; padding-left: 1rem; border-left: 1px solid var(--l-rule); color: var(--l-ink-faint); font-size: .7rem; line-height: 1.85; }
+  .intro__hint { display: grid; gap: .45rem; margin-top: 2rem; color: var(--l-ink-faint); font: .52rem var(--l-font-mono); letter-spacing: .12em; }
+  .intro__hint strong { color: var(--l-ink-dim); font-weight: 400; }
+
+  .overview { position: absolute; z-index: 6; left: 46.5vw; top: 13vh; bottom: 8vh; width: 4rem; display: grid; grid-template-rows: auto 1fr auto; gap: .65rem; text-align: center; }
+  .overview > p { margin: 0; color: var(--l-ink-faint); font: .48rem var(--l-font-mono); }
+  .overview__line { position: relative; width: 1px; margin: 0 auto; background: var(--l-rule); }
+  .overview__era { position: absolute; left: -4px; width: 9px; min-height: 3px; padding: 0; border: 0; border-left: 1px solid var(--l-ink-faint); background: rgba(255,255,255,.025); cursor: pointer; transition: width .25s, border-color .25s, background .25s; }
+  .overview__era span { position: absolute; left: -1.25rem; top: 50%; transform: translateY(-50%); color: transparent; font: .45rem var(--l-font-mono); }
+  .overview__era.is-sample { border-color: var(--l-accent); background: rgba(201,161,91,.13); }
+  .overview__era:hover, .overview__era.is-current { width: 16px; border-color: var(--l-accent); background: rgba(201,161,91,.28); }
+  .overview__era.is-current span { color: var(--l-accent); }
+  #timelineNeedle { position: absolute; left: -9px; width: 19px; height: 1px; background: var(--l-accent); transition: top .5s ease; pointer-events: none; }
+
+  .eras { position: absolute; inset: 0 0 0 51vw; overflow-y: auto; scroll-snap-type: y proximity; padding: 0 clamp(2rem,7vw,8rem) 0 2vw; }
+  .threshold, .era, .continuation { min-height: 100vh; scroll-snap-align: center; display: flex; flex-direction: column; justify-content: center; }
+  .threshold { max-width: 39rem; }
+  .threshold h2 { margin: 1rem 0 1.2rem; color: var(--l-ink); font: 300 clamp(2.2rem,3.6vw,4rem)/1.08 var(--l-font-display); }
+  .threshold span { max-width: 31rem; color: var(--l-ink-dim); font-size: .85rem; line-height: 2; }
+  .era { position: relative; border-top: 1px solid var(--l-rule); }
+  .era__number { position: absolute; left: 0; top: 15vh; color: rgba(255,255,255,.04); font: 400 clamp(5rem,9vw,10rem)/1 var(--l-font-display); }
+  .era__body { position: relative; width: min(100%,42rem); padding-left: clamp(1rem,4vw,4rem); }
+  .era__meta { display: flex; justify-content: space-between; color: var(--l-ink-faint); font: .52rem var(--l-font-mono); letter-spacing: .13em; }
+  .era__meta em { color: var(--l-ink-faint); font-style: normal; }
+  .era--sample .era__meta em { color: var(--l-accent); }
+  .era h2 { margin: 1rem 0 .9rem; color: var(--l-ink); font: 300 clamp(2.4rem,4vw,4.5rem)/1 var(--l-font-display); }
+  .era__thesis { margin: 0; color: var(--l-ink); font-size: 1rem; line-height: 1.9; }
+  .era__summary { color: var(--l-ink-dim); font-size: .8rem; line-height: 1.9; }
+  .era ul { display: flex; flex-wrap: wrap; gap: .45rem; list-style: none; margin: 1.2rem 0; padding: 0; }
+  .era li { padding: .35rem .55rem; border: 1px solid var(--l-rule); color: var(--l-ink-faint); font: .5rem var(--l-font-mono); }
+  .era__transition { display: grid; gap: .4rem; margin-top: 1.3rem; padding: .9rem 1rem; border-left: 1px solid var(--l-cool); color: var(--l-ink-dim); font-size: .72rem; line-height: 1.75; }
+  .era__transition span { color: var(--l-cool); font: .48rem var(--l-font-mono); letter-spacing: .14em; }
+  .era__enter { display: inline-block; align-self: flex-start; margin-top: 1.4rem; padding: .75rem 1rem; border: 1px solid var(--l-accent-dim); color: var(--l-accent); font: .58rem var(--l-font-mono); letter-spacing: .1em; text-decoration: none; }
+  .era__enter:hover { background: rgba(201,161,91,.08); border-color: var(--l-accent); }
+  .era__enter i { margin-left: .8rem; font-style: normal; }
+  .era__planned { margin-top: 1.4rem; color: var(--l-ink-faint); font: .52rem var(--l-font-mono); letter-spacing: .1em; }
+  .era--planned { opacity: .72; }
+  .continuation { gap: .8rem; }
+  .continuation p { color: var(--l-cool); font: .55rem var(--l-font-mono); letter-spacing: .15em; }
+  .continuation strong { max-width: 34rem; color: var(--l-ink); font: 300 clamp(2rem,3.5vw,3.8rem)/1.2 var(--l-font-display); }
+  .continuation a { margin-top: 1rem; color: var(--l-accent); font: .55rem var(--l-font-mono); text-decoration: none; }
+
+  @media (max-width: 820px) {
+    .intro { position: absolute; top: 5rem; left: 1rem; right: 1rem; width: auto; padding-bottom: 2rem; }
+    .intro h1 { font-size: 2.6rem; }
+    .intro__summary { font-size: .8rem; }
+    .intro__scope, .intro__hint { display: none; }
+    .overview { left: 1rem; right: 1rem; top: auto; bottom: 1rem; width: auto; height: 2rem; display: none; }
+    .eras { inset: 0; padding: 0 1rem; }
+    .threshold { padding-top: 42vh; }
+    .threshold h2 { font-size: 2.2rem; }
+    .era__body { padding-left: 0; }
+    .era__number { top: 10vh; }
+    .era h2 { font-size: 2.6rem; }
+  }
+</style>

@@ -1,0 +1,13 @@
+civilization: rome
+title: { zh: 城市形成与王政传统 }
+shortTitle: { zh: 城市形成 }
+order: 1
+availability: planned
+span: { label: { zh: 约前 753 — 前 509 年 }, fromSortKey: -753, toSortKey: -509 }
+thesis: { zh: 后世罗马人把城市的制度、宗教与社会秩序追溯到一系列国王，但传说与可证历史必须分开。 }
+summary: { zh: 从台伯河沿岸聚落到城市共同体；考古材料与晚出的建城叙事彼此交叠。 }
+transition: { zh: 传统叙述以驱逐末代国王结束王政，但共和国制度并非在一天内完整出现。 }
+anchors:
+  - { zh: 建城传统 }
+  - { zh: 元老院与宗教职位 }
+  - { zh: 伊特鲁里亚联系 }

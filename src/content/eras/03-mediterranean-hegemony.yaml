@@ -1,0 +1,13 @@
+civilization: rome
+title: { zh: 地中海霸权的形成 }
+shortTitle: { zh: 地中海霸权 }
+order: 3
+availability: planned
+span: { label: { zh: 前 264 — 前 133 年 }, fromSortKey: -264, toSortKey: -133 }
+thesis: { zh: 为意大利城邦设计的政治制度，开始管理跨海战争、行省、贡赋与大规模人口流动。 }
+summary: { zh: 布匿战争和东方战争使罗马成为地中海霸主，也把财富、奴隶、长期军役和海外指挥权带回国内政治。 }
+transition: { zh: 帝国扩张积累的问题进入公民政治，改革、暴力与个人军权逐渐互相强化。 }
+anchors:
+  - { zh: 布匿战争 }
+  - { zh: 行省治理 }
+  - { zh: 征服带来的社会变化 }

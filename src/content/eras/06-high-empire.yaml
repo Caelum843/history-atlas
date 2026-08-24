@@ -1,0 +1,13 @@
+civilization: rome
+title: { zh: 高帝国与公民世界 }
+shortTitle: { zh: 高帝国 }
+order: 6
+availability: planned
+span: { label: { zh: 公元 96 — 235 年 }, fromSortKey: 96, toSortKey: 235 }
+thesis: { zh: 帝国的稳定并不只是好皇帝的结果，而依赖军队、城市、税收、法律和地方精英共同维持。 }
+summary: { zh: 帝国达到最大空间范围，行省城市网络发展，公民权最终扩展到几乎所有自由居民。 }
+transition: { zh: 当边疆压力、财政负担与皇位竞争同时加剧，维持稳定的协商机制迅速失效。 }
+anchors:
+  - { zh: 行省城市 }
+  - { zh: 边疆军队 }
+  - { zh: 公民权扩展 }

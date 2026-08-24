@@ -1,0 +1,21 @@
+kind: modern
+author:
+  name: J. A. Crook, Andrew Lintott, Elizabeth Rawson (eds.)
+  nameZh: 克鲁克、林托特、罗森（编）
+title:
+  zh: '剑桥古代史·第九卷：罗马共和国的最后时代，前146—前43年'
+  en: 'The Cambridge Ancient History, Volume 9: The Last Age of the Roman Republic, 146–43 BC'
+composed:
+  label: 第二版，1994 年
+  sortKey: 1994
+language: en
+edition:
+  publisher: Cambridge University Press
+  year: 1994
+  isbn: '9780521256032'
+url: https://www.cambridge.org/core/books/the-cambridge-ancient-history/1045FF4F56B492EAE08E750319AE0E0C
+accessed: '2026-08-24'
+stance:
+  zh: 现代多作者综合研究，用于制度、政治背景与事件因果的校准，不作为古代现场证词。
+limits:
+  zh: 各章节作者的解释不完全一致；引用时必须定位到具体章节和页码。

@@ -273,6 +273,87 @@ export const work = z.object({
   }
 });
 
+/* ---------- 文明与时代主干 ---------- */
+
+/**
+ * 文明总览不是一篇作品，而是许多时代卷共同挂载的时间主干。
+ * 起讫只是当前编辑范围，不声称文明存在一个无争议的绝对边界。
+ */
+export const civilization = z.object({
+  title: i18n,
+  subtitle: i18n,
+  span: z.object({
+    label: i18n,
+    fromSortKey: z.number(),
+    toSortKey: z.number(),
+  }),
+  summary: i18n,
+  scopeNote: i18n,
+});
+
+export const eraAvailability = z.enum(['open', 'sample', 'planned']);
+
+/** 一个时代卷：时间主干上的语义区段，而非简单的世纪切片。 */
+export const civilizationEra = z.object({
+  civilization: z.string(),
+  title: i18n,
+  shortTitle: i18n,
+  order: z.number(),
+  availability: eraAvailability,
+  span: z.object({
+    label: i18n,
+    fromSortKey: z.number(),
+    toSortKey: z.number(),
+  }),
+  /** 这一时代最值得理解的结构变化。 */
+  thesis: i18n,
+  summary: i18n,
+  transition: i18n.optional(),
+  entry: z.string().optional(),
+  anchors: z.array(i18n).default([]),
+}).superRefine((era, ctx) => {
+  if (era.availability === 'planned' && era.entry) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['entry'],
+      message: `规划中的时代卷“${era.title.zh}”不能提供可进入路由。`,
+    });
+  }
+  if (era.availability !== 'planned' && !era.entry) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['entry'],
+      message: `已开放或实验中的时代卷“${era.title.zh}”必须提供入口。`,
+    });
+  }
+});
+
+/* ---------- 知识章节 ---------- */
+
+/**
+ * 场景负责视觉与证据，章节负责读者真正读到的论证顺序。
+ * 二者分开后，同一套视觉舞台可以承载比“三拍演示”更完整的知识叙事。
+ */
+export const chapterSegment = z.object({
+  id: z.string(),
+  /** 对应故事舞台的幕；同一幕可以承载多个知识段落。 */
+  act: z.number().int().min(0).max(2),
+  role: z.enum(['question', 'context', 'mechanism', 'sequence', 'event', 'consequence', 'sources', 'recap']),
+  eyebrow: i18n,
+  title: i18n,
+  body: z.array(i18n).min(1),
+  keyPoint: i18n.optional(),
+  entities: z.array(z.string()).default([]),
+  claimRefs: z.array(z.string()).default([]),
+});
+
+export const knowledgeChapter = z.object({
+  scene: z.string(),
+  question: i18n,
+  answer: i18n,
+  segments: z.array(chapterSegment).min(5),
+});
+
 /* ============================================================
    世界层（M1.5）
    与上面的作品/论断结构**并列**，互不侵入。

@@ -1,0 +1,104 @@
+scene: rubicon
+question:
+  zh: 为什么一条无法精确定位的小河，会成为罗马共和国崩解最著名的象征？
+answer:
+  zh: >-
+    因为它标记的不是自然障碍，而是军事指挥权的空间边界。凯撒率军越出受命行省，
+    把仍可谈判的政治冲突变成了不可逆的军事行动；但“渡河一刻结束共和国”是后世压缩出的戏剧版本。
+
+segments:
+  - id: opening-question
+    act: 0
+    role: question
+    eyebrow: { zh: 本章问题 · 前 49 年 1 月 }
+    title: { zh: 为什么偏偏是一条河？ }
+    body:
+      - { zh: 卢比孔不是宽阔天险。它之所以重要，是因为罗马把军事权力限制在受命的空间内：一位统帅可以在行省里合法指挥军队，却不能把同一支军队带进意大利。 }
+      - { zh: 所以问题不是“凯撒有没有跨水”，而是“一个仍握有军队的政治人物，何时越出了共和国为他划定的权限”。 }
+    keyPoint: { zh: 地理在这里不是背景，而是法律的一部分。 }
+    entities: [rubico, caesar, ravenna, ariminum]
+    claimRefs: [c2-lex-cornelia]
+
+  - id: accumulated-conflict
+    act: 0
+    role: context
+    eyebrow: { zh: 背景 · 长期指挥权 }
+    title: { zh: 危机在抵达河岸之前已经形成 }
+    body:
+      - { zh: 凯撒在高卢多年征战，拥有军团、战功、财富和政治网络。庞培及其盟友掌握另一套军事资源，元老院内部也并非一个意志统一的集团。 }
+      - { zh: 双方争执包括凯撒何时交出行省与军队、能否在缺席状态下竞选执政官，以及谁有权决定这些条件。具体法律效力和个人动机至今仍有争论。 }
+    keyPoint: { zh: 这不是“凯撒对元老院”的简单二元对抗，而是多个合法性主张彼此冲突。 }
+    entities: [caesar, pompey, rome-city]
+    claimRefs: [c1-concentration, c2-absentia]
+
+  - id: spatial-imperium
+    act: 1
+    role: mechanism
+    eyebrow: { zh: 机制 · IMPERIVM }
+    title: { zh: 同一支军队，在边界两侧具有不同意义 }
+    body:
+      - { zh: 罗马的 imperium 不是无处不在的私人权力。它由公共决定授予特定人物，在特定任务、期限与地域内成立。 }
+      - { zh: 苏拉时代的叛国法把未经授权率军越出行省纳入 maiestas 问题。卢比孔的历史作用，是充当山南高卢与意大利之间的边界地标；罪名并不来自这条河的神圣性。 }
+    keyPoint: { zh: “越河”是一个空间动作，“越权”才是制度含义。 }
+    entities: [lex-cornelia, rubico, caesar]
+    claimRefs: [c2-lex-cornelia]
+
+  - id: seven-days
+    act: 1
+    role: sequence
+    eyebrow: { zh: 过程 · 1 月 1 日—7 日 }
+    title: { zh: 在行动以前，常规程序逐级收紧 }
+    body:
+      - { zh: 凯撒的条件在元老院宣读；院内出现调停意见，也出现要求他立即交权的强硬意见。保民官的否决、离开罗马和元老院最终采取非常措施，共同把冲突推向下一阶段。 }
+      - { zh: 必须区分两件常被混写的事：元老院最后通牒与 senatus consultum ultimum，并不等于在 1 月 7 日已经完成一次正式的 hostis 宣告。 }
+    keyPoint: { zh: 制度不是突然消失，而是在几天里失去调和相互冲突力量的能力。 }
+    entities: [rome-city, caesar, pompey]
+    claimRefs: [c3-mediation, c3-extraordinary, c2-scu-not-hostis]
+
+  - id: march-to-ariminum
+    act: 2
+    role: event
+    eyebrow: { zh: 行动 · 拉文纳 → 里米尼 }
+    title: { zh: 当事人的文字里，没有那个著名镜头 }
+    body:
+      - { zh: 凯撒在《内战记》第一卷第 7 章写军团支持他，下一章便写自己带着第十三军团前往里米尼。文本没有出现 Rubico 一词，也没有停在河岸犹豫、掷骰子或宣布名言的场面。 }
+      - { zh: 这段省略并不证明渡河没有发生；从拉文纳率军到里米尼必然意味着越出行省。它告诉我们的，是凯撒选择怎样叙述自己的行动。 }
+    keyPoint: { zh: 史料的沉默也是信息，但不能被当成事件不存在的证明。 }
+    entities: [caesar-bc, ravenna, ariminum, rubico]
+    claimRefs: [c4-caesar-account]
+
+  - id: consequences
+    act: 2
+    role: consequence
+    eyebrow: { zh: 后果 · 不是一个瞬间 }
+    title: { zh: 越河改变了局面，却没有在一夜之间“结束共和国” }
+    body:
+      - { zh: 率军进入意大利使政治冲突取得了军事上的既成事实。随后各城镇、军队、执政官和庞培必须作出反应，内战才沿着一系列选择展开。 }
+      - { zh: 法律状态、对手的政治定性、凯撒的自我辩护和实际军事后果并不同步。把它们压缩为一个瞬间，记忆更有力，理解却更贫乏。 }
+    keyPoint: { zh: 卢比孔是不可逆转的门槛，不是单独造成共和国终结的按钮。 }
+    entities: [caesar, pompey, ariminum, rome-city]
+    claimRefs: [c2-scu-not-hostis, c6-not-single-moment]
+
+  - id: later-memory
+    act: 2
+    role: sources
+    eyebrow: { zh: 史料辨析 · 约一个半世纪后的记忆 }
+    title: { zh: 我们熟悉的“卢比孔”，主要由后世作者塑造 }
+    body:
+      - { zh: 普鲁塔克、苏埃托尼乌斯和阿庇安都把渡河写成有犹豫、预兆或名言的戏剧场面。他们保存了重要传统，却都不是事件现场的记录者。 }
+      - { zh: 三位作者的措辞和情节并不完全相同；今天常说的“骰子已经掷出”也不是一个可以无条件还原的现场录音。 }
+    keyPoint: { zh: 后世叙述可以研究“人们怎样记住事件”，不能自动取代当事材料。 }
+    entities: [rubico, caesar-bc]
+    claimRefs: [c5-later-tradition]
+
+  - id: final-recap
+    act: 2
+    role: recap
+    eyebrow: { zh: 带走的理解 }
+    title: { zh: 一条河，四种不同速度的变化 }
+    body:
+      - { zh: 军事权限在越出行省时改变；政治定性在此前与此后逐步形成；凯撒始终用保民官权利与自身待遇为行动辩护；实际后果则在数日和数月内展开。 }
+      - { zh: 我们能较有把握地确认行军与制度边界，却不能在现代地图上画出一条毫无争议的古代河道，也不能把后世传记的戏剧细节伪装成同时代记录。 }
+    keyPoint: { zh: 理解历史，不只是知道发生了什么，也要知道我们凭什么这样说。 }
+    entities: [rubico, lex-cornelia, caesar-bc]
+    claimRefs: [c2-lex-cornelia, c4-caesar-account, c5-later-tradition]
