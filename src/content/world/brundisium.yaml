@@ -1,0 +1,6 @@
+type: story
+title: { zh: 布林迪西的撤离 }
+summary: { zh: 庞培把大半个元老院运过亚得里亚海。这是失败还是既定计划？ }
+position: { x: 0.86, y: 0.80 }
+planned: true
+related: [rome-world]

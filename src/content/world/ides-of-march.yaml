@@ -1,0 +1,6 @@
+type: story
+title: { zh: 三月十五日 }
+summary: { zh: 刺杀者以为杀掉一个人就能恢复制度。 }
+position: { x: 0.16, y: 0.18 }
+planned: true
+related: [rome-world]

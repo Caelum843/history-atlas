@@ -1,0 +1,7 @@
+type: region
+title: { zh: 凯尔特世界, en: The Celtic World }
+summary: { zh: 被罗马书写、也被罗马消灭的那一侧。规划中。 }
+lon: 4
+lat: 48
+planned: true
+related: [rome-world]

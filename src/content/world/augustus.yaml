@@ -1,0 +1,6 @@
+type: story
+title: { zh: 奥古斯都掌权 }
+summary: { zh: 一个从不称王的人，如何让共和国的机构一样不少地空转。 }
+position: { x: 0.84, y: 0.16 }
+planned: true
+related: [rome-world]

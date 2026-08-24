@@ -1,0 +1,8 @@
+type: place
+title: { zh: 里米尼, en: Ariminum }
+summary:
+  zh: 《内战记》点名的第一个目的地，在行省界线以南的意大利本土。他自己的记述从拉文纳直接跳到这里。
+lon: 12.57
+lat: 44.06
+entry: /entity/ariminum/
+related: [ravenna, caesar, rubicon-story, caesar-bc]

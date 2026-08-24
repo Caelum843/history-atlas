@@ -1,0 +1,7 @@
+type: person
+title: { zh: 盖乌斯·尤利乌斯·凯撒, en: C. Iulius Caesar }
+summary:
+  zh: 同时是行省总督、军队指挥者、政治参与者，还是这段历史最重要那份史料的作者。从哪个身份进入，得到的是不同的凯撒。
+position: { x: 0.30, y: 0.30 }
+entry: /entity/caesar/
+related: [rubicon-story, ravenna, caesar-bc, pompey, lex-cornelia]

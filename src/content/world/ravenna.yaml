@@ -1,0 +1,8 @@
+type: place
+title: { zh: 拉文纳, en: Ravenna }
+summary:
+  zh: 凯撒南下前的驻地，在山南高卢行省境内——也就是他军权仍然合法的最后一段土地。
+lon: 12.20
+lat: 44.42
+entry: /entity/ravenna/
+related: [caesar, ariminum, rubicon-story, lex-cornelia]

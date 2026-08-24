@@ -1,0 +1,6 @@
+type: story
+title: { zh: 科尔菲尼乌姆 }
+summary: { zh: 唯一一场真正的围城，也是「宽容」被当作工具使用的地方。 }
+position: { x: 0.14, y: 0.82 }
+planned: true
+related: [rome-world]

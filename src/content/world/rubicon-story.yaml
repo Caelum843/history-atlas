@@ -1,0 +1,7 @@
+type: story
+title: { zh: 卢比孔河, en: The Rubicon }
+summary:
+  zh: 越过的不是一条河，而是共和国约束军事力量的边界。
+position: { x: 0.5, y: 0.48 }
+entry: /story/rubicon/
+related: [caesar, rubico, lex-cornelia, ravenna, ariminum]

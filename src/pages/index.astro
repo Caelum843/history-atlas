@@ -1,69 +1,181 @@
 ---
+/**
+ * 世界层。
+ *
+ * 真实海陆轮廓（Natural Earth，land-110m，**不含现代国界**）。
+ * 文明锚在真实经纬度上：尼罗河世界在罗马东南，不在西南。
+ * 陆地在四边溢出画框——画外还有世界，这件事由构图证明，不由文案宣称。
+ */
+import Shell from '../layouts/Shell.astro';
+import ObjectDrawer from '../components/ObjectDrawer.astro';
 import { getCollection } from 'astro:content';
-import Base from '../layouts/Base.astro';
-import { listRenderers } from '../renderers/registry';
+import { worldLandPath, worldProjector } from '../lib/geo';
+import { sitePath } from '../lib/paths';
 
-const scenes = await getCollection('scenes');
-const works = await getCollection('works');
-const renderers = listRenderers();
+const VB = { width: 1600, height: 900 };
+const land = worldLandPath(VB);
+const project = worldProjector(VB);
+
+const world = await getCollection('world');
+const regions = world.filter((n) => n.data.type === 'region');
+const open = regions.filter((n) => !n.data.planned);
+const planned = regions.filter((n) => n.data.planned);
+
+const stories = world.filter((n) => n.data.type === 'story');
+const openStories = stories.filter((n) => !n.data.planned);
+
+const placed = regions.map((n) => {
+  const [x, y] = project(n.data.lon!, n.data.lat!);
+  return { node: n, x, y };
+});
 ---
-<Base title="history_atlas">
-  <div class="shell stack-lg">
-    <header class="stack">
-      <p class="eyebrow">M1 · 工程骨架</p>
-      <h1>history_atlas</h1>
-      <p class="dim lede">
-        这是开发期的索引页，不是产品首页。真正的发现入口（世界地图 → 时间 → 作品）在 M2.5 建。
-      </p>
-    </header>
 
-    <section class="stack">
-      <h2>作品</h2>
-      {works.map((w) => (
-        <div class="stack card">
-          <div class="row">
-            <strong>{w.data.title.zh}</strong>
-            <span class="ha-status">{w.data.status === 'sample' ? '实验样章' : w.data.status}</span>
-          </div>
-          <p class="dim">{w.data.span.label.zh}</p>
-          {w.data.sampleNotice && <p class="faint small">{w.data.sampleNotice.zh}</p>}
-          <ul class="scenes">
-            {scenes.filter((s) => s.data.work === w.id).map((s) => (
-              <li><a href={`/scene/${s.id}/`}>{s.data.title.zh}</a></li>
-            ))}
-          </ul>
-        </div>
+<Shell layer="world" title="History Atlas · 历史世界" context="世界 · 真实地理上的历史作品">
+  <div class="world">
+    <svg class="world__map" viewBox={`0 0 ${VB.width} ${VB.height}`}
+         preserveAspectRatio="xMidYMid slice" role="img"
+         aria-label="世界地图，罗马世界为唯一已开放区域，其余为规划中的文明">
+      <defs>
+        <radialGradient id="fOpen">
+          <stop offset="0%" stop-color="#c9a15b" stop-opacity=".30" />
+          <stop offset="100%" stop-color="#c9a15b" stop-opacity="0" />
+        </radialGradient>
+        <radialGradient id="fDim">
+          <stop offset="0%" stop-color="#8fb6cf" stop-opacity=".10" />
+          <stop offset="100%" stop-color="#8fb6cf" stop-opacity="0" />
+        </radialGradient>
+        <radialGradient id="vig">
+          <stop offset="52%" stop-color="#070b0f" stop-opacity="0" />
+          <stop offset="100%" stop-color="#070b0f" stop-opacity=".9" />
+        </radialGradient>
+      </defs>
+
+      <rect width={VB.width} height={VB.height} fill="var(--l-ground)" />
+      <path d={land} class="world__land" />
+
+      {placed.map(({ node, x, y }) => (
+        <circle cx={x} cy={y} r={node.data.planned ? 118 : 168}
+                fill={node.data.planned ? 'url(#fDim)' : 'url(#fOpen)'} />
       ))}
-    </section>
 
-    <section class="stack">
-      <h2>已注册的渲染器</h2>
-      <p class="dim small">
-        场景视觉走 registry，公共 schema 不枚举类型。新增一种历史表达 = 注册一个 renderer，不动内容契约。
+      <rect width={VB.width} height={VB.height} fill="url(#vig)" pointer-events="none" />
+    </svg>
+
+    <!-- 区域节点是 HTML，不是 SVG：它们要能被 tab 到、被读屏读到 -->
+    <div class="world__nodes">
+      {placed.map(({ node, x, y }) => {
+        const style = `left:${(x / VB.width) * 100}%; top:${(y / VB.height) * 100}%`;
+        return node.data.planned ? (
+          <button class="wnode wnode--planned" style={style} data-object={node.id}>
+            <span class="wnode__dot" aria-hidden="true"></span>
+            <span class="wnode__name">{node.data.title.zh}</span>
+            <span class="wnode__meta">规划中 · 未开放</span>
+          </button>
+        ) : (
+          <a class="wnode wnode--open" style={style} href={sitePath(node.data.entry!)}>
+            <span class="wnode__dot" aria-hidden="true"></span>
+            <span class="wnode__name">{node.data.title.zh}</span>
+            <span class="wnode__meta">
+              {openStories.length} 部作品已开放 · {stories.length - openStories.length} 篇规划中
+            </span>
+          </a>
+        );
+      })}
+    </div>
+
+    <div class="world__intro">
+      <p class="world__kicker">一部可以进入的历史书</p>
+      <h1 class="world__title">历史发生在<br />真实的土地上</h1>
+      <p class="world__lede">
+        所以这张图不是隐喻。海陆轮廓是实测数据，文明落在它们真实的位置上——
+        但这里没有一条现代国界，因为国界不该支配古代的叙述。
       </p>
-      <ul class="renderers">
-        {renderers.map((r) => (
-          <li>
-            <code>{r.id}</code>
-            <span class={r.implemented ? 'ok' : 'faint'}>{r.implemented ? '已实现' : '已登记 · 未实现'}</span>
-            <span class="faint small">{r.purpose}</span>
-          </li>
-        ))}
-      </ul>
-    </section>
+    </div>
+
+    <p class="world__index">
+      <span class="is-open">已开放 {String(open.length).padStart(2, '0')}</span>
+      <span>规划中 {String(planned.length).padStart(2, '0')}</span>
+      <span class="world__note">未开放节点均来自真实内容计划</span>
+    </p>
   </div>
-</Base>
+
+  <ObjectDrawer slot="overlay" />
+</Shell>
 
 <style>
-  .lede { max-width: var(--ha-measure); }
-  .card { border-left: 2px solid var(--ha-rule); padding-left: var(--ha-sp-4); gap: var(--ha-sp-2); }
-  .row { display: flex; gap: var(--ha-sp-3); align-items: center; }
-  .small { font-size: var(--ha-text-sm); max-width: var(--ha-measure); }
-  .scenes { margin: var(--ha-sp-2) 0 0; padding-left: 1.1rem; }
-  .renderers { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--ha-sp-3); }
-  .renderers li { display: grid; grid-template-columns: 12rem 8rem 1fr; gap: var(--ha-sp-3); align-items: baseline; font-size: var(--ha-text-sm); }
-  .renderers code { font-family: var(--ha-font-mono); color: var(--ha-cool); }
-  .ok { font-family: var(--ha-font-mono); font-size: var(--ha-text-xs); color: var(--ha-warm); }
-  .faint { font-family: var(--ha-font-mono); font-size: var(--ha-text-xs); }
-  @media (max-width: 720px) { .renderers li { grid-template-columns: 1fr; gap: var(--ha-sp-1); } }
+  .world { position: absolute; inset: 0; overflow: hidden; }
+  .world__map { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .world__land {
+    fill: var(--l-land);
+    stroke: var(--l-land-edge);
+    stroke-width: .75;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .world__nodes { position: absolute; inset: 0; }
+  .wnode {
+    position: absolute; transform: translate(-6px, -50%);
+    display: grid; grid-template-columns: auto 1fr;
+    grid-template-areas: 'dot name' '. meta';
+    column-gap: .6rem; row-gap: .2rem;
+    background: none; border: 0; padding: .4rem .6rem .4rem 0;
+    text-align: left; text-decoration: none; cursor: pointer;
+    font-family: var(--l-font-body);
+  }
+  .wnode__dot {
+    grid-area: dot; align-self: center;
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--l-ink-faint);
+  }
+  .wnode__name { grid-area: name; font-size: .95rem; letter-spacing: .06em; color: var(--l-ink-dim); }
+  .wnode__meta {
+    grid-area: meta; font-family: var(--l-font-mono);
+    font-size: .55rem; letter-spacing: .14em; color: var(--l-ink-faint);
+  }
+
+  .wnode--open .wnode__dot {
+    width: 9px; height: 9px; background: var(--l-warm);
+    box-shadow: 0 0 18px var(--l-warm), 0 0 0 7px rgba(201,161,91,.07);
+  }
+  .wnode--open .wnode__name { font-size: 1.4rem; color: var(--l-ink); }
+  .wnode--open .wnode__meta { color: var(--l-warm); }
+  .wnode--open:hover .wnode__name { color: var(--l-warm); }
+
+  .wnode--planned { opacity: .55; }
+  .wnode--planned:hover { opacity: .9; }
+
+  .world__intro {
+    position: absolute; left: clamp(1rem, 5vw, 4rem); top: 22vh;
+    max-width: min(26rem, 40vw);
+  }
+  .world__kicker {
+    font-family: var(--l-font-mono); font-size: .6rem; letter-spacing: .24em;
+    text-transform: uppercase; color: var(--l-accent); margin: 0 0 1rem;
+  }
+  .world__title {
+    font-family: var(--l-font-display); font-weight: 400;
+    font-size: clamp(2.2rem, 4.2vw, 3.6rem); line-height: 1.06;
+    letter-spacing: -.01em; margin: 0 0 1.2rem; color: var(--l-ink);
+  }
+  .world__lede {
+    margin: 0; font-size: .88rem; line-height: 1.95; color: var(--l-ink-dim);
+  }
+
+  .world__index {
+    position: absolute; right: clamp(1rem, 3vw, 2rem); bottom: 1.6rem;
+    display: flex; gap: 1.4rem; align-items: baseline; margin: 0;
+    font-family: var(--l-font-mono); font-size: .58rem;
+    letter-spacing: .14em; color: var(--l-ink-faint);
+  }
+  .world__index .is-open { color: var(--l-warm); }
+  .world__note { color: var(--l-ink-faint); opacity: .7; }
+
+  @media (max-width: 860px) {
+    .world__intro { left: 1.25rem; right: 1.25rem; top: auto; bottom: 8.5rem; max-width: none; }
+    .world__title { font-size: 2rem; }
+    .world__lede { font-size: .8rem; }
+    .wnode--planned { display: none; }
+    .world__index { left: 1.25rem; right: 1.25rem; bottom: 1rem; flex-wrap: wrap; gap: .8rem; }
+    .world__note { display: none; }
+  }
 </style>

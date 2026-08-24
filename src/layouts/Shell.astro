@@ -1,0 +1,110 @@
+---
+/**
+ * 全视口外壳。
+ *
+ * 与 Base.astro 的区别：这里**没有文章容器**，没有 1100px 纵向栏。
+ * 三层体验都用它，各层通过 data-layer 拿到自己那套视觉令牌。
+ *
+ * 顶栏只做两件事：告诉你在哪一层，以及怎么上去。
+ * 「返回是上升」——层级关系靠这一个控件表达，不用面包屑。
+ */
+import '../styles/base.css';
+import '../styles/layers.css';
+import { sitePath } from '../lib/paths';
+
+interface Props {
+  title: string;
+  layer: 'world' | 'realm' | 'story';
+  /** 顶栏中间的上下文标签 */
+  context: string;
+  /** 返回目标。世界层没有。 */
+  up?: { href: string; label: string };
+  /** 罗马卷的视觉身份 */
+  identity?: string;
+}
+const { title, layer, context, up, identity } = Astro.props;
+---
+<!doctype html>
+<html lang="zh-CN" data-layer={layer} data-identity={identity}>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{title}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600&family=Noto+Serif+SC:wght@200;300;400;600&family=IBM+Plex+Mono:wght@400;500&display=swap" />
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href={sitePath('/')}><span class="brand-mark" aria-hidden="true"></span><span>History Atlas</span></a>
+    <p class="context">{context}</p>
+    {up
+      ? <a class="up" href={sitePath(up.href)}>↑ {up.label}</a>
+      : <span class="up up--placeholder" aria-hidden="true"></span>}
+  </header>
+
+  <main class="stage-root">
+    <slot />
+  </main>
+
+  <slot name="overlay" />
+</body>
+</html>
+
+<style is:global>
+  html, body { height: 100%; margin: 0; }
+  body {
+    background: var(--l-ground);
+    color: var(--l-ink);
+    font-family: var(--l-font-body);
+    font-weight: 300;
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;   /* 各层自己决定滚不滚 */
+  }
+  .stage-root { position: absolute; inset: 0; }
+
+  .topbar {
+    position: fixed; z-index: 60; inset: 0 0 auto 0; height: 60px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 clamp(1rem, 3vw, 2rem);
+    background: linear-gradient(var(--l-ground) 15%, transparent);
+    pointer-events: none;
+  }
+  .topbar > * { pointer-events: auto; }
+
+  .brand {
+    display: flex; align-items: center; gap: .7rem;
+    font-family: var(--l-font-mono); font-size: .62rem;
+    letter-spacing: .22em; text-transform: uppercase;
+    color: var(--l-ink-dim); text-decoration: none;
+  }
+  .brand-mark {
+    width: 15px; height: 15px; border: 1px solid var(--l-accent);
+    transform: rotate(45deg); position: relative;
+  }
+  .brand-mark::after { content: ''; position: absolute; inset: 3px; border: 1px solid var(--l-accent-dim); }
+
+  .context {
+    margin: 0; font-family: var(--l-font-mono); font-size: .62rem;
+    letter-spacing: .16em; color: var(--l-ink-faint);
+  }
+  .up {
+    font-family: var(--l-font-mono); font-size: .62rem; letter-spacing: .12em;
+    color: var(--l-ink-dim); text-decoration: none;
+    border: 1px solid var(--l-rule); padding: .45rem .7rem;
+    background: var(--l-surface); transition: border-color .2s, color .2s;
+  }
+  .up:hover { border-color: var(--l-accent); color: var(--l-ink); }
+  .up--placeholder { border-color: transparent; background: none; visibility: hidden; }
+
+  :focus-visible { outline: 2px solid var(--l-focus); outline-offset: 3px; }
+
+  @media (max-width: 760px) {
+    .topbar { height: 52px; }
+    .context { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+  }
+</style>

@@ -1,0 +1,7 @@
+type: place
+title: { zh: 卢比孔河, en: Rubico }
+summary:
+  zh: 古代山南高卢行省与意大利本土的界河。古代河道已不可考，所以这里没有坐标。
+positionDisputed: true
+entry: /entity/rubico/
+related: [lex-cornelia, ariminum, ravenna, rubicon-story]

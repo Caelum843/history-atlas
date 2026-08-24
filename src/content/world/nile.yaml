@@ -1,0 +1,7 @@
+type: region
+title: { zh: 尼罗河世界, en: The Nile }
+summary: { zh: 托勒密埃及与更早的法老时代。规划中。 }
+lon: 31
+lat: 26
+planned: true
+related: [rome-world]

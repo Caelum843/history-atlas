@@ -1,0 +1,135 @@
+---
+/**
+ * 对象抽屉 —— 世界深度的入口。
+ *
+ * 两条硬规则（来自 M1.5 指导）：
+ * ① 任何核心对象至少通向 3 个别处，不能是终点；
+ * ② 互链不是右侧推荐列表 —— 每条都注明关系性质，是"门"不是"猜你喜欢"。
+ *
+ * 证据只在这里出现，默认舞台上不显示论断、来源、图层 ID。
+ */
+import { getCollection } from 'astro:content';
+import { sitePath } from '../lib/paths';
+
+const world = await getCollection('world');
+const byId = new Map(world.map((n) => [n.id, n]));
+
+const TYPE_LABEL: Record<string, string> = {
+  region: '地区', person: '人物', place: '地点', event: '事件',
+  institution: '制度', artefact: '文献 / 文物', story: '故事',
+};
+
+/** 关系性质：由两端的类型推出，避免为占位数据手写一堆关系记录。 */
+function relationLabel(fromType: string, toType: string): string {
+  if (toType === 'story') return '出现于';
+  if (toType === 'institution') return '受其约束';
+  if (toType === 'artefact') return '记载于';
+  if (toType === 'person') return fromType === 'person' ? '对手' : '相关人物';
+  if (toType === 'place') return '相关地点';
+  if (toType === 'region') return '所属';
+  return '相关';
+}
+
+const payload = Object.fromEntries(
+  world.map((n) => [
+    n.id,
+    {
+      type: TYPE_LABEL[n.data.type] ?? n.data.type,
+      title: n.data.title.zh,
+      summary: n.data.summary?.zh ?? '',
+      planned: n.data.planned,
+      positionDisputed: n.data.positionDisputed,
+      links: n.data.related
+        .map((r) => {
+          const t = byId.get(r);
+          if (!t) return null;
+          return {
+            id: r,
+            title: t.data.title.zh,
+            rel: relationLabel(n.data.type, t.data.type),
+            href: t.data.entry ? sitePath(t.data.entry) : null,
+            planned: t.data.planned,
+          };
+        })
+        .filter(Boolean),
+    },
+  ]),
+);
+---
+
+<aside class="drawer" id="drawer" data-open="false" aria-label="对象" aria-hidden="true">
+  <button class="drawer__close" id="drawerClose" aria-label="关闭">×</button>
+  <div id="drawerBody"></div>
+</aside>
+
+<script type="application/json" id="worldData" set:html={JSON.stringify(payload)} is:inline></script>
+
+<script>
+  const data = JSON.parse(document.getElementById('worldData')!.textContent!);
+  const drawer = document.getElementById('drawer')!;
+  const body = document.getElementById('drawerBody')!;
+  const stack: string[] = [];
+  let lastFocus: HTMLElement | null = null;
+
+  function esc(s: string) {
+    return s.replace(/[&<>"]/g, (c) =>
+      ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]!));
+  }
+
+  function render(id: string) {
+    const n = data[id];
+    if (!n) return;
+    const links = n.links
+      .map((l: any) =>
+        l.href && !l.planned
+          ? `<a class="drawer__link" href="${esc(l.href)}"><span>${esc(l.title)}</span><em>${esc(l.rel)}</em></a>`
+          : `<button class="drawer__link" data-peek="${esc(l.id)}"><span>${esc(l.title)}</span><em>${esc(l.rel)}${l.planned ? ' · 未开放' : ''}</em></button>`)
+      .join('');
+
+    // 位置不可考的对象，抽屉里直接说清楚，不留给读者猜
+    const disputed = n.positionDisputed
+      ? `<div class="drawer__evidence"><b class="st-disputed">POSITION DISPUTED</b><span>古代位置不可考，因此没有坐标。任何把它画在具体一点上的地图都超出了证据。</span></div>`
+      : '';
+
+    body.innerHTML =
+      `<p class="drawer__type">${esc(n.type)}${n.planned ? ' · 规划中，未开放' : ''}</p>` +
+      `<h2 class="drawer__title">${esc(n.title)}</h2>` +
+      `<p class="drawer__body">${esc(n.summary)}</p>` +
+      disputed +
+      `<p class="drawer__section">继续进入 · ${n.links.length} 处</p>` +
+      links;
+    drawer.dataset.open = 'true';
+    drawer.setAttribute('aria-hidden', 'false');
+    document.getElementById('drawerClose')!.focus();
+  }
+
+  function open(id: string, from?: HTMLElement) {
+    if (!stack.length) lastFocus = from ?? (document.activeElement as HTMLElement);
+    stack.push(id);
+    render(id);
+  }
+
+  function close() {
+    drawer.dataset.open = 'false';
+    drawer.setAttribute('aria-hidden', 'true');
+    stack.length = 0;
+    lastFocus?.focus();
+  }
+
+  document.addEventListener('click', (e) => {
+    const t = e.target as HTMLElement;
+    const opener = t.closest<HTMLElement>('[data-object]');
+    if (opener) { e.preventDefault(); open(opener.dataset.object!, opener); return; }
+    const peek = t.closest<HTMLElement>('[data-peek]');
+    if (peek) { open(peek.dataset.peek!); return; }
+    if (t.closest('#drawerClose')) close();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape' || drawer.dataset.open !== 'true') return;
+    // 逐级退回，最后才关闭 —— 用户始终知道自己是从哪儿进来的
+    stack.pop();
+    if (stack.length) render(stack[stack.length - 1]!);
+    else close();
+  });
+</script>

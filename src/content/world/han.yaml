@@ -1,0 +1,7 @@
+type: region
+title: { zh: 汉, en: Han }
+summary: { zh: 与罗马同时代的另一个帝国。规划中。 }
+lon: 112
+lat: 34
+planned: true
+related: [rome-world]

@@ -12,10 +12,12 @@
   "dependencies": {
     "astro": "^7.2.4",
     "d3-geo": "^3.1.1",
-    "topojson-client": "^3.1.0"
+    "topojson-client": "^3.1.0",
+    "world-atlas": "^2.0.2"
   },
   "devDependencies": {
     "@types/d3-geo": "^3.1.1",
+    "@types/node": "^26.2.0",
     "@types/topojson-client": "^3.1.5",
     "typescript": "^7.0.2"
   }

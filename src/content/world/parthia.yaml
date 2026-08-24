@@ -1,0 +1,7 @@
+type: region
+title: { zh: 帕提亚, en: Parthia }
+summary: { zh: 罗马东方边界之外唯一势均力敌的对手。规划中。 }
+lon: 53
+lat: 33
+planned: true
+related: [rome-world]

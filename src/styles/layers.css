@@ -1,0 +1,135 @@
+/* ============================================================
+   三层各自的视觉语法。
+   刻意不共用一套「黑金地图」——那正是要避免的。
+
+   世界层：冷。深海蓝黑，真实海陆轮廓，尺度感来自留白与裁切。
+   罗马卷：暖。石灰岩与赭石，构图对称，地图退为插图。
+   故事层：随幕变化。第一幕海、第二幕土、第三幕雾。
+
+   全站基础令牌（排版、间距、注释、焦点）仍在 base.css，此处只覆盖颜色与材质。
+   ============================================================ */
+
+:root{
+  --l-font-display:'EB Garamond','Noto Serif SC',Georgia,serif;
+  --l-font-body:'Noto Serif SC','EB Garamond',Georgia,serif;
+  --l-font-mono:'IBM Plex Mono',ui-monospace,monospace;
+}
+
+/* ---------- 世界层：冷 ---------- */
+[data-layer="world"]{
+  --l-ground:      #070b0f;
+  --l-ground-2:    #0b1219;
+  --l-surface:     rgba(12,20,27,.72);
+  --l-ink:         #dfe6ea;
+  --l-ink-dim:     #93a3ad;
+  --l-ink-faint:   #5a6a75;
+  --l-rule:        #1b2831;
+  --l-accent:      #8fb6cf;     /* 冷：这一层是海图，不是展厅 */
+  --l-accent-dim:  #3f5f76;
+  --l-warm:        #c9a15b;     /* 只给"已开放"用，稀缺才有指向性 */
+  --l-focus:       #8fb6cf;
+  --l-land:        #131c23;
+  --l-land-edge:   #24343f;
+}
+
+/* ---------- 罗马卷：暖 ---------- */
+[data-layer="realm"][data-identity="rome-republic"]{
+  --l-ground:      #17140f;
+  --l-ground-2:    #201b14;
+  --l-surface:     rgba(33,28,21,.82);
+  --l-ink:         #f0e9db;
+  --l-ink-dim:     #b8ac97;
+  --l-ink-faint:   #7d7360;
+  --l-rule:        #362e23;
+  --l-accent:      #c9a15b;
+  --l-accent-dim:  #7d6234;
+  --l-cool:        #7d9bb0;
+  --l-focus:       #c9a15b;
+  --l-land:        #241e16;
+  --l-land-edge:   #453a2a;
+  --l-stone:       #2b2419;
+}
+
+/* ---------- 故事层：基调随幕变 ---------- */
+[data-layer="story"]{
+  --l-ground:      #080a0b;
+  --l-ground-2:    #0e1214;
+  --l-surface:     rgba(10,13,14,.86);
+  --l-ink:         #e8e3d7;
+  --l-ink-dim:     #a49d90;
+  --l-ink-faint:   #66604f;
+  --l-rule:        #23282a;
+  --l-accent:      #c9a15b;
+  --l-accent-dim:  #7d6234;
+  --l-cool:        #7fa3ba;
+  --l-focus:       #c9a15b;
+  --l-land:        #1a1a16;
+  --l-land-edge:   #38352b;
+}
+/* 幕的基调：由 data-act 改，只改颜色，不改结构 */
+[data-layer="story"] .stage[data-act="0"]{ --act-ground:#0a1013; --act-land:#161d20; --act-edge:#2c3a40; }
+[data-layer="story"] .stage[data-act="1"]{ --act-ground:#100d09; --act-land:#241d14; --act-edge:#4a3c28; }
+[data-layer="story"] .stage[data-act="2"]{ --act-ground:#0c0d0e; --act-land:#16171a; --act-edge:#2a2c30; }
+
+/* ---------- 对象抽屉：三层共用，属于全站基础 ---------- */
+.drawer{
+  position: fixed; z-index: 90; top: 0; right: 0;
+  width: min(420px, 92vw); height: 100%;
+  background: var(--l-ground-2);
+  border-left: 1px solid var(--l-accent-dim);
+  padding: 84px 1.75rem 2rem;
+  transform: translateX(101%);
+  transition: transform .5s cubic-bezier(.22,.8,.22,1);
+  overflow-y: auto;
+  box-shadow: -24px 0 70px rgba(0,0,0,.6);
+}
+.drawer[data-open="true"]{ transform: none; }
+.drawer__close{
+  position: absolute; right: 1.25rem; top: 1.1rem;
+  border: 0; background: none; color: var(--l-ink-dim);
+  font-size: 1.3rem; line-height: 1; cursor: pointer; padding: .35rem;
+}
+.drawer__type{
+  font-family: var(--l-font-mono); font-size: .6rem;
+  letter-spacing: .18em; text-transform: uppercase; color: var(--l-accent);
+}
+.drawer__title{
+  font-family: var(--l-font-display); font-weight: 600;
+  font-size: 1.65rem; line-height: 1.2; margin: .6rem 0 .9rem; color: var(--l-ink);
+}
+.drawer__body{ color: var(--l-ink-dim); font-size: .9rem; line-height: 1.85; margin: 0; }
+.drawer__section{
+  font-family: var(--l-font-mono); font-size: .6rem; letter-spacing: .16em;
+  text-transform: uppercase; color: var(--l-ink-faint);
+  margin: 2rem 0 .75rem; padding-top: 1rem; border-top: 1px solid var(--l-rule);
+}
+/* 互链不是推荐列表：每条都是通往世界另一处的门，带上关系性质 */
+.drawer__link{
+  display: grid; grid-template-columns: 1fr auto; gap: .5rem;
+  align-items: baseline; width: 100%; text-align: left;
+  border: 0; border-bottom: 1px solid var(--l-rule); background: none;
+  color: var(--l-ink); font-family: var(--l-font-body); font-size: .92rem;
+  padding: .75rem 0; cursor: pointer; text-decoration: none;
+}
+.drawer__link:hover{ color: var(--l-accent); }
+.drawer__link em{
+  font-style: normal; font-family: var(--l-font-mono);
+  font-size: .58rem; letter-spacing: .14em; color: var(--l-ink-faint);
+}
+.drawer__evidence{ padding: .85rem 0; border-bottom: 1px solid var(--l-rule); }
+.drawer__evidence b{
+  display: block; font-family: var(--l-font-mono); font-size: .58rem;
+  letter-spacing: .15em; font-weight: 500;
+}
+.drawer__evidence span{ display: block; margin-top: .45rem; font-size: .84rem; line-height: 1.7; color: var(--l-ink-dim); }
+.st-attested{ color: var(--l-ink); }
+.st-inferred{ color: var(--l-ink-dim); }
+.st-disputed{ color: var(--l-cool, #7fa3ba); }
+.st-legend  { color: var(--l-ink-faint); }
+
+/* 开发信息：只在 ?debug=1 出现 */
+[data-debug="false"] .debug-only{ display: none; }
+.debug-only{
+  font-family: var(--l-font-mono); font-size: .58rem;
+  letter-spacing: .12em; color: var(--l-ink-faint);
+}

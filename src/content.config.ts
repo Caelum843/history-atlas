@@ -1,6 +1,6 @@
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
-import { scene, work, sourceEntity } from './lib/schema';
+import { scene, work, sourceEntity, worldNode } from './lib/schema';
 import { z } from 'astro/zod';
 import { i18n } from './lib/schema';
 
@@ -52,4 +52,10 @@ const entities = defineCollection({
   }),
 });
 
-export const collections = { works, scenes, sources, entities };
+/** 世界层节点。与作品/论断结构并列，互不侵入。 */
+const world = defineCollection({
+  loader: glob({ pattern: '**/*.yaml', base: './src/content/world' }),
+  schema: worldNode,
+});
+
+export const collections = { works, scenes, sources, entities, world };

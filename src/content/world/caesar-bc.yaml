@@ -1,0 +1,7 @@
+type: artefact
+title: { zh: 《内战记》, en: Commentarii de Bello Civili }
+summary:
+  zh: 当事人自己的记述。全卷没有出现卢比孔一词，也没有那个后世家喻户晓的渡河场面。
+position: { x: 0.28, y: 0.68 }
+entry: /entity/caesar-bc/
+related: [caesar, rubico, ariminum, rubicon-story]

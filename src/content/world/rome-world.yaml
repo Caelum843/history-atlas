@@ -1,0 +1,8 @@
+type: region
+title: { zh: 罗马世界, en: The Roman World }
+summary:
+  zh: 目前唯一开放的一卷。共和国最后一个世纪，权力如何在不违法的情况下集中到一个人手里。
+lon: 14.5
+lat: 40.0
+entry: /world/rome-republic/
+related: [caesar, pompey, rubicon-story, rome-city, lex-cornelia]

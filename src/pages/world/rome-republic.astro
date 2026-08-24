@@ -1,0 +1,196 @@
+---
+import { getCollection } from 'astro:content';
+import Shell from '../../layouts/Shell.astro';
+import ObjectDrawer from '../../components/ObjectDrawer.astro';
+import { BOUNDS, regionView } from '../../lib/geo';
+import { sitePath } from '../../lib/paths';
+
+const world = await getCollection('world');
+const byId = new Map(world.map((node) => [node.id, node]));
+const story = byId.get('rubicon-story');
+const plannedStories = world.filter((node) => node.data.type === 'story' && node.data.planned);
+const actors = ['caesar', 'pompey', 'lex-cornelia'].map((id) => byId.get(id)).filter(Boolean);
+const places = ['rome-city', 'ravenna', 'ariminum'].map((id) => byId.get(id)).filter(Boolean);
+
+const VB = { width: 720, height: 560 };
+const map = regionView(VB, BOUNDS.mediterranean, 20);
+const mapPlaces = places
+  .filter((node) => node?.data.lon !== undefined && node.data.lat !== undefined)
+  .map((node) => ({
+    node: node!,
+    point: map.project(node!.data.lon!, node!.data.lat!),
+    label: node!.id === 'ravenna'
+      ? { dx: -10, dy: -7, anchor: 'end' }
+      : node!.id === 'ariminum'
+        ? { dx: 10, dy: 15, anchor: 'start' }
+        : { dx: 10, dy: 4, anchor: 'start' },
+  }));
+
+const actorPositions: Record<string, { x: number; y: number }> = {
+  caesar: { x: 19, y: 31 },
+  pompey: { x: 73, y: 25 },
+  'lex-cornelia': { x: 60, y: 72 },
+};
+---
+
+<Shell
+  layer="realm"
+  identity="rome-republic"
+  title="罗马世界 · 共和国危机"
+  context="罗马世界 · 卷一 · 共和国危机"
+  up={{ href: '/', label: '返回历史世界' }}
+>
+  <section class="realm" aria-labelledby="realm-title">
+    <div class="realm__stone" aria-hidden="true">
+      <span>ROMA</span>
+    </div>
+
+    <header class="realm__intro">
+      <p class="realm__eyebrow">卷一 · 前 133 — 前 27 年</p>
+      <h1 id="realm-title">共和国<br /><em>失去共同规则</em></h1>
+      <p>
+        不是一个政体突然倒塌，而是许多人仍在援引法律时，
+        法律已经无法约束他们共同拥有的力量。
+      </p>
+    </header>
+
+    <div class="realm__relations" aria-label="罗马世界的核心对象">
+      <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M19 31 C36 18 55 16 73 25" />
+        <path d="M19 31 C37 45 47 62 60 72" />
+        <path d="M73 25 C72 46 68 59 60 72" />
+        <path class="relation--story" d="M19 31 C28 49 35 55 43 59" />
+        <path class="relation--story" d="M60 72 C54 66 49 62 43 59" />
+      </svg>
+
+      {actors.map((node) => {
+        if (!node) return null;
+        const position = actorPositions[node.id];
+        return (
+          <button
+            class={`object object--${node.data.type}`}
+            style={`left:${position.x}%;top:${position.y}%`}
+            data-object={node.id}
+          >
+            <span class="object__type">{node.data.type === 'institution' ? '制度' : '人物'}</span>
+            <strong>{node.data.title.zh}</strong>
+            <span class="object__links">{node.data.related.length} 条关联</span>
+          </button>
+        );
+      })}
+    </div>
+
+    <aside class="realm__map" aria-label="地中海空间参照">
+      <div class="map__meta">
+        <span>地中海世界 · 空间参照</span>
+        <span>SURVEY · NATURAL EARTH 50M</span>
+      </div>
+      <svg viewBox={`0 0 ${VB.width} ${VB.height}`} role="img" aria-label="地中海和意大利的真实海岸轮廓">
+        <path d={map.land} class="map__land" />
+        {mapPlaces.map(({ node, point, label }) => (
+          <g class="map__place">
+            <circle cx={point[0]} cy={point[1]} r="4" />
+            <text x={point[0] + label.dx} y={point[1] + label.dy} text-anchor={label.anchor}>{node.data.title.zh}</text>
+          </g>
+        ))}
+      </svg>
+      <p>地图在这一层退为参照：人物和制度没有被错误地钉在地理坐标上。</p>
+    </aside>
+
+    {story && (
+      <a class="portal" href={sitePath(story.data.entry!)} aria-label="进入卢比孔河故事">
+        <span class="portal__index">实验样章 · 01</span>
+        <span class="portal__latin">RVBICO</span>
+        <strong>{story.data.title.zh}</strong>
+        <span class="portal__summary">{story.data.summary?.zh}</span>
+        <span class="portal__enter">进入故事 <i>→</i></span>
+      </a>
+    )}
+
+    <div class="realm__future" aria-label="规划中的真实故事">
+      <p>卷内远景 · 规划中</p>
+      <ol>
+        {plannedStories.map((node, index) => (
+          <li>
+            <button data-object={node.id}>
+              <span>{String(index + 2).padStart(2, '0')}</span>
+              <strong>{node.data.title.zh}</strong>
+              <em>未开放</em>
+            </button>
+          </li>
+        ))}
+      </ol>
+    </div>
+
+    <p class="realm__instruction">选择对象理解这个世界，或从卢比孔进入第一段故事。</p>
+  </section>
+
+  <ObjectDrawer slot="overlay" />
+</Shell>
+
+<style>
+  .realm { position: absolute; inset: 0; overflow: hidden; background: radial-gradient(circle at 45% 43%, rgba(90,69,39,.13), transparent 34%), var(--l-ground); }
+  .realm::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(90deg, rgba(0,0,0,.35), transparent 20%, transparent 76%, rgba(0,0,0,.28)); }
+
+  .realm__stone { position: absolute; left: 4vw; top: 7vh; bottom: 5vh; width: 48vw; border: 1px solid var(--l-rule); overflow: hidden; opacity: .62; }
+  .realm__stone::before, .realm__stone::after { content: ''; position: absolute; border: 1px solid var(--l-rule); border-bottom: 0; width: 22%; height: 37%; bottom: 0; }
+  .realm__stone::before { left: 12%; border-radius: 50% 50% 0 0; }
+  .realm__stone::after { right: 12%; border-radius: 50% 50% 0 0; }
+  .realm__stone span { position: absolute; left: -2%; top: 18%; font-family: var(--l-font-display); font-size: clamp(7rem, 18vw, 18rem); letter-spacing: -.08em; color: var(--l-stone); line-height: .8; }
+
+  .realm__intro { position: absolute; z-index: 3; left: 6.5vw; top: 15vh; width: min(30rem, 34vw); }
+  .realm__eyebrow { margin: 0 0 1rem; color: var(--l-accent); font: .62rem var(--l-font-mono); letter-spacing: .2em; }
+  .realm__intro h1 { margin: 0; font: 400 clamp(2.6rem, 5.3vw, 5.2rem)/.92 var(--l-font-display); color: var(--l-ink); }
+  .realm__intro h1 em { font-style: normal; color: var(--l-ink-dim); }
+  .realm__intro > p:last-child { width: 26rem; max-width: 100%; margin: 1.5rem 0 0; color: var(--l-ink-dim); font-size: .88rem; line-height: 1.9; }
+
+  .realm__relations { position: absolute; z-index: 4; left: 4vw; top: 42vh; width: 50vw; height: 44vh; }
+  .realm__relations svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .realm__relations path { fill: none; stroke: var(--l-rule); stroke-width: .22; vector-effect: non-scaling-stroke; }
+  .realm__relations .relation--story { stroke: var(--l-accent-dim); stroke-dasharray: 1 1.5; }
+  .object { position: absolute; transform: translate(-50%,-50%); width: 9rem; padding: .7rem; border: 1px solid var(--l-rule); background: rgba(23,20,15,.82); color: var(--l-ink); text-align: left; cursor: pointer; }
+  .object:hover { border-color: var(--l-accent); }
+  .object__type, .object__links { display: block; font: .52rem var(--l-font-mono); letter-spacing: .13em; color: var(--l-ink-faint); }
+  .object strong { display: block; margin: .4rem 0; font: 400 .88rem var(--l-font-body); }
+  .object--institution { border-style: dashed; }
+
+  .realm__map { position: absolute; z-index: 3; top: 11vh; right: 3vw; width: 36vw; height: 41vh; margin: 0; border: 1px solid var(--l-rule); background: rgba(15,13,10,.55); }
+  .realm__map svg { width: 100%; height: calc(100% - 48px); display: block; }
+  .map__meta { height: 32px; padding: 0 .75rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--l-rule); color: var(--l-ink-faint); font: .48rem var(--l-font-mono); letter-spacing: .12em; }
+  .map__land { fill: var(--l-land); stroke: var(--l-land-edge); stroke-width: .8; vector-effect: non-scaling-stroke; }
+  .map__place circle { fill: var(--l-accent); }
+  .map__place text { fill: var(--l-ink-dim); font: 10px var(--l-font-body); }
+  .realm__map > p { position: absolute; left: .75rem; right: .75rem; bottom: .45rem; margin: 0; color: var(--l-ink-faint); font: .48rem var(--l-font-mono); letter-spacing: .08em; }
+
+  .portal { position: absolute; z-index: 5; right: 5vw; top: 57vh; width: 30vw; min-height: 24vh; padding: 1.25rem 1.4rem; display: grid; grid-template-columns: 1fr auto; align-content: start; border: 1px solid var(--l-accent-dim); background: linear-gradient(135deg, rgba(55,43,25,.92), rgba(16,14,11,.96)); text-decoration: none; color: var(--l-ink); overflow: hidden; transition: transform .35s, border-color .35s; }
+  .portal::after { content: ''; position: absolute; width: 12rem; height: 12rem; right: -5rem; bottom: -6rem; border: 1px solid var(--l-accent-dim); border-radius: 50%; box-shadow: 0 0 0 1.6rem rgba(201,161,91,.025), 0 0 0 3.2rem rgba(201,161,91,.02); }
+  .portal:hover { transform: translateY(-4px); border-color: var(--l-accent); }
+  .portal__index { grid-column: 1; color: var(--l-accent); font: .56rem var(--l-font-mono); letter-spacing: .17em; }
+  .portal__latin { grid-column: 2; color: var(--l-ink-faint); font: .54rem var(--l-font-mono); letter-spacing: .18em; }
+  .portal strong { grid-column: 1 / -1; margin-top: 1.1rem; font: 400 clamp(1.7rem, 3vw, 2.7rem) var(--l-font-display); }
+  .portal__summary { grid-column: 1 / -1; max-width: 25rem; margin-top: .5rem; color: var(--l-ink-dim); font-size: .78rem; line-height: 1.7; }
+  .portal__enter { grid-column: 1 / -1; margin-top: 1.1rem; color: var(--l-accent); font: .58rem var(--l-font-mono); letter-spacing: .14em; }
+  .portal__enter i { font-style: normal; font-size: 1rem; margin-left: .4rem; }
+
+  .realm__future { position: absolute; z-index: 4; left: 57vw; bottom: 4vh; width: 37vw; }
+  .realm__future > p { margin: 0 0 .5rem; color: var(--l-ink-faint); font: .52rem var(--l-font-mono); letter-spacing: .16em; }
+  .realm__future ol { display: grid; grid-template-columns: repeat(2,1fr); gap: 1px; list-style: none; margin: 0; padding: 0; background: var(--l-rule); }
+  .realm__future button { width: 100%; display: grid; grid-template-columns: auto 1fr auto; gap: .5rem; padding: .55rem .65rem; border: 0; background: var(--l-ground); color: var(--l-ink-faint); text-align: left; cursor: pointer; }
+  .realm__future button:hover { color: var(--l-ink-dim); background: var(--l-ground-2); }
+  .realm__future span, .realm__future em { font: .48rem var(--l-font-mono); font-style: normal; }
+  .realm__future strong { font: 300 .7rem var(--l-font-body); }
+  .realm__instruction { position: absolute; z-index: 3; left: 6.5vw; bottom: 2vh; margin: 0; color: var(--l-ink-faint); font: .5rem var(--l-font-mono); letter-spacing: .12em; }
+
+  @media (max-width: 900px) {
+    .realm { overflow-y: auto; padding: 5.5rem 1.1rem 3rem; }
+    .realm__stone { position: absolute; left: 1rem; right: 1rem; top: 5rem; width: auto; height: 30rem; bottom: auto; }
+    .realm__intro, .realm__relations, .realm__map, .portal, .realm__future, .realm__instruction { position: relative; left: auto; right: auto; top: auto; bottom: auto; width: 100%; }
+    .realm__intro { padding: 2rem 1rem 0; }
+    .realm__intro h1 { font-size: 3.2rem; }
+    .realm__relations { height: 25rem; margin-top: 1rem; }
+    .realm__map { height: 20rem; margin-top: 1rem; }
+    .portal { min-height: 16rem; margin-top: 1rem; }
+    .realm__future { margin-top: 1.5rem; }
+    .realm__instruction { margin-top: 1.5rem; }
+  }
+</style>

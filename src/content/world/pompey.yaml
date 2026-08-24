@@ -1,0 +1,7 @@
+type: person
+title: { zh: 格奈乌斯·庞培, en: Cn. Pompeius Magnus }
+summary:
+  zh: 军事声望、遥领的西班牙行省、元老院内的联盟——危机的另一侧。他的选择和凯撒的选择同样需要解释。
+position: { x: 0.72, y: 0.28 }
+entry: /entity/pompey/
+related: [rome-city, caesar, lex-cornelia, rubicon-story]

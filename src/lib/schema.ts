@@ -272,3 +272,92 @@ export const work = z.object({
     });
   }
 });
+
+/* ============================================================
+   世界层（M1.5）
+   与上面的作品/论断结构**并列**，互不侵入。
+   这不是最终的历史知识图谱，只用于搭建世界节点、对象卡片、
+   相关故事、页面间跳转与空间布局。以后再替换为严谨的关系模型。
+   ============================================================ */
+
+/** 时间上下文。本阶段只定义，不使用 —— 时间系统不得阻塞体验框架。 */
+export const timeContext = z.object({
+  from: z.number().optional(),
+  to: z.number().optional(),
+  label: i18n.optional(),
+});
+export type TimeContext = z.infer<typeof timeContext>;
+
+/** 最小关系结构。本阶段只定义，不驱动渲染。 */
+export const relationship = z.object({
+  from: z.string(),
+  to: z.string(),
+  type: z.string(),
+  label: i18n,
+  timeContext: timeContext.optional(),
+});
+
+export const worldNodeType = z.enum([
+  'region', 'person', 'place', 'event', 'institution', 'artefact', 'story',
+]);
+
+export const worldNode = z.object({
+  type: worldNodeType,
+  title: i18n,
+  summary: i18n.optional(),
+  /** 视觉提示，交给该层的渲染决定怎么用 */
+  visual: z.string().optional(),
+
+  /**
+   * 真实经纬度。只有确实占据地理位置的对象才有。
+   * 人物、制度、文献没有 —— 把它们钉到坐标上是范畴错误。
+   */
+  lon: z.number().optional(),
+  lat: z.number().optional(),
+  /** 位置存在争议时为 true，绘制上必须与确定位置区分 */
+  positionDisputed: z.boolean().default(false),
+
+  /**
+   * 布局位置（0–1 的相对坐标）。给没有地理位置的对象用。
+   * 与 lon/lat 互斥：一个对象要么在地上，要么在构图里。
+   */
+  position: z.object({ x: z.number(), y: z.number() }).optional(),
+
+  /** 关联对象 id。互链的最低要求见下方 superRefine。 */
+  related: z.array(z.string()).default([]),
+  /** 可进入时的目标路由。没有则为"可感知不可进入" */
+  entry: z.string().optional(),
+  /** 未开放但确在规划内 —— 必须为真实计划，不得用装饰点伪造规模 */
+  planned: z.boolean().default(false),
+
+  timeContext: timeContext.optional(),
+}).superRefine((n, ctx) => {
+  const hasGeo = n.lon !== undefined && n.lat !== undefined;
+  if (hasGeo && n.position) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom, path: ['position'],
+      message: `"${n.title.zh}" 同时给了经纬度和布局坐标。一个对象要么在地上，要么在构图里，不能都要。`,
+    });
+  }
+  if (['person', 'institution'].includes(n.type) && hasGeo) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom, path: ['lon'],
+      message: `"${n.title.zh}" 是 ${n.type}，不应有经纬度。人物与制度不是地点，钉在地图坐标上是范畴错误。`,
+    });
+  }
+  // 「像一本书」靠的是永远撞不到叶子节点
+  if (n.entry && n.related.length < 3) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom, path: ['related'],
+      message:
+        `可进入对象 "${n.title.zh}" 只有 ${n.related.length} 条关联，至少需要 3 条。` +
+        `每个核心对象都必须能继续通向别处，不能成为终点。`,
+    });
+  }
+  if (n.planned && n.entry) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom, path: ['entry'],
+      message: `"${n.title.zh}" 标为 planned（未开放）却给了 entry。未开放节点不能假装可点。`,
+    });
+  }
+});

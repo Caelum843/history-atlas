@@ -1,8 +1,8 @@
 ---
 import { getCollection, getEntry } from 'astro:content';
-import Base from '../../layouts/Base.astro';
-import BeatVisual from '../../components/BeatVisual.astro';
-import { assertContentValid } from '../../lib/validate';
+import Base from '../../../layouts/Base.astro';
+import BeatVisual from '../../../components/BeatVisual.astro';
+import { assertContentValid } from '../../../lib/validate';
 
 export async function getStaticPaths() {
   const scenes = await getCollection('scenes');
@@ -20,10 +20,11 @@ const STATUS_LABEL: Record<string, string> = {
   sample: '实验样章', draft: '草稿', chapter: '完整章节', published: '已发布',
 };
 ---
-<Base title={`${d.title.zh} · ${work?.data.title.zh ?? ''}`}>
+<Base title={`[开发视图] ${d.title.zh}`}>
   <div class="shell stack-lg">
 
     <header class="stack">
+      <p class="eyebrow" style="color:var(--ha-cool)">开发 / 研究视图 · 非读者界面</p>
       <p class="eyebrow">{work?.data.title.zh} · {work?.data.span.label.zh}</p>
       <h1>{d.title.zh}</h1>
       <p class="dim summary">{d.summary.zh}</p>

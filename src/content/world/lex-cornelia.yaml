@@ -1,0 +1,7 @@
+type: institution
+title: { zh: 科尔涅利乌斯叛国法, en: Lex Cornelia de maiestate }
+summary:
+  zh: 苏拉制定。它约束的是总督率军离开受命行省，而不是任何一条河。这是整个故事的法律支点。
+position: { x: 0.70, y: 0.66 }
+entry: /entity/lex-cornelia/
+related: [caesar, rubico, rome-city, rubicon-story]

@@ -1,0 +1,7 @@
+type: region
+title: { zh: 印度次大陆, en: The Indian Subcontinent }
+summary: { zh: 孔雀王朝之后的政治与贸易网络。规划中。 }
+lon: 78
+lat: 22
+planned: true
+related: [rome-world]

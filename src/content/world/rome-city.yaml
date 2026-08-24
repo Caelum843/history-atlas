@@ -1,0 +1,8 @@
+type: place
+title: { zh: 罗马, en: Roma }
+summary:
+  zh: 既是城市，也是合法性被生产、争夺和宣布的地方。凯撒行动的全部意义，取决于这里的人怎么定性它。
+lon: 12.48
+lat: 41.90
+entry: /entity/rome-city/
+related: [caesar, pompey, lex-cornelia, rubicon-story]
