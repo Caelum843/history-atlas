@@ -1,86 +1,298 @@
 ---
 import Shell from '../layouts/Shell.astro';
 import ObjectDrawer from '../components/ObjectDrawer.astro';
-import { getCollection } from 'astro:content';
-import { sitePath } from '../lib/paths';
+import { worldEpochs } from '../lib/worldTimeline';
 
-const VB={width:1600,height:900};
-const world=await getCollection('world');
-const regions=world.filter(n=>n.data.type==='region');
-const stops=[
- {year:-753,short:'前 753',label:'城市形成与王政传统',note:'传统建城纪年只是导航坐标，早期历史大量依赖后世叙述与考古。',reach:.02,unity:1,west:0,east:0},
- {year:-509,short:'前 509',label:'共和国与意大利共同体',note:'共和国制度与罗马在意大利的扩张共同形成。',reach:.08,unity:1,west:0,east:0},
- {year:-264,short:'前 264',label:'地中海争霸开始',note:'控制意大利以后，罗马开始卷入跨海霸权战争。',reach:.24,unity:1,west:0,east:0},
- {year:-133,short:'前 133',label:'共和国危机',note:'帝国扩张积累的问题进入公民政治，当前实验样卷从这里开放。',reach:.48,unity:1,west:0,east:0},
- {year:-49,short:'前 49',label:'卢比孔与内战',note:'政治冲突取得军事既成事实；地图状态综合使用前 50—前 49 年资料。',reach:.56,unity:1,west:0,east:0},
- {year:-27,short:'前 27',label:'元首制建立',note:'新的君主权力以恢复共和国的语言建立。',reach:.62,unity:1,west:0,east:0},
- {year:117,short:'117',label:'高帝国',note:'帝国达到最大空间范围附近；当前范围仅作体验示意。',reach:.92,unity:1,west:0,east:0},
- {year:284,short:'284',label:'晚期帝国的再造',note:'行政、军队、税制与皇帝宫廷被重新组织。',reach:.82,unity:.78,west:.16,east:.18},
- {year:395,short:'395',label:'两个皇帝宫廷',note:'东西各有宫廷，但双方仍宣称属于同一个罗马帝国。',reach:.72,unity:.2,west:.62,east:.68},
- {year:476,short:'476',label:'西部皇帝终结',note:'这不是罗马历史终点；东部罗马帝国继续延伸。',reach:.62,unity:0,west:.05,east:.72},
-];
-const min=stops[0].year,max=stops.at(-1)!.year,pos=(y:number)=>(y-min)/(max-min)*100;
+const minYear = worldEpochs[0].year;
+const maxYear = worldEpochs.at(-1)!.year;
+const yearPosition = (year: number) => (year - minYear) / (maxYear - minYear) * 100;
+const majorYears = new Set([-753, -509, -264, -133, -49, -27, 117, 395, 476]);
 ---
-<Shell layer="world" title="History Atlas · 历史世界" context="历史世界 · 时间地图">
-<div class="world" id="timeMap" data-mode="terrain" style="--p:57.28%;--state-y:57.1vh;--reach:.56;--unity:1;--west:0;--east:0">
- <svg class="map" viewBox={`0 0 ${VB.width} ${VB.height}`} preserveAspectRatio="xMidYMid slice" role="img" aria-label="随时间变化的历史世界">
-  <defs><radialGradient id="field"><stop stop-color="#c9a15b" stop-opacity=".42"/><stop offset="1" stop-color="#9a7133" stop-opacity="0"/></radialGradient><radialGradient id="fieldEast"><stop stop-color="#8fb6cf" stop-opacity=".38"/><stop offset="1" stop-color="#617f92" stop-opacity="0"/></radialGradient><filter id="soft"><feGaussianBlur stdDeviation="12"/></filter></defs>
-  <path id="spherePath" class="sphere"/><path id="graticulePath" class="graticule"/><path id="landPath" class="land"/>
-  <g class="polity"><ellipse id="fieldUnified" class="unified" rx="355" ry="205" fill="url(#field)" filter="url(#soft)"/><ellipse id="fieldWest" class="west" rx="245" ry="180" fill="url(#field)" filter="url(#soft)"/><ellipse id="fieldEast" class="east" rx="250" ry="185" fill="url(#fieldEast)" filter="url(#soft)"/><circle id="fieldOrigin" r="7"/></g>
- </svg>
- <div class="nodes">{regions.map(node=>node.data.planned?<button class="node planned" data-lon={node.data.lon} data-lat={node.data.lat} data-object={node.id}><i></i><strong>{node.data.title.zh}</strong><span>规划中</span></button>:<a class="node open" data-lon={node.data.lon} data-lat={node.data.lat} href={sitePath(node.data.entry!)}><i></i><strong>{node.data.title.zh}</strong><span id="romeMeta">前 49 年 · 共和国危机可进入</span></a>)}</div>
- <header class="intro"><p>一部可以进入的历史书</p><h1>拖动时间，<br/>观察世界改变。</h1><div id="description">政治冲突取得军事既成事实；地图状态综合使用前 50—前 49 年资料。</div><span id="accuracy">地形模式 · 海陆轮廓为现代测绘参照</span></header>
- <section class="clock" id="clock" aria-label="历史时间与地图模式"><small>约前 753</small><div class="track" id="track" role="slider" tabindex="0" aria-label="历史年份" aria-valuemin={min} aria-valuemax={max} aria-valuenow="-49">{stops.map(s=><button class:list={['stop',{major:[-753,-133,-49,-27,395,476].includes(s.year)}]} style={`top:${pos(s.year)}%`} data-year={s.year}><i></i><span>{s.short}</span></button>)}<div class="probe" id="probe"><i></i><span id="probeYear"></span></div><div class="thumb"><span class="mode terrain-mode"><button data-mode="terrain" aria-pressed="true">地形</button><i></i></span><strong id="year">前 49</strong><span class="mode polity-mode"><i></i><button data-mode="polity" aria-pressed="false">政权</button></span></div></div><small>公元 476</small></section>
- <div class="state"><span id="stateYear">前 49 年</span><strong id="stateTitle">卢比孔与内战</strong><em>靠近关键年份时自动吸附</em></div>
-</div>
-<ObjectDrawer slot="overlay"/><script type="application/json" id="timeData" set:html={JSON.stringify(stops)} is:inline slot="overlay"></script>
-</Shell>
-<script>
-import { geoDistance, geoGraticule10, geoOrthographic, geoPath } from 'd3-geo';
-import { feature } from 'topojson-client';
-import land110 from 'world-atlas/land-110m.json';
-type Stop={year:number;short:string;label:string;note:string;reach:number;unity:number;west:number;east:number};
-const root=document.getElementById('timeMap')!,track=document.getElementById('track')!,clock=document.getElementById('clock')!,data:Stop[]=JSON.parse(document.getElementById('timeData')!.textContent!);const min=data[0].year,max=data.at(-1)!.year;let target=-49,current=-49,drag=false,wheelTimer=0;
-const clamp=(v:number,a:number,b:number)=>Math.max(a,Math.min(b,v)),fmt=(y:number)=>y<0?`前 ${Math.abs(Math.round(y))}`:`公元 ${Math.round(y)}`;
 
-const svg=document.querySelector<SVGSVGElement>('.map')!;
-const topology=land110 as any, landFeature=feature(topology,topology.objects.land) as any;
-const projection=geoOrthographic().translate([800,450]).scale(415).clipAngle(90).precision(.35).rotate([-18,-25,0]);
-const path=geoPath(projection), sphere={type:'Sphere'} as any;
-const landPath=document.getElementById('landPath')!,spherePath=document.getElementById('spherePath')!,graticulePath=document.getElementById('graticulePath')!;
-const geoNodes=[...document.querySelectorAll<HTMLElement>('.node[data-lon]')];
-const fields=[{el:document.getElementById('fieldUnified')!,at:[14.5,40]},{el:document.getElementById('fieldWest')!,at:[1,40]},{el:document.getElementById('fieldEast')!,at:[28,38]},{el:document.getElementById('fieldOrigin')!,at:[14.5,40]}] as {el:SVGElement;at:[number,number]}[];
-function visible(at:[number,number]){const r=projection.rotate();return geoDistance(at,[-r[0],-r[1]])<Math.PI/2-.24}
-function renderGlobe(){spherePath.setAttribute('d',path(sphere)??'');landPath.setAttribute('d',path(landFeature)??'');graticulePath.setAttribute('d',path(geoGraticule10())??'');geoNodes.forEach(node=>{const at:[number,number]=[Number(node.dataset.lon),Number(node.dataset.lat)],p=projection(at);if(!p||!visible(at)){node.style.opacity='0';node.style.pointerEvents='none'}else{node.style.left=`${p[0]/16}%`;node.style.top=`${p[1]/9}%`;node.style.opacity='';node.style.pointerEvents=''}});fields.forEach(({el,at})=>{const p=projection(at);if(p){el.setAttribute('cx',String(p[0]));el.setAttribute('cy',String(p[1]))}el.style.visibility=visible(at)?'visible':'hidden'})}
-renderGlobe();
-let globeDrag=false,lastX=0,lastY=0,vx=0,vy=0,inertia=0;
-root.addEventListener('pointerdown',e=>{if((e.target as HTMLElement).closest('.clock,.node,.intro,a,button'))return;globeDrag=true;lastX=e.clientX;lastY=e.clientY;vx=vy=0;cancelAnimationFrame(inertia);root.setPointerCapture(e.pointerId);root.dataset.globeDrag='true';e.preventDefault()});
-root.addEventListener('pointermove',e=>{if(!globeDrag)return;const dx=e.clientX-lastX,dy=e.clientY-lastY,r=projection.rotate();vx=dx*.22;vy=-dy*.18;projection.rotate([r[0]+vx,clamp(r[1]+vy,-72,72),0]);lastX=e.clientX;lastY=e.clientY;renderGlobe()});
-function coast(){if(Math.abs(vx)+Math.abs(vy)<.04)return;const r=projection.rotate();projection.rotate([r[0]+vx,r[1]+vy,0]);vx*=.91;vy*=.91;renderGlobe();inertia=requestAnimationFrame(coast)}
-root.addEventListener('pointerup',()=>{if(!globeDrag)return;globeDrag=false;delete root.dataset.globeDrag;coast()});
-function pair(y:number){let i=data.findIndex(s=>s.year>=y);if(i<=0)return[data[0],data[0],0] as const;if(i<0)return[data.at(-1)!,data.at(-1)!,0] as const;let a=data[i-1],b=data[i];return[a,b,(y-a.year)/(b.year-a.year)] as const}const mix=(a:number,b:number,t:number)=>a+(b-a)*t;
-function render(y:number){const[a,b,t]=pair(y),near=t<.5?a:b,fy=fmt(y),p=(y-min)/(max-min)*100;root.style.setProperty('--p',`${p}%`);root.style.setProperty('--state-y',`${13+p*.77}vh`);for(const k of ['reach','unity','west','east'] as const)root.style.setProperty(`--${k}`,String(mix(a[k],b[k],t)));document.getElementById('year')!.textContent=fy.replace('公元 ','');document.getElementById('stateYear')!.textContent=`${fy} 年`;document.getElementById('stateTitle')!.textContent=near.label;document.getElementById('description')!.textContent=near.note;document.getElementById('romeMeta')!.textContent=y>=-133&&y<=-27?`${fy} · 共和国危机可进入`:`${fy} · 进入罗马时间主干`;track.setAttribute('aria-valuenow',String(Math.round(y)))}
-function loop(){const d=target-current;current=Math.abs(d)<.08?target:current+d*.18;render(current);requestAnimationFrame(loop)}loop();
-const fromPointer=(e:PointerEvent)=>Math.round(min+clamp((e.clientY-track.getBoundingClientRect().top)/track.getBoundingClientRect().height,0,1)*(max-min));const snap=(y:number)=>{const s=data.reduce((a,b)=>Math.abs(b.year-y)<Math.abs(a.year-y)?b:a);return Math.abs(s.year-y)<=34?s.year:y};
-const probe=document.getElementById('probe')!,probeYear=document.getElementById('probeYear')!;
-track.addEventListener('pointerdown',e=>{if((e.target as HTMLElement).closest('button'))return;drag=true;track.setPointerCapture(e.pointerId);target=fromPointer(e);probe.classList.add('active');e.preventDefault()});track.addEventListener('pointermove',e=>{const rect=track.getBoundingClientRect(),p=clamp((e.clientY-rect.top)/rect.height,0,1);probe.style.top=`${p*100}%`;probeYear.textContent=fmt(min+p*(max-min));probe.classList.add('visible');if(drag)target=fromPointer(e)});track.addEventListener('pointerleave',()=>{if(!drag)probe.classList.remove('visible')});track.addEventListener('pointerup',e=>{if(!drag)return;drag=false;target=snap(fromPointer(e));probe.classList.remove('active','visible')});
-clock.addEventListener('wheel',e=>{e.preventDefault();target=clamp(target+(e.deltaY>0?10:-10),min,max);window.clearTimeout(wheelTimer);wheelTimer=window.setTimeout(()=>target=snap(target),180)},{passive:false});
-track.addEventListener('keydown',e=>{const n:{[k:string]:number}={ArrowUp:-10,ArrowDown:10,PageUp:-50,PageDown:50};if(e.key==='Home')target=min;else if(e.key==='End')target=max;else if(n[e.key])target=clamp(target+n[e.key],min,max);else return;e.preventDefault()});document.querySelectorAll<HTMLElement>('[data-year]').forEach(b=>b.addEventListener('click',()=>target=Number(b.dataset.year)));document.querySelectorAll<HTMLButtonElement>('[data-mode]').forEach(b=>b.addEventListener('click',()=>{root.dataset.mode=b.dataset.mode!;document.querySelectorAll<HTMLButtonElement>('[data-mode]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));document.getElementById('accuracy')!.textContent=b.dataset.mode==='terrain'?'地形模式 · 海陆轮廓为现代测绘参照':'政权模式 · 范围为编辑示意，不代表逐年精确边界'}));
+<Shell layer="world" title="History Atlas · 历史世界" context="历史世界 · 时间观测台">
+  <div class="world" id="historyWorld" style="--time-p:57.28%;">
+    <svg class="world-map" id="worldMap" role="img" aria-label="可旋转、缩放并随年代变化的历史世界地图">
+      <defs>
+        <radialGradient id="oceanGlow" cx="48%" cy="42%" r="68%">
+          <stop offset="0" stop-color="#1d2925" /><stop offset=".65" stop-color="#111916" /><stop offset="1" stop-color="#080b0a" />
+        </radialGradient>
+        <linearGradient id="landWash" x1="0" y1="0" x2="1" y2="1">
+          <stop stop-color="#354038" /><stop offset=".48" stop-color="#252e29" /><stop offset="1" stop-color="#1c2420" />
+        </linearGradient>
+        <filter id="terrainTexture" x="-20%" y="-20%" width="140%" height="140%">
+          <feTurbulence type="fractalNoise" baseFrequency=".72" numOctaves="2" seed="8" result="noise" />
+          <feColorMatrix in="noise" type="saturate" values="0" result="gray" />
+          <feComponentTransfer in="gray" result="softNoise"><feFuncA type="table" tableValues="0 .13" /></feComponentTransfer>
+          <feBlend in="SourceGraphic" in2="softNoise" mode="soft-light" />
+        </filter>
+        <filter id="fieldSoft" x="-35%" y="-35%" width="170%" height="170%"><feGaussianBlur stdDeviation="5" /></filter>
+        <filter id="mapShadow" x="-25%" y="-25%" width="150%" height="150%"><feDropShadow dx="0" dy="20" stdDeviation="28" flood-color="#000" flood-opacity=".48" /></filter>
+        <clipPath id="sphereClip"><path id="sphereClipPath" /></clipPath>
+      </defs>
+      <path id="spherePath" class="sphere" filter="url(#mapShadow)" />
+      <g clip-path="url(#sphereClip)">
+        <path id="landPath" class="land" filter="url(#terrainTexture)" />
+        <path id="graticulePath" class="graticule" />
+        <g id="terrainFeatures" class="terrain-features"></g>
+        <g id="historicalFieldsA" class="historical-fields"></g>
+        <g id="historicalFieldsB" class="historical-fields"></g>
+      </g>
+    </svg>
+
+    <div id="eraLabels" class="era-labels" aria-live="polite"></div>
+    <div id="placeLabels" class="place-labels"></div>
+
+    <header class="intro">
+      <p>THE WORLD AT A MOMENT</p>
+      <h1>移动时间，<br />观察历史世界。</h1>
+      <div>转动球面寻找地区；靠近地图，让河流、城市与事件逐层浮现。</div>
+    </header>
+
+    <section class="epoch-heading" aria-live="polite">
+      <span id="epochYear">公元前 49 年</span><strong id="epochTitle">旧秩序的断裂</strong>
+    </section>
+
+    <section class="time-instrument" id="timeInstrument" aria-label="历史时间仪">
+      <div class="instrument-heading"><span>TIME</span><strong id="instrumentYear">前 49</strong></div>
+      <div class="time-rail" id="timeRail" role="slider" tabindex="0" aria-label="历史年份" aria-valuemin={minYear} aria-valuemax={maxYear} aria-valuenow="-49">
+        <i class="rail-line" aria-hidden="true"></i>
+        {worldEpochs.map((epoch) => (
+          <button class:list={['time-stop', { major: majorYears.has(epoch.year) }]} style={`top:${yearPosition(epoch.year)}%`} data-year={epoch.year} aria-label={`${epoch.short}年，${epoch.title}`}>
+            <i></i><span>{epoch.short}</span>
+          </button>
+        ))}
+        <div class="time-thumb" id="timeThumb"><i></i><span id="thumbYear">前 49</span></div>
+      </div>
+      <div class="instrument-ends"><span>前 753</span><span>476</span></div>
+    </section>
+
+    <nav class="map-controls" aria-label="地图视角控制">
+      <button id="zoomIn" aria-label="放大地图">＋</button><button id="zoomOut" aria-label="缩小地图">−</button><button id="resetView" class="reset-view" aria-label="返回初始观察位置">◎</button>
+    </nav>
+    <div class="map-status"><span id="scaleState">世界尺度</span><i></i><span id="detailState">文明与政权</span></div>
+    <p class="interaction-hint"><span>拖动</span> 转动世界　 <span>滚轮</span> 靠近地图　 <span>时间仪</span> 改变年代</p>
+    <div class="vignette" aria-hidden="true"></div>
+  </div>
+  <ObjectDrawer slot="overlay" />
+</Shell>
+
+<script>
+  import { geoDistance, geoGraticule10, geoOrthographic, geoPath } from 'd3-geo';
+  import { feature } from 'topojson-client';
+  import land110 from 'world-atlas/land-110m.json';
+  import { physicalFeatures, placeLabels, worldEpochs } from '../lib/worldTimeline';
+
+  type Coordinates = [number, number];
+  const root = document.getElementById('historyWorld')!;
+  const svg = document.getElementById('worldMap') as unknown as SVGSVGElement;
+  const spherePath = document.getElementById('spherePath')!;
+  const sphereClipPath = document.getElementById('sphereClipPath')!;
+  const landPath = document.getElementById('landPath')!;
+  const graticulePath = document.getElementById('graticulePath')!;
+  const terrainLayer = document.getElementById('terrainFeatures')!;
+  const fieldLayerA = document.getElementById('historicalFieldsA')!;
+  const fieldLayerB = document.getElementById('historicalFieldsB')!;
+  const eraLabels = document.getElementById('eraLabels')!;
+  const placeLabelsLayer = document.getElementById('placeLabels')!;
+  const rail = document.getElementById('timeRail')!;
+  const topologyFeature = (source: any) => feature(source, source.objects.land) as any;
+  const worldLand = topologyFeature(land110 as any);
+  let regionLand: any = null;
+  let localLand: any = null;
+  let regionLandLoading = false, localLandLoading = false;
+
+  const minYear = worldEpochs[0].year;
+  const maxYear = worldEpochs.at(-1)!.year;
+  const initialRotation: [number, number, number] = [-27, -27, 0];
+  const projection = geoOrthographic().clipAngle(90).precision(.28).rotate(initialRotation);
+  const path = geoPath(projection);
+  const sphere = { type: 'Sphere' } as any;
+  const graticule = geoGraticule10();
+  let viewportWidth = 1600, viewportHeight = 900, baseScale = 900;
+  let zoom = 1, targetZoom = 1, currentYear = -49, targetYear = -49;
+  let timeDragging = false, globeDragging = false, lastX = 0, lastY = 0, velocityX = 0, velocityY = 0;
+  let inertiaFrame = 0, wheelSnapTimer = 0, renderedEpoch = -1, renderedDetail = '', renderedFieldPair = '';
+  let lastGeometryZoom = Number.NaN, lastGeometryRotation = '';
+
+  const clamp = (value: number, low: number, high: number) => Math.max(low, Math.min(high, value));
+  const formatYear = (year: number, spaced = true) => year < 0 ? `前${spaced ? ' ' : ''}${Math.abs(Math.round(year))}` : `公元${spaced ? ' ' : ''}${Math.round(year)}`;
+  const siteHref = (href?: string) => href ? `${import.meta.env.BASE_URL}${href.replace(/^\//, '')}` : undefined;
+
+  function epochPair(year: number) {
+    const upper = worldEpochs.findIndex((epoch) => epoch.year >= year);
+    if (upper <= 0) return [worldEpochs[0], worldEpochs[0], 0] as const;
+    if (upper < 0) { const final = worldEpochs.at(-1)!; return [final, final, 0] as const; }
+    const a = worldEpochs[upper - 1], b = worldEpochs[upper];
+    return [a, b, (year - a.year) / (b.year - a.year)] as const;
+  }
+  function isVisible(coordinates: Coordinates, padding = .06) {
+    const rotation = projection.rotate();
+    return geoDistance(coordinates, [-rotation[0], -rotation[1]]) < Math.PI / 2 - padding;
+  }
+  function detailLevel() { return zoom >= 2.05 ? 'local' : zoom >= 1.3 ? 'region' : 'world'; }
+  async function ensureRegionLand() {
+    if (regionLand || regionLandLoading) return;
+    regionLandLoading = true;
+    const source = (await import('world-atlas/land-50m.json')).default as any;
+    regionLand = topologyFeature(source);
+    regionLandLoading = false;
+    updateMapGeometry(true);
+  }
+  async function ensureLocalLand() {
+    if (localLand || localLandLoading) return;
+    localLandLoading = true;
+    const source = (await import('world-atlas/land-10m.json')).default as any;
+    localLand = topologyFeature(source);
+    localLandLoading = false;
+    updateMapGeometry(true);
+  }
+  function makeSvgElement(tag: string, className: string) {
+    const element = document.createElementNS('http://www.w3.org/2000/svg', tag);
+    element.setAttribute('class', className); return element;
+  }
+
+  const terrainElements = physicalFeatures.map((item) => {
+    const line = makeSvgElement('path', `physical-feature ${item.kind}`);
+    line.setAttribute('data-id', item.id); terrainLayer.append(line); return { item, line };
+  });
+  const placeElements = placeLabels.map((place) => {
+    const element = document.createElement(place.href ? 'a' : 'span');
+    element.className = `map-place ${place.importance}`; element.textContent = place.name;
+    if (place.href) (element as HTMLAnchorElement).href = siteHref(place.href)!;
+    placeLabelsLayer.append(element); return { place, element };
+  });
+
+  function fieldGeometry(field: (typeof worldEpochs)[number]['fields'][number]) {
+    const seed = [...field.id].reduce((sum, char) => sum + char.charCodeAt(0), 0) * .017;
+    const horizontal = field.radius * (field.confidence === 'influence' ? 1.35 : 1.18);
+    const vertical = field.radius * (field.confidence === 'influence' ? .62 : .7);
+    const ring: Coordinates[] = [];
+    for (let index = 0; index <= 72; index += 1) {
+      const angle = index / 72 * Math.PI * 2;
+      const variation = 1 + Math.sin(angle * 3 + seed) * .065 + Math.cos(angle * 5 - seed) * .035;
+      ring.push([field.center[0] + Math.cos(angle) * horizontal * variation, clamp(field.center[1] + Math.sin(angle) * vertical * variation, -82, 82)]);
+    }
+    return { type: 'Polygon', coordinates: [ring] } as any;
+  }
+
+  function renderFieldLayer(layer: HTMLElement, epochIndex: number) {
+    const epoch = worldEpochs[epochIndex]; layer.replaceChildren();
+    epoch.fields.forEach((field) => {
+      const shape = makeSvgElement('path', `historical-field ${field.confidence}`);
+      shape.setAttribute('d', path(fieldGeometry(field)) ?? ''); shape.style.setProperty('--field-color', field.color); shape.setAttribute('data-field', field.id); layer.append(shape);
+    });
+  }
+  function renderEraLabels(epochIndex: number) {
+    const epoch = worldEpochs[epochIndex]; eraLabels.replaceChildren();
+    epoch.fields.forEach((field) => {
+      const element = document.createElement(field.href ? 'a' : 'div');
+      element.className = `era-label ${field.confidence}`; element.dataset.lon = String(field.center[0]); element.dataset.lat = String(field.center[1]);
+      element.innerHTML = `<strong>${field.name}</strong><span>${field.era}</span>`;
+      if (field.href) (element as HTMLAnchorElement).href = siteHref(field.href)!; eraLabels.append(element);
+    });
+  }
+  function positionHtmlLabels() {
+    eraLabels.querySelectorAll<HTMLElement>('.era-label').forEach((element) => {
+      const coordinates: Coordinates = [Number(element.dataset.lon), Number(element.dataset.lat)];
+      const point = projection(coordinates), visible = point && isVisible(coordinates, .12); element.hidden = !visible;
+      if (point && visible) { element.style.left = `${point[0]}px`; element.style.top = `${point[1]}px`; }
+    });
+    placeElements.forEach(({ place, element }) => {
+      const point = projection(place.coordinates), visible = zoom >= place.minZoom && point && isVisible(place.coordinates, .1); element.hidden = !visible;
+      if (point && visible) { element.style.left = `${point[0]}px`; element.style.top = `${point[1]}px`; }
+    });
+  }
+  function updateMapGeometry(force = false) {
+    projection.scale(baseScale * zoom).translate([viewportWidth * .5, viewportHeight * .54]);
+    const sphereD = path(sphere) ?? ''; spherePath.setAttribute('d', sphereD); sphereClipPath.setAttribute('d', sphereD); graticulePath.setAttribute('d', path(graticule) ?? '');
+    const level = detailLevel();
+    if (level === 'region' && !regionLand) void ensureRegionLand();
+    if (level === 'local' && !localLand) void ensureLocalLand();
+    const activeLand = level === 'world' ? worldLand : level === 'region' ? (regionLand ?? worldLand) : (localLand ?? regionLand ?? worldLand);
+    landPath.setAttribute('d', path(activeLand) ?? '');
+    if (force || renderedDetail !== level) {
+      renderedDetail = level; root.dataset.detail = level;
+      document.getElementById('scaleState')!.textContent = level === 'world' ? '世界尺度' : level === 'region' ? '地区尺度' : '局部尺度';
+      document.getElementById('detailState')!.textContent = level === 'world' ? '文明与政权' : level === 'region' ? '山川、首都与边界' : '城市、河流与事件地点';
+    }
+    terrainElements.forEach(({ item, line }) => { line.setAttribute('d', path({ type: 'LineString', coordinates: item.coordinates } as any) ?? ''); line.style.opacity = zoom >= item.minZoom ? '1' : '0'; });
+    const [a, b] = epochPair(currentYear), aIndex = worldEpochs.indexOf(a), bIndex = worldEpochs.indexOf(b);
+    renderFieldLayer(fieldLayerA, aIndex); renderFieldLayer(fieldLayerB, bIndex); renderedFieldPair = `${aIndex}:${bIndex}`; positionHtmlLabels();
+  }
+  function updateEpochState() {
+    const [a, b, blend] = epochPair(currentYear), near = blend < .5 ? a : b, nearIndex = worldEpochs.indexOf(near);
+    fieldLayerA.style.opacity = String(1 - blend); fieldLayerB.style.opacity = String(blend);
+    const aIndex = worldEpochs.indexOf(a), bIndex = worldEpochs.indexOf(b), pairKey = `${aIndex}:${bIndex}`;
+    if (renderedFieldPair !== pairKey) { renderFieldLayer(fieldLayerA, aIndex); renderFieldLayer(fieldLayerB, bIndex); renderedFieldPair = pairKey; }
+    if (renderedEpoch !== nearIndex) { renderedEpoch = nearIndex; renderEraLabels(nearIndex); positionHtmlLabels(); }
+    const formatted = formatYear(currentYear); root.style.setProperty('--time-p', `${(currentYear - minYear) / (maxYear - minYear) * 100}%`);
+    document.getElementById('instrumentYear')!.textContent = formatted.replace('公元 ', ''); document.getElementById('thumbYear')!.textContent = formatted.replace('公元 ', '');
+    document.getElementById('epochYear')!.textContent = `${formatted} 年`; document.getElementById('epochTitle')!.textContent = near.title; rail.setAttribute('aria-valuenow', String(Math.round(currentYear)));
+  }
+  function resize() {
+    const box = root.getBoundingClientRect(); viewportWidth = box.width; viewportHeight = box.height; svg.setAttribute('viewBox', `0 0 ${viewportWidth} ${viewportHeight}`);
+    baseScale = viewportWidth < 720 ? Math.max(viewportWidth * .8, viewportHeight * .46) : Math.max(viewportWidth * .58, viewportHeight * .9); updateMapGeometry(true);
+  }
+  function animate() {
+    const previousYear = currentYear;
+    const zoomDelta = targetZoom - zoom; zoom = Math.abs(zoomDelta) < .0005 ? targetZoom : zoom + zoomDelta * .16;
+    const yearDelta = targetYear - currentYear; currentYear = timeDragging ? targetYear : Math.abs(yearDelta) < .04 ? targetYear : currentYear + yearDelta * .18;
+    if (Math.abs(currentYear - previousYear) > .001) updateEpochState();
+    const rotationKey = projection.rotate().map((value) => value.toFixed(3)).join(':');
+    if (Math.abs(zoom - lastGeometryZoom) > .0005 || rotationKey !== lastGeometryRotation) {
+      updateMapGeometry(); lastGeometryZoom = zoom; lastGeometryRotation = rotationKey;
+    }
+    requestAnimationFrame(animate);
+  }
+  function yearFromPointer(event: PointerEvent) {
+    const box = rail.getBoundingClientRect(), ratio = clamp((event.clientY - box.top) / box.height, 0, 1); return Math.round(minYear + ratio * (maxYear - minYear));
+  }
+  function snapYear(year: number) {
+    const nearest = worldEpochs.reduce((best, item) => Math.abs(item.year - year) < Math.abs(best.year - year) ? item : best); return Math.abs(nearest.year - year) <= 28 ? nearest.year : year;
+  }
+
+  rail.addEventListener('pointerdown', (event) => { timeDragging = true; targetYear = yearFromPointer(event); currentYear = targetYear; rail.setPointerCapture(event.pointerId); root.dataset.timeDragging = 'true'; event.preventDefault(); });
+  rail.addEventListener('pointermove', (event) => { if (timeDragging) { targetYear = yearFromPointer(event); currentYear = targetYear; } });
+  rail.addEventListener('pointerup', (event) => { if (!timeDragging) return; targetYear = snapYear(yearFromPointer(event)); timeDragging = false; delete root.dataset.timeDragging; });
+  document.getElementById('timeInstrument')!.addEventListener('wheel', (event) => { event.preventDefault(); targetYear = clamp(targetYear + (event.deltaY > 0 ? 9 : -9), minYear, maxYear); window.clearTimeout(wheelSnapTimer); wheelSnapTimer = window.setTimeout(() => targetYear = snapYear(targetYear), 170); }, { passive: false });
+  rail.addEventListener('keydown', (event) => { const steps: Record<string, number> = { ArrowUp: -10, ArrowDown: 10, PageUp: -50, PageDown: 50 }; if (event.key === 'Home') targetYear = minYear; else if (event.key === 'End') targetYear = maxYear; else if (steps[event.key]) targetYear = clamp(targetYear + steps[event.key], minYear, maxYear); else return; event.preventDefault(); });
+  document.querySelectorAll<HTMLElement>('.time-stop').forEach((stop) => stop.addEventListener('click', () => targetYear = Number(stop.dataset.year)));
+
+  root.addEventListener('pointerdown', (event) => {
+    if ((event.target as HTMLElement).closest('.time-instrument,.map-controls,.intro,.era-label,.map-place,a,button')) return;
+    globeDragging = true; lastX = event.clientX; lastY = event.clientY; velocityX = velocityY = 0; cancelAnimationFrame(inertiaFrame); root.setPointerCapture(event.pointerId); root.dataset.globeDragging = 'true'; event.preventDefault();
+  });
+  root.addEventListener('pointermove', (event) => {
+    if (!globeDragging) return; const dx = event.clientX - lastX, dy = event.clientY - lastY, rotation = projection.rotate(), sensitivity = .19 / Math.sqrt(zoom);
+    velocityX = dx * sensitivity; velocityY = -dy * sensitivity; projection.rotate([rotation[0] + velocityX, clamp(rotation[1] + velocityY, -74, 74), 0]); lastX = event.clientX; lastY = event.clientY;
+  });
+  function coast() { if (Math.abs(velocityX) + Math.abs(velocityY) < .018) return; const rotation = projection.rotate(); projection.rotate([rotation[0] + velocityX, clamp(rotation[1] + velocityY, -74, 74), 0]); velocityX *= .9; velocityY *= .9; inertiaFrame = requestAnimationFrame(coast); }
+  root.addEventListener('pointerup', () => { if (!globeDragging) return; globeDragging = false; delete root.dataset.globeDragging; coast(); });
+  root.addEventListener('wheel', (event) => { if ((event.target as HTMLElement).closest('.time-instrument')) return; event.preventDefault(); targetZoom = clamp(targetZoom * Math.exp(-event.deltaY * .001), .82, 3.25); }, { passive: false });
+  document.getElementById('zoomIn')!.addEventListener('click', () => targetZoom = clamp(targetZoom * 1.3, .82, 3.25));
+  document.getElementById('zoomOut')!.addEventListener('click', () => targetZoom = clamp(targetZoom / 1.3, .82, 3.25));
+  document.getElementById('resetView')!.addEventListener('click', () => { projection.rotate(initialRotation); targetZoom = 1; });
+  window.addEventListener('resize', resize); resize(); updateEpochState(); animate();
 </script>
-<style>
-.world{position:absolute;inset:0;overflow:hidden}.map{position:absolute;width:100%;height:100%}.sea{fill:#070b0f}.land{fill:var(--l-land);stroke:var(--l-land-edge);stroke-width:.8;transition:.7s}.terrain{opacity:.4;transition:.7s}.terrain path{fill:none;stroke:#6d8998;stroke-width:.6;stroke-dasharray:2 12;opacity:.3}.polity{opacity:0;transition:.7s}.polity ellipse{transform-box:fill-box;transform-origin:center}.unified{opacity:var(--unity);transform:scale(calc(.12 + var(--reach)*.88))}.west{opacity:var(--west);transform:scale(calc(.2 + var(--reach)*.8))}.east{opacity:var(--east);transform:scale(calc(.2 + var(--reach)*.8))}.polity circle{fill:var(--l-warm)}[data-mode=polity] .polity{opacity:1}[data-mode=polity] .terrain{opacity:.04}[data-mode=polity] .land{fill:#101719;stroke:#2b3d43}
-.nodes{position:absolute;inset:0}.node{position:absolute;transform:translate(-6px,-50%);display:grid;grid-template-columns:auto 1fr;gap:.2rem .6rem;background:none;border:0;text-align:left;text-decoration:none;font-family:var(--l-font-body);cursor:pointer}.node i{grid-row:1;width:6px;height:6px;border-radius:50%;background:var(--l-ink-faint)}.node strong{color:var(--l-ink-dim);font-weight:300}.node span{grid-column:2;color:var(--l-ink-faint);font:.5rem var(--l-font-mono)}.open i{width:9px;height:9px;background:var(--l-warm);box-shadow:0 0 18px var(--l-warm)}.open strong{color:var(--l-ink);font-size:1.25rem}.open span{color:var(--l-warm)}.planned{opacity:.45}
-.intro{position:absolute;left:5vw;top:20vh;width:min(25rem,34vw)}.intro>p{color:var(--l-accent);font:.58rem var(--l-font-mono);letter-spacing:.2em}.intro h1{margin:1rem 0;color:var(--l-ink);font:300 clamp(2.5rem,4.2vw,4.2rem)/1.05 var(--l-font-display)}.intro div{color:var(--l-ink-dim);font-size:.82rem;line-height:1.9}.intro>span{display:block;margin-top:1rem;padding-left:.8rem;border-left:1px solid var(--l-cool);color:var(--l-ink-faint);font:.5rem var(--l-font-mono)}
-.clock{position:absolute;z-index:10;left:68%;top:13vh;bottom:10vh;width:4rem;display:grid;grid-template-rows:auto 1fr auto;gap:.6rem;text-align:center}.clock small{color:var(--l-ink-faint);font:.46rem var(--l-font-mono)}.track{position:relative;width:1px;margin:auto;background:linear-gradient(var(--l-rule),var(--l-cool),var(--l-rule));cursor:ns-resize;touch-action:none}.stop{position:absolute;left:-4px;width:9px;height:1px;padding:0;border:0;background:var(--l-rule);cursor:pointer}.stop span{position:absolute;left:1rem;top:-.35rem;color:transparent;white-space:nowrap;font:.44rem var(--l-font-mono)}.stop.major span,.stop:hover span{color:var(--l-ink-faint)}.thumb{position:absolute;top:var(--p);transition:top .08s}.thumb:before{content:'';position:absolute;left:-7px;top:-7px;width:13px;height:13px;border:1px solid var(--l-accent);border-radius:50%;background:var(--l-ground)}.thumb>strong{position:absolute;right:1rem;top:-.7rem;color:var(--l-ink);white-space:nowrap;font:1rem var(--l-font-display)}.mode{position:absolute;top:-.55rem;display:flex;align-items:center}.mode i{width:1.3rem;height:1px;background:var(--l-rule)}.terrain-mode{right:4.2rem}.polity-mode{left:1rem}.mode button{padding:.32rem .48rem;border:1px solid transparent;background:rgba(7,11,15,.8);color:var(--l-ink-faint);font:.48rem var(--l-font-mono);cursor:pointer}.mode button[aria-pressed=true]{border-color:var(--l-accent-dim);color:var(--l-accent)}
-.state{position:absolute;left:72%;top:var(--state-y);transform:translateY(-50%);display:grid;gap:.3rem;width:20vw}.state span,.state em{color:var(--l-ink-faint);font:.48rem var(--l-font-mono);font-style:normal}.state strong{color:var(--l-ink);font:300 1.15rem var(--l-font-body)}
-.track{height:100%;margin:0 auto}.stop{height:16px;transform:translateY(-8px);background:none}.stop i{position:absolute;left:0;top:8px;width:9px;height:1px;background:var(--l-rule)}.stop span{top:4px}
-/* M2.2：可拨动球面与独立但相连的时间仪器 */
-.world{user-select:none;-webkit-user-select:none}.map{cursor:grab;touch-action:none}.world[data-globe-drag=true] .map{cursor:grabbing}.sphere{fill:#071015;stroke:#31434b;stroke-width:1}.land{fill:#142027;stroke:#344a55;stroke-width:.85}.graticule{fill:none;stroke:#36505c;stroke-width:.45;stroke-opacity:.24;transition:opacity .6s}[data-mode=polity] .graticule{opacity:.08}
-.node strong{font-size:.92rem;text-shadow:0 2px 8px #05090b}.node span{font-size:.68rem;line-height:1.4;letter-spacing:.06em;text-shadow:0 2px 8px #05090b}.open strong{font-size:1.35rem}.planned{opacity:.58}
-.intro>p{font-size:.68rem}.intro div{font-size:.94rem;line-height:1.85}.intro>span{font-size:.68rem;line-height:1.6;color:#82949d}
-.clock{left:auto;right:6vw;top:10vh;bottom:7vh;width:7rem;padding:1.1rem 1.65rem;border:1px solid rgba(143,182,207,.2);border-radius:2px;background:linear-gradient(90deg,rgba(5,10,13,.58),rgba(13,23,28,.84) 45%,rgba(5,10,13,.58));box-shadow:0 18px 65px rgba(0,0,0,.34),inset 0 0 32px rgba(143,182,207,.025);backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);cursor:default}.clock:before{content:'TIME';position:absolute;top:.65rem;left:.65rem;color:#718691;font:.58rem var(--l-font-mono);letter-spacing:.18em}.clock small{font-size:.66rem;color:#93a3ad}.track{width:2px;background:linear-gradient(#3d5360,#9bb6c3 48%,#3d5360);cursor:default}.stop{left:-6px;width:14px}.stop i{width:14px;background:#526975}.stop span{left:1.35rem;top:2px;color:#82949d;font-size:.62rem}.stop.major span{color:#a8b5ba}.thumb:before{left:-8px;top:-8px;width:15px;height:15px;border:2px solid var(--l-accent);box-shadow:0 0 0 7px rgba(201,161,91,.08),0 0 20px rgba(201,161,91,.25)}.thumb>strong{right:1.45rem;top:-.8rem;font-size:1.25rem}.mode button{font-size:.64rem;padding:.4rem .55rem;background:rgba(7,13,16,.94)}.terrain-mode{right:5.25rem}.polity-mode{left:1.4rem}.mode i{width:1.7rem}
-.state{left:auto;right:17rem;width:15rem;padding:.85rem 1rem;border-right:1px solid rgba(143,182,207,.32);text-align:right;background:linear-gradient(90deg,transparent,rgba(5,10,13,.64))}.state span,.state em{font-size:.64rem;line-height:1.5}.state strong{font-size:1.32rem}.state em{color:#788990}
-.probe{position:absolute;left:0;top:0;opacity:0;pointer-events:none;transition:opacity .15s}.probe.visible{opacity:1}.probe i{position:absolute;left:-8px;top:-8px;width:15px;height:15px;border:1px solid #8fb6cf;border-radius:50%;background:rgba(7,13,16,.85)}.probe span{position:absolute;left:1.4rem;top:-.55rem;padding:.2rem .35rem;background:rgba(7,13,16,.9);color:#b9c8cf;white-space:nowrap;font:.64rem var(--l-font-mono)}.probe.active i{border-color:var(--l-accent);box-shadow:0 0 0 6px rgba(201,161,91,.09)}.probe.active span{color:var(--l-accent)}
-.drawer,.evidence{user-select:text;-webkit-user-select:text}
-@media(max-width:860px){.intro{left:1rem;top:5rem;width:60vw}.intro h1{font-size:2.3rem}.clock{left:auto;right:2rem;top:20vh;bottom:14vh}.state{left:auto;right:5rem;width:9rem;text-align:right}.planned{display:none}}
+
+<style is:global>
+  .world{position:absolute;inset:0;overflow:hidden;background:radial-gradient(circle at 43% 42%,rgba(79,91,74,.13),transparent 46%),#0c0f0e;user-select:none;-webkit-user-select:none;touch-action:none}
+  .world-map{position:absolute;inset:0;width:100%;height:100%;cursor:grab}[data-globe-dragging=true] .world-map{cursor:grabbing}
+  .sphere{fill:url(#oceanGlow);stroke:rgba(128,151,137,.34);stroke-width:1.2}.land{fill:url(#landWash);stroke:#59685e;stroke-width:.72;stroke-opacity:.7;vector-effect:non-scaling-stroke}.graticule{fill:none;stroke:#819084;stroke-width:.48;stroke-opacity:.12;vector-effect:non-scaling-stroke}
+  .historical-fields{transition:opacity .22s linear}.historical-field{fill:var(--field-color);fill-opacity:.24;stroke:color-mix(in srgb,var(--field-color) 76%,#f0e4ce);stroke-width:1.15;stroke-opacity:.58;vector-effect:non-scaling-stroke}.historical-field.approximate{stroke-dasharray:5 3}.historical-field.influence{fill-opacity:.18;stroke-width:5;stroke-opacity:.14;filter:url(#fieldSoft)}
+  .physical-feature{fill:none;vector-effect:non-scaling-stroke;transition:opacity .35s}.physical-feature.river{stroke:#7898a3;stroke-width:1.25;stroke-opacity:.72}.physical-feature.mountain{stroke:#a99b7b;stroke-width:4;stroke-linecap:round;stroke-dasharray:1 8;stroke-opacity:.48}
+  .era-labels,.place-labels{position:absolute;inset:0;pointer-events:none}.era-label,.map-place{position:absolute;z-index:5;transform:translate(-50%,-50%);text-decoration:none;pointer-events:auto}.era-label{display:grid;justify-items:center;gap:.16rem;width:max-content;max-width:13rem;color:#eee6d8;text-align:center;text-shadow:0 1px 2px #080b09,0 2px 12px #080b09,0 0 3px #080b09}.era-label strong{font:620 clamp(.93rem,1.16vw,1.18rem)/1.2 var(--l-font-display);letter-spacing:.025em}.era-label span{color:#c0b8aa;font:500 .76rem/1.35 var(--l-font-body)}.era-label.influence:before{content:'';width:1.9rem;height:1px;margin-bottom:.12rem;background:rgba(225,215,194,.45)}[data-detail=local] .era-label span{opacity:.7}
+  .map-place{padding-left:.7rem;color:#e5ddd0;font:500 .78rem/1.3 var(--l-font-body);white-space:nowrap;text-shadow:0 1px 2px #050806,0 0 7px #050806}.map-place:before{content:'';position:absolute;left:0;top:.4em;width:5px;height:5px;border:1px solid #d2b276;border-radius:50%;background:#19201c}.map-place.capital{color:#efdcb9;font-weight:620}.map-place.site{color:#e0bb76}
+  .intro{position:absolute;left:clamp(1.5rem,5vw,5.6rem);top:clamp(7rem,22vh,14rem);width:min(31rem,34vw);pointer-events:none}.intro p{margin:0 0 1.2rem;color:#c49a5c;font:600 .72rem/1 var(--l-font-body);letter-spacing:.2em}.intro h1{margin:0;color:#eee8dc;font:560 clamp(2.8rem,4.5vw,4.8rem)/1.08 var(--l-font-display);letter-spacing:-.025em;text-wrap:balance;text-shadow:0 4px 30px rgba(0,0,0,.55)}.intro div{width:min(28rem,100%);margin-top:1.4rem;color:#b8b1a5;font:440 clamp(.96rem,1.05vw,1.08rem)/1.75 var(--l-font-body);text-shadow:0 2px 9px #080b09}
+  .epoch-heading{position:absolute;left:50%;top:5.9rem;display:grid;justify-items:center;gap:.28rem;transform:translateX(-50%);text-align:center;pointer-events:none}.epoch-heading span{color:#c69c5d;font:600 .76rem/1 var(--l-font-body);letter-spacing:.12em}.epoch-heading strong{color:#ddd6ca;font:540 1.08rem/1.3 var(--l-font-display);letter-spacing:.04em}
+  .time-instrument{position:absolute;right:clamp(1.5rem,4.5vw,5.2rem);top:11vh;bottom:9vh;width:8.5rem;display:grid;grid-template-rows:auto 1fr auto;gap:1rem;padding:.35rem 0}.instrument-heading{display:flex;align-items:baseline;justify-content:space-between;padding-left:1.75rem}.instrument-heading span{color:#85877f;font:600 .68rem/1 var(--l-font-body);letter-spacing:.2em}.instrument-heading strong{color:#e5ddd0;font:560 1rem/1 var(--l-font-display);font-variant-numeric:tabular-nums}
+  .time-rail{position:relative;width:48px;height:100%;margin-left:auto;margin-right:1.65rem;cursor:default;touch-action:none}.rail-line{position:absolute;left:23px;inset-block:0;width:3px;border-radius:999px;background:linear-gradient(#525d56,#b1a58d 47%,#535e57);box-shadow:0 0 0 1px rgba(0,0,0,.18),0 0 22px rgba(200,155,88,.08)}
+  .time-stop{position:absolute;left:0;width:48px;height:24px;padding:0;transform:translateY(-12px);border:0;background:none;pointer-events:none}.time-stop i{position:absolute;left:17px;top:11px;width:10px;height:3px;border-radius:999px 0 0 999px;background:#6e766f;transition:width .18s,background .18s}.time-stop.major i{left:11px;width:16px;background:#969488}.time-stop span{position:absolute;right:2.7rem;top:4px;color:transparent;font:520 .69rem/1 var(--l-font-body);font-variant-numeric:tabular-nums;white-space:nowrap;transition:color .18s}.time-stop.major span{color:#a9a398}
+  .time-thumb{position:absolute;left:24px;top:var(--time-p);transform:translate(-50%,-50%);pointer-events:none}.time-thumb i{display:block;width:17px;height:17px;border:2px solid #d3ad69;border-radius:50%;background:#111613;box-shadow:0 0 0 7px rgba(200,155,88,.1),0 0 22px rgba(200,155,88,.26)}.time-thumb span{position:absolute;right:1.65rem;top:50%;transform:translateY(-50%);padding:.26rem .48rem;border-radius:999px;background:rgba(13,17,15,.88);color:#f0e8da;font:600 .85rem/1 var(--l-font-display);font-variant-numeric:tabular-nums;white-space:nowrap}[data-time-dragging=true] .time-thumb i{transform:scale(1.12)}.instrument-ends{display:flex;justify-content:space-between;padding-left:1.75rem;color:#747a74;font:520 .66rem/1 var(--l-font-body);font-variant-numeric:tabular-nums}
+  .map-controls{position:absolute;right:clamp(1.5rem,4.5vw,5.2rem);bottom:2.1rem;display:flex;gap:.42rem}.map-controls button{width:2.2rem;height:2.2rem;border:1px solid rgba(184,174,154,.22);border-radius:999px;background:rgba(17,22,19,.78);color:#c9c0b1;font:500 1rem/1 var(--l-font-body);cursor:pointer;backdrop-filter:blur(8px);transition:color .2s,border-color .2s,background .2s}.map-controls button:hover{color:#e3bd78;border-color:#8b7147;background:#171d19}.map-controls .reset-view{margin-left:.25rem;color:#d2ac6a}
+  .map-status{position:absolute;left:clamp(1.5rem,5vw,5.6rem);bottom:3.9rem;display:flex;align-items:center;gap:.7rem;color:#8f9188;font:520 .71rem/1 var(--l-font-body);letter-spacing:.04em;pointer-events:none}.map-status i{width:2rem;height:1px;background:#5e675f}.interaction-hint{position:absolute;left:clamp(1.5rem,5vw,5.6rem);bottom:1.55rem;margin:0;color:#777b74;font:460 .69rem/1.5 var(--l-font-body);pointer-events:none}.interaction-hint span{color:#b1aa9e}
+  .vignette{position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(7,9,8,.74),transparent 23%,transparent 73%,rgba(7,9,8,.28)),radial-gradient(ellipse at center,transparent 55%,rgba(3,5,4,.43) 100%)}
+  .intro,.epoch-heading,.map-status,.interaction-hint{z-index:12}.time-instrument,.map-controls{z-index:20}.era-labels,.place-labels{z-index:9}.vignette{z-index:8}
+  @media(max-width:900px){.intro{top:5.3rem;width:57vw}.intro h1{font-size:clamp(2.25rem,8vw,3.5rem)}.intro div{display:none}.epoch-heading{display:none}.time-instrument{right:.8rem;top:17vh;bottom:11vh;width:7.6rem}.map-controls{right:1.2rem}.map-status{bottom:3.6rem}.interaction-hint{max-width:62vw}.era-label span{display:none}}
+  @media(max-width:560px){.intro p{font-size:.65rem}.intro h1{font-size:2.25rem}.time-instrument{right:.2rem;width:6.5rem}.time-stop.major span{font-size:.62rem}.instrument-heading{padding-left:.5rem}.instrument-heading strong{display:none}.instrument-ends{padding-left:.5rem}.map-status{display:none}.interaction-hint{font-size:.64rem}}
 </style>

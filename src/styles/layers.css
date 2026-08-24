@@ -17,19 +17,23 @@
 
 /* ---------- 世界层：冷 ---------- */
 [data-layer="world"]{
-  --l-ground:      #070b0f;
-  --l-ground-2:    #0b1219;
-  --l-surface:     rgba(12,20,27,.72);
-  --l-ink:         #dfe6ea;
-  --l-ink-dim:     #93a3ad;
-  --l-ink-faint:   #5a6a75;
-  --l-rule:        #1b2831;
-  --l-accent:      #8fb6cf;     /* 冷：这一层是海图，不是展厅 */
-  --l-accent-dim:  #3f5f76;
-  --l-warm:        #c9a15b;     /* 只给"已开放"用，稀缺才有指向性 */
-  --l-focus:       #8fb6cf;
-  --l-land:        #131c23;
-  --l-land-edge:   #24343f;
+  --l-font-display:'Noto Serif SC Variable','Noto Serif SC','Source Han Serif SC',serif;
+  --l-font-body:'Noto Sans SC Variable','Noto Sans SC','Source Han Sans SC','Microsoft YaHei',sans-serif;
+  --l-font-mono:'Noto Sans SC Variable','Noto Sans SC',ui-monospace,monospace;
+  --l-ground:      #0c0f0e;
+  --l-ground-2:    #111613;
+  --l-surface:     rgba(18,23,20,.76);
+  --l-ink:         #e9e3d7;
+  --l-ink-dim:     #b1aa9d;
+  --l-ink-faint:   #7c7d75;
+  --l-rule:        #2b332f;
+  --l-accent:      #c89b58;
+  --l-accent-dim:  #6d5938;
+  --l-warm:        #c89b58;
+  --l-cool:        #7896a2;
+  --l-focus:       #d4ad6a;
+  --l-land:        #222a25;
+  --l-land-edge:   #4a5850;
 }
 
 /* ---------- 罗马卷：暖 ---------- */

@@ -10,6 +10,8 @@
  */
 import '../styles/base.css';
 import '../styles/layers.css';
+import '@fontsource-variable/noto-sans-sc';
+import '@fontsource-variable/noto-serif-sc';
 import { sitePath } from '../lib/paths';
 
 interface Props {
@@ -59,7 +61,7 @@ const { title, layer, context, up, identity } = Astro.props;
     color: var(--l-ink);
     font-family: var(--l-font-body);
     font-weight: 300;
-    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
     overflow: hidden;   /* 各层自己决定滚不滚 */
   }
   .stage-root { position: absolute; inset: 0; }
