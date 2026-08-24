@@ -52,7 +52,7 @@ History Atlas 是一本“可以进入的历史书”，未来不局限于罗马
 
 正式 M1.5 已接入 Astro 项目：
 
-- `/` — Natural Earth 真实海陆数据上的世界层，不绘制现代国界；
+- `/` — Natural Earth 世界层，含融合式纵向时间轴、关键年份吸附以及地形 / 政权互斥模式；
 - `/civilization/rome/` — 约前 753—公元 476 年的罗马时间主干，共九个时代卷；
 - `/world/rome-republic/` — 罗马卷，独立暖色石质视觉身份；
 - `/story/rubicon/` — 三幕视觉舞台承载八段完整知识章节；
