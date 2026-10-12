@@ -114,7 +114,7 @@ const majorYears = new Set([-753, -509, -264, -133, -49, -27, 117, 395, 476]);
   const graticule = geoGraticule10();
   let viewportWidth = 1600, viewportHeight = 900, baseScale = 900;
   let zoom = 1, targetZoom = 1, currentYear = -49, targetYear = -49;
-  // renderedZoom = SVG 路径精确渲染时的 zoom；缩放手势进行中用 CSS transform 做视觉近似，
+  // renderedZoom = SVG (rebuild trigger) 路径精确渲染时的 zoom；缩放手势进行中用 CSS transform 做视觉近似，
   // 停稳后才做一次精确重投影（正交投影的 scale 变化等价于以投影中心为原点的线性缩放）。
   let timeDragging = false, globeDragging = false, lastX = 0, lastY = 0, velocityX = 0, velocityY = 0;
   let inertiaFrame = 0, wheelSnapTimer = 0, renderedEpoch = -1, renderedDetail = '', renderedFieldPair = '';
