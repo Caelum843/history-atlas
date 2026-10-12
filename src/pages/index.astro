@@ -338,7 +338,7 @@ const majorYears = new Set([-753, -509, -264, -133, -49, -27, 117, 395, 476]);
 
 <style is:global>
   .world{position:absolute;inset:0;overflow:hidden;background:radial-gradient(circle at 43% 42%,rgba(79,91,74,.13),transparent 46%),#0c0f0e;user-select:none;-webkit-user-select:none;touch-action:none}
-  .map-stage{position:absolute;inset:0;will-change:transform}
+  .map-stage{position:absolute;inset:0;z-index:1;will-change:transform}
   .world-map{position:absolute;inset:0;width:100%;height:100%;cursor:grab}[data-globe-dragging=true] .world-map{cursor:grabbing}
   .sphere{fill:url(#oceanGlow);stroke:rgba(128,151,137,.34);stroke-width:1.2}.land{fill:url(#landWash);stroke:#59685e;stroke-width:.72;stroke-opacity:.7;vector-effect:non-scaling-stroke}.graticule{fill:none;stroke:#819084;stroke-width:.48;stroke-opacity:.12;vector-effect:non-scaling-stroke}
   .historical-fields{transition:opacity .22s linear}.historical-field{fill:var(--field-color);fill-opacity:.24;stroke:color-mix(in srgb,var(--field-color) 76%,#f0e4ce);stroke-width:1.15;stroke-opacity:.58;vector-effect:non-scaling-stroke}.historical-field.approximate{stroke-dasharray:5 3}.historical-field.influence{fill-opacity:.18;stroke-width:7;stroke-opacity:.2}
