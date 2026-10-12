@@ -11,6 +11,7 @@ const majorYears = new Set([-753, -509, -264, -133, -49, -27, 117, 395, 476]);
 
 <Shell layer="world" title="History Atlas · 历史世界" context="历史世界 · 时间观测台">
   <div class="world" id="historyWorld" style="--time-p:57.28%;">
+    <div class="map-stage" id="mapStage">
     <svg class="world-map" id="worldMap" role="img" aria-label="可旋转、缩放并随年代变化的历史世界地图">
       <defs>
         <radialGradient id="oceanGlow" cx="48%" cy="42%" r="68%">
@@ -41,6 +42,7 @@ const majorYears = new Set([-753, -509, -264, -133, -49, -27, 117, 395, 476]);
 
     <div id="eraLabels" class="era-labels" aria-live="polite"></div>
     <div id="placeLabels" class="place-labels"></div>
+    </div>
 
     <header class="intro">
       <p>THE WORLD AT A MOMENT</p>
@@ -85,6 +87,7 @@ const majorYears = new Set([-753, -509, -264, -133, -49, -27, 117, 395, 476]);
   type Coordinates = [number, number];
   const root = document.getElementById('historyWorld')!;
   const svg = document.getElementById('worldMap') as unknown as SVGSVGElement;
+  const mapStage = document.getElementById('mapStage')!;
   const spherePath = document.getElementById('spherePath')!;
   const sphereClipPath = document.getElementById('sphereClipPath')!;
   const landPath = document.getElementById('landPath')!;
@@ -111,9 +114,11 @@ const majorYears = new Set([-753, -509, -264, -133, -49, -27, 117, 395, 476]);
   const graticule = geoGraticule10();
   let viewportWidth = 1600, viewportHeight = 900, baseScale = 900;
   let zoom = 1, targetZoom = 1, currentYear = -49, targetYear = -49;
+  // renderedZoom = SVG 路径精确渲染时的 zoom；缩放手势进行中用 CSS transform 做视觉近似，
+  // 停稳后才做一次精确重投影（正交投影的 scale 变化等价于以投影中心为原点的线性缩放）。
   let timeDragging = false, globeDragging = false, lastX = 0, lastY = 0, velocityX = 0, velocityY = 0;
   let inertiaFrame = 0, wheelSnapTimer = 0, renderedEpoch = -1, renderedDetail = '', renderedFieldPair = '';
-  let lastGeometryZoom = Number.NaN, lastGeometryRotation = '', lastSphereD = '', lastLandD = '';
+  let renderedZoom = 1, lastGeometryRotation = '', lastSphereD = '', lastLandD = '';
 
   const clamp = (value: number, low: number, high: number) => Math.max(low, Math.min(high, value));
   const formatYear = (year: number, spaced = true) => year < 0 ? `前${spaced ? ' ' : ''}${Math.abs(Math.round(year))}` : `公元${spaced ? ' ' : ''}${Math.round(year)}`;
@@ -252,16 +257,51 @@ const majorYears = new Set([-753, -509, -264, -133, -49, -27, 117, 395, 476]);
   }
   function resize() {
     const box = root.getBoundingClientRect(); viewportWidth = box.width; viewportHeight = box.height; svg.setAttribute('viewBox', `0 0 ${viewportWidth} ${viewportHeight}`);
-    baseScale = viewportWidth < 720 ? Math.max(viewportWidth * .8, viewportHeight * .46) : Math.max(viewportWidth * .58, viewportHeight * .9); updateMapGeometry(true);
+    baseScale = viewportWidth < 720 ? Math.max(viewportWidth * .8, viewportHeight * .46) : Math.max(viewportWidth * .58, viewportHeight * .9); clearZoomPreview(); updateMapGeometry(true);
+  }
+  function clearZoomPreview() {
+    // 清掉 CSS 缩放预览，回到精确渲染状态
+    mapStage.style.transform = '';
+    renderedZoom = zoom;
+  }
+  function applyZoomPreview() {
+    // 缩放进行中：只用 GPU 合成的 CSS transform 做视觉近似，跳过全部逐帧重投影。
+    // 投影中心即 translate 点，CSS scale 与 projection.scale 在视觉上等价。
+    const factor = zoom / renderedZoom;
+    mapStage.style.transformOrigin = `${viewportWidth * .5}px ${viewportHeight * .54}px`;
+    mapStage.style.transform = `scale(${factor})`;
+  }
+  function preloadDetailForZoom(target: number) {
+    // 按目标缩放预加载对应精度数据，停稳时直接可用
+    const targetLevel = target >= 2.05 ? 'local' : target >= 1.3 ? 'region' : 'world';
+    if (targetLevel === 'region' || targetLevel === 'local') void ensureRegionLand();
+    if (targetLevel === 'local') void ensureLocalLand();
   }
   function animate() {
     const previousYear = currentYear;
-    const zoomDelta = targetZoom - zoom; zoom = Math.abs(zoomDelta) < .0005 ? targetZoom : zoom + zoomDelta * .16;
+    const zoomDelta = targetZoom - zoom;
+    const zoomSettling = Math.abs(zoomDelta) < .0005;
+    zoom = zoomSettling ? targetZoom : zoom + zoomDelta * .16;
     const yearDelta = targetYear - currentYear; currentYear = timeDragging ? targetYear : Math.abs(yearDelta) < .04 ? targetYear : currentYear + yearDelta * .18;
     if (Math.abs(currentYear - previousYear) > .001) updateEpochState();
     const rotationKey = projection.rotate().map((value) => value.toFixed(3)).join(':');
-    if (Math.abs(zoom - lastGeometryZoom) > .0005 || rotationKey !== lastGeometryRotation) {
-      updateMapGeometry(); lastGeometryZoom = zoom; lastGeometryRotation = rotationKey;
+    const rotationChanged = rotationKey !== lastGeometryRotation;
+    const zoomChanged = Math.abs(zoom - renderedZoom) > .0005;
+    if (rotationChanged) {
+      // 旋转变化必须完整重投影；同时清掉可能存在的缩放预览
+      clearZoomPreview();
+      updateMapGeometry();
+      lastGeometryRotation = rotationKey;
+    } else if (zoomChanged) {
+      if (zoomSettling) {
+        // 缩放停稳：做一次精确重投影
+        clearZoomPreview();
+        updateMapGeometry();
+      } else {
+        // 缩放进行中：CSS 预览 + 预加载数据，不做重投影
+        applyZoomPreview();
+        preloadDetailForZoom(targetZoom);
+      }
     }
     requestAnimationFrame(animate);
   }
@@ -298,6 +338,7 @@ const majorYears = new Set([-753, -509, -264, -133, -49, -27, 117, 395, 476]);
 
 <style is:global>
   .world{position:absolute;inset:0;overflow:hidden;background:radial-gradient(circle at 43% 42%,rgba(79,91,74,.13),transparent 46%),#0c0f0e;user-select:none;-webkit-user-select:none;touch-action:none}
+  .map-stage{position:absolute;inset:0;will-change:transform}
   .world-map{position:absolute;inset:0;width:100%;height:100%;cursor:grab}[data-globe-dragging=true] .world-map{cursor:grabbing}
   .sphere{fill:url(#oceanGlow);stroke:rgba(128,151,137,.34);stroke-width:1.2}.land{fill:url(#landWash);stroke:#59685e;stroke-width:.72;stroke-opacity:.7;vector-effect:non-scaling-stroke}.graticule{fill:none;stroke:#819084;stroke-width:.48;stroke-opacity:.12;vector-effect:non-scaling-stroke}
   .historical-fields{transition:opacity .22s linear}.historical-field{fill:var(--field-color);fill-opacity:.24;stroke:color-mix(in srgb,var(--field-color) 76%,#f0e4ce);stroke-width:1.15;stroke-opacity:.58;vector-effect:non-scaling-stroke}.historical-field.approximate{stroke-dasharray:5 3}.historical-field.influence{fill-opacity:.18;stroke-width:7;stroke-opacity:.2}
