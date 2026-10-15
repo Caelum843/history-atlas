@@ -319,8 +319,18 @@ const majorYears = new Set([-753, -509, -264, -133, -49, -27, 117, 395, 476]);
     const nearest = worldEpochs.reduce((best, item) => Math.abs(item.year - year) < Math.abs(best.year - year) ? item : best); return Math.abs(nearest.year - year) <= 28 ? nearest.year : year;
   }
 
-  rail.addEventListener('pointerdown', (event) => { timeDragging = true; targetYear = yearFromPointer(event); rail.setPointerCapture(event.pointerId); root.dataset.timeDragging = 'true'; event.preventDefault(); });
-  rail.addEventListener('pointermove', (event) => { if (timeDragging) { targetYear = yearFromPointer(event); } });
+  rail.addEventListener('pointerdown', (event) => { timeDragging = true;
+    const box = rail.getBoundingClientRect();
+    const ratio = Math.max(0, Math.min(1, (event.clientY - box.top) / box.height));
+    root.style.setProperty('--time-p', `${ratio * 100}%`);
+    targetYear = yearFromPointer(event); rail.setPointerCapture(event.pointerId); root.dataset.timeDragging = 'true'; event.preventDefault(); });
+  rail.addEventListener('pointermove', (event) => { if (timeDragging) {
+    const box = rail.getBoundingClientRect();
+    const ratio = Math.max(0, Math.min(1, (event.clientY - box.top) / box.height));
+    // 拇指直接跟鼠标，不走插值
+    root.style.setProperty('--time-p', `${ratio * 100}%`);
+    targetYear = yearFromPointer(event);
+  } });
   rail.addEventListener('pointerup', (event) => { if (!timeDragging) return; targetYear = snapYear(yearFromPointer(event)); timeDragging = false; delete root.dataset.timeDragging; updateEpochState(); });
   document.getElementById('timeInstrument')!.addEventListener('wheel', (event) => { event.preventDefault(); targetYear = clamp(targetYear + (event.deltaY > 0 ? 9 : -9), minYear, maxYear); window.clearTimeout(wheelSnapTimer); wheelSnapTimer = window.setTimeout(() => targetYear = snapYear(targetYear), 170); }, { passive: false });
   rail.addEventListener('keydown', (event) => { const steps: Record<string, number> = { ArrowUp: -10, ArrowDown: 10, PageUp: -50, PageDown: 50 }; if (event.key === 'Home') targetYear = minYear; else if (event.key === 'End') targetYear = maxYear; else if (steps[event.key]) targetYear = clamp(targetYear + steps[event.key], minYear, maxYear); else return; event.preventDefault(); });
