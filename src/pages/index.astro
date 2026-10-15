@@ -282,7 +282,7 @@ const majorYears = new Set([-753, -509, -264, -133, -49, -27, 117, 395, 476]);
     const zoomDelta = targetZoom - zoom;
     const zoomSettling = Math.abs(zoomDelta) < .0005;
     zoom = zoomSettling ? targetZoom : zoom + zoomDelta * .16;
-    const yearDelta = targetYear - currentYear; const yearRate = timeDragging ? .35 : .18; currentYear = Math.abs(yearDelta) < .04 ? targetYear : currentYear + yearDelta * yearRate;
+    const yearDelta = targetYear - currentYear; const yearRate = timeDragging ? .55 : .18; currentYear = Math.abs(yearDelta) < .04 ? targetYear : currentYear + yearDelta * yearRate;
     if (Math.abs(currentYear - previousYear) > .001) updateEpochState();
     const rotationKey = projection.rotate().map((value) => value.toFixed(3)).join(':');
     const rotationChanged = rotationKey !== lastGeometryRotation;
